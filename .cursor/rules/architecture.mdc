@@ -1,0 +1,19 @@
+---
+description: Capitalife web — scalable Next.js architecture and TypeScript standards
+alwaysApply: true
+---
+
+# Architecture
+
+- **Sections**: Route-level UI lives in `components/sections/<route>/`. Each section is its own small component file; compose them in a single page entry (e.g. `HomePage.tsx`). No monolithic section files.
+- **UI**: Reusable layout and primitives live in `components/ui/`.
+- **Content**: Copy, structured data, and locale-specific assets live in `content/`. UI components consume content via props or thin selectors — do not hardcode strings in section components when adding real copy.
+- **Logic**: Pure business logic and helpers live in `lib/`. Keep components mostly presentational; extract hooks or functions when logic grows.
+- **Styles**: Global tokens in `styles/tokens.css`; component styles via CSS Modules next to components unless a pattern dictates otherwise.
+
+# Quality bar
+
+- **File size**: Prefer files under 200 lines; split when a file grows.
+- **TypeScript**: Use `strict` mode; avoid `any`; prefer explicit types for public props and content models.
+- **i18n**: When adding strings, add locale files under `content/.../locales/` and extend `Locale` in `lib/i18n/types.ts`.
+- **Scope**: Avoid drive-by refactors and unrelated changes; match existing patterns in the repo.

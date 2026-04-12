@@ -1,0 +1,38 @@
+{
+  "name": "capitalife-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:smart": "node scripts/dev.js",
+    "dev:clean": "npx kill-port 3000 && npx kill-port 3001 && npx kill-port 3002",
+    "dev:direct": "next dev --turbopack -p 3000 -H 0.0.0.0",
+    "dev:webpack": "next dev -p 3000 -H 0.0.0.0",
+    "dev:alt": "next dev --turbopack -p 3001 -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "framer-motion": "^12.38.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.1.0",
+    "kill-port": "^2.0.1",
+    "postcss": "^8.5.9",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5.7.0"
+  }
+}

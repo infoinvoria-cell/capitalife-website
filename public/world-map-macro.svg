@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="land" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1c1e"/>
+      <stop offset="100%" stop-color="#141416"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <path fill="url(#land)" stroke="rgba(212,175,55,0.14)" stroke-width="0.85" filter="url(#glow)"
+    d="M120 180 Q90 220 100 280 Q130 340 180 360 Q220 380 260 350 Q280 300 270 240 Q250 180 200 160 Q150 150 120 180Z"/>
+  <path fill="url(#land)" stroke="rgba(212,175,55,0.12)" stroke-width="0.85"
+    d="M200 380 Q180 420 220 450 Q280 470 320 430 Q340 380 300 350 Q240 340 200 380Z"/>
+  <path fill="url(#land)" stroke="rgba(212,175,55,0.14)" stroke-width="0.85"
+    d="M420 120 Q380 160 400 220 Q420 280 480 300 Q540 280 560 220 Q550 150 500 120 Q460 100 420 120Z"/>
+  <path fill="url(#land)" stroke="rgba(212,175,55,0.12)" stroke-width="0.85"
+    d="M460 260 Q440 320 460 400 Q500 460 560 440 Q600 400 590 320 Q560 250 500 240 Q470 240 460 260Z"/>
+  <path fill="url(#land)" stroke="rgba(212,175,55,0.11)" stroke-width="0.85"
+    d="M600 140 Q640 180 700 200 Q780 190 840 220 Q880 280 860 360 Q820 420 740 400 Q660 380 620 320 Q580 220 600 140Z"/>
+  <path fill="url(#land)" stroke="rgba(212,175,55,0.1)" stroke-width="0.85"
+    d="M780 380 Q820 400 860 430 Q900 460 880 500 Q840 510 800 480 Q760 440 780 380Z"/>
+</svg>

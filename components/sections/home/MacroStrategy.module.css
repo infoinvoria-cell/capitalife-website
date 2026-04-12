@@ -1,0 +1,18 @@
+.mapInner {
+  transform: scale(1.02) translateX(1%);
+  transform-style: flat;
+}
+
+@media (min-width: 768px) {
+  .mapInner {
+    transform: perspective(1000px) rotateX(5deg) rotateY(-4deg) scale(1.06) translateX(3.5%);
+    transform-style: preserve-3d;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapInner {
+    transform: scale(1.02) translateX(1%);
+    transform-style: flat;
+  }
+}

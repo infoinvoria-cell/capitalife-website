@@ -1,0 +1,26 @@
+
+> capitalife-web@0.1.0 dev
+> node scripts/dev.js
+
+[dev] NODE_ENV="production" erkannt — für Dev auf "development" gesetzt.
+[dev] Projektpfad enthält Leerzeichen — verwende Webpack (Turbopack aus). Für Turbopack: NEXT_DEV_WEBPACK=0 setzen.
+
+
+  Capitalife — Entwicklungsserver
+  Terminal offen lassen. Beenden: Strg+C
+  (Modus: Webpack, kein Turbopack)
+
+  ─────────────────────────────────────
+    http://localhost:3014
+    http://127.0.0.1:3014
+  ─────────────────────────────────────
+
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3014
+   - Network:      http://0.0.0.0:3014
+
+ ✓ Starting...
+ ✓ Ready in 1956ms
+ ○ Compiling /partner-program ...
+ ✓ Compiled /partner-program in 1233ms (619 modules)
+ GET /partner-program 200 in 1692ms

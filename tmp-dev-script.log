@@ -1,0 +1,71 @@
+
+> capitalife-web@0.1.0 dev
+> node scripts/dev.js
+
+[dev] Projektpfad enthält Leerzeichen — verwende Webpack (Turbopack aus). Für Turbopack: NEXT_DEV_WEBPACK=0 setzen.
+
+
+  Capitalife — Entwicklungsserver
+  Terminal offen lassen. Beenden: Strg+C
+  (Modus: Webpack, kein Turbopack)
+
+  ─────────────────────────────────────
+    http://localhost:3011
+    http://127.0.0.1:3011
+  ─────────────────────────────────────
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3011
+   - Network:      http://0.0.0.0:3011
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling /partner-program ...
+ ⨯ ./app/globals.css
+Module parse failed: Unexpected character '@' (1:0)
+> @import "tailwindcss";
+| @import "../styles/tokens.css";
+| 
+
+Import trace for requested module:
+./app/globals.css
+./app/layout.tsx
+ ⨯ ./app/globals.css
+Module parse failed: Unexpected character '@' (1:0)
+> @import "tailwindcss";
+| @import "../styles/tokens.css";
+| 
+
+Import trace for requested module:
+./app/globals.css
+./app/layout.tsx
+ ⨯ ./app/globals.css
+Module parse failed: Unexpected character '@' (1:0)
+> @import "tailwindcss";
+| @import "../styles/tokens.css";
+| 
+
+Import trace for requested module:
+./app/globals.css
+./app/layout.tsx
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\joris\Documents\Capitalife Web\.next\required-server-files.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\joris\\Documents\\Capitalife Web\\.next\\required-server-files.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\joris\Documents\Capitalife Web\.next\required-server-files.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\joris\\Documents\\Capitalife Web\\.next\\required-server-files.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\joris\Documents\Capitalife Web\.next\required-server-files.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\joris\\Documents\\Capitalife Web\\.next\\required-server-files.json'
+}
+ GET /partner-program 500 in 6180ms
+ GET /partner-program 500 in 26ms

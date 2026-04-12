@@ -1,0 +1,19 @@
+You are working on a premium production-level Next.js project.
+
+Rules:
+- Always write clean, minimal, scalable code
+- Use modular component architecture
+- Never create large monolithic files
+- Always separate:
+  - UI (components)
+  - data (content files)
+  - types
+- Prefer simple solutions over complex ones
+- Keep everything readable and maintainable
+- Mobile-first approach
+- No unnecessary dependencies
+- No inline styles
+- Use Tailwind CSS only
+- Prepare for multilingual support
+
+Code should feel like it was written by a senior frontend engineer.

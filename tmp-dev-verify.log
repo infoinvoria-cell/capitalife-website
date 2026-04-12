@@ -1,0 +1,26 @@
+
+> capitalife-web@0.1.0 dev
+> node scripts/dev.js
+
+[dev] Projektpfad enthält Leerzeichen — verwende Webpack (Turbopack aus). Für Turbopack: NEXT_DEV_WEBPACK=0 setzen.
+
+
+  Capitalife — Entwicklungsserver
+  Terminal offen lassen. Beenden: Strg+C
+  (Modus: Webpack, kein Turbopack)
+
+  ─────────────────────────────────────
+    http://localhost:3013
+    http://127.0.0.1:3013
+  ─────────────────────────────────────
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3013
+   - Network:      http://0.0.0.0:3013
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling /partner-program ...
+ ✓ Compiled /partner-program in 1340ms (619 modules)
+ GET /partner-program 200 in 1815ms
