@@ -496,7 +496,7 @@
   align-items: center;
   gap: 72px;
   width: max-content;
-  animation: slide 30s linear infinite;
+  animation: slide 20s linear infinite;
 }
 
 .sliderLogo {
