@@ -61,13 +61,13 @@ const TX = {
     h2a: { de: "Einfach erkl\u00E4rt.", en: "Simple in structure." } as T,
     h2b: { de: "Partnerschaftlich gedacht.", en: "Built for partnership." } as T,
     text: {
-      de: "Einfach, transparent und auf Performance ausgelegt \u2014 Sie verdienen nur, wenn Ergebnisse entstehen.",
-      en: "Simple, transparent and built around performance \u2014 you only earn when results are generated.",
+      de: "Einfach, transparent und auf Performance ausgelegt.",
+      en: "Simple, transparent and built around performance.",
     } as T,
     steps: [
-      { title: { de: "Investor bindet Kapital", en: "Investor connects capital" } as T, desc: { de: "Kapital wird mit der Strategie verbunden.", en: "Capital is connected to the strategy." } as T },
-      { title: { de: "Performance entsteht", en: "Performance is generated" } as T, desc: { de: "Ergebnisse entstehen im Markt.", en: "Results are generated in the market." } as T },
-      { title: { de: "Gewinn wird mit Ihnen geteilt", en: "Profit is shared with you" } as T, desc: { de: "Sie partizipieren am Erfolgsanteil.", en: "You participate in the performance share." } as T },
+      { title: { de: "Investor Kapital", en: "Investor capital" } as T, desc: { de: "Kapital wird mit der Strategie verbunden.", en: "Capital is connected to the strategy." } as T },
+      { title: { de: "Performance + Management Gebühr", en: "Performance + Management Fee" } as T, desc: { de: "Gewinne für Investor & Capitalife werden erzielt.", en: "Profits for investors & Capitalife are generated." } as T },
+      { title: { de: "Capitalife Anteil für Sie", en: "Capitalife share for you" } as T, desc: { de: "Partner erhalten einen Anteil an den Gewinnen.", en: "Partners receive a share of the profits." } as T },
     ],
   },
   calc: {
