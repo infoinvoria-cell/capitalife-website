@@ -24,5 +24,6 @@ export const SP500_CUM: number[] = [
   30.28,
   32.06,
   30.92,
-  24.25
+  24.25,
+  19.8, // Apr 2026 — update by running: node scripts/fetch-sp500.mjs
 ];

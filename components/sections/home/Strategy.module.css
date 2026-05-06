@@ -293,28 +293,36 @@
   flex: 0 0 50%;
   background-image: url("/worldmap.png");
   background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: auto 108%;
+  background-size: 200% 108%;
   filter:
     grayscale(1)
     sepia(0.9)
     hue-rotate(350deg)
     saturate(1.26)
-    brightness(1.08)
-    contrast(1.24)
-    drop-shadow(0 0 1.5px rgba(234, 205, 128, 0.22));
+    brightness(1.1)
+    contrast(1.28)
+    drop-shadow(0 0 2px rgba(234, 205, 128, 0.3));
   mix-blend-mode: screen;
   opacity: 0.88;
-  transform: scale(1.04);
+}
+
+/* Layer 1 shows left half of map, layer 2 shows right half — seamless tile */
+.globeMapLayer:first-child {
+  background-position: 0 50%;
+}
+
+.globeMapLayer:last-child {
+  background-position: 100% 50%;
 }
 
 .globeShade {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 26% 34%, rgba(255, 245, 212, 0.2), transparent 42%),
-    radial-gradient(circle at 78% 64%, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.66) 72%),
-    linear-gradient(150deg, rgba(255, 250, 220, 0.06), transparent 42%);
+    radial-gradient(circle at 26% 34%, rgba(255, 245, 212, 0.26), transparent 40%),
+    radial-gradient(circle at 78% 66%, rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.7) 68%),
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.58) 100%),
+    linear-gradient(150deg, rgba(255, 250, 220, 0.07), transparent 42%);
 }
 
 @keyframes globeSpin {

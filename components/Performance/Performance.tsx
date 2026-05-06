@@ -99,7 +99,7 @@ const YEARLY_TOTALS: Record<string, number> = { 2024: 28.96, 2025: 25.81, 2026: 
 
 const CAP_DATA = [
   2.13, 17.08, 19.99, 22.13, 22.05, 17.78, 28.31, 21.96, 28.96, 46.45, 68.07, 69.87, 60.05, 61.4, 62.29, 63.92,
-  62.79, 62.42, 61.7, 61.16, 62.24, 62.51, 68.61, 71.99,
+  62.79, 62.42, 61.7, 61.16, 62.24, 62.51, 68.61, 71.99, 73.7, // Apr 2026
 ];
 
 const CAP_FIRST = CAP_DATA[0]!;
@@ -161,7 +161,7 @@ function buildChartData(chartLabels: string[]) {
 
   const n = CAP_DATA.length;
   const xIdx: number[] = [];
-  for (let i = 0; i < n; i += 6) xIdx.push(i);
+  for (let i = 0; i < n; i += 3) xIdx.push(i);
   if (xIdx[xIdx.length - 1] !== n - 1) xIdx.push(n - 1);
 
   const xLabels = xIdx.map((i) => ({
@@ -177,7 +177,7 @@ function buildChartData(chartLabels: string[]) {
 
 function ChartUpIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M3 17l6-6 4 4 8-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M17 7h4v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -186,7 +186,7 @@ function ChartUpIcon() {
 
 function CalendarIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
       <rect x="3" y="4" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.5" />
       <path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -195,7 +195,7 @@ function CalendarIcon() {
 
 function ShieldSmIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M12 2L4 6v5c0 5.25 3.4 10.15 8 11.25 4.6-1.1 8-6 8-11.25V6l-8-4z" stroke="currentColor" strokeWidth="1.5" />
       <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -204,7 +204,7 @@ function ShieldSmIcon() {
 
 function UsersIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
       <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
       <path d="M2 21v-2a4 4 0 014-4h6a4 4 0 014 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <circle cx="17" cy="7" r="3" stroke="currentColor" strokeWidth="1.5" />

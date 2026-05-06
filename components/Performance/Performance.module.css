@@ -163,7 +163,8 @@
   padding: 20px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  justify-content: center;
+  gap: 10px;
   transition: box-shadow 0.35s ease, border-color 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -190,8 +191,8 @@
 }
 
 .kpiIcon {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,7 +204,7 @@
 
 .kpiValue {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1;
   color: #e2ca7b;
@@ -212,16 +213,16 @@
 
 .kpiLabel {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.82);
 }
 
 .kpiSub {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.58);
   line-height: 1.4;
 }
 
@@ -232,9 +233,7 @@
   position: relative;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, transparent 48%, rgba(255, 255, 255, 0.03) 100%),
-    rgba(255, 255, 255, 0.035);
+  background: rgba(10, 10, 13, 0.72);
   backdrop-filter: blur(17px) saturate(1.04);
   -webkit-backdrop-filter: blur(17px) saturate(1.04);
   box-shadow:
@@ -264,16 +263,7 @@
 }
 
 .rightPanel::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 58%;
-  height: 42%;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+  content: none;
 }
 
 .rightPanel:has(.viewContainer:hover) {
@@ -431,7 +421,7 @@
 
 .chartLineSp {
   fill: none;
-  stroke: rgba(200, 80, 80, 0.55);
+  stroke: rgba(220, 55, 55, 0.88);
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -498,7 +488,7 @@
 
 .endpointValueGold {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 35px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #f0dc96;
@@ -507,10 +497,10 @@
 
 .endpointValueGray {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 27px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: rgba(200, 90, 90, 0.85);
+  color: rgb(220, 75, 75);
 }
 
 .endpointIconSp {
@@ -531,7 +521,7 @@
   flex-direction: column;
   position: relative;
   z-index: 1;
-  padding: 4px 40px 8px 8px;
+  padding: 4px 8px 8px 8px;
   box-sizing: border-box;
 }
 
@@ -590,7 +580,6 @@
   font-weight: 500;
   text-align: center;
   padding: 18px 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
   transition: background 0.2s ease;
 }
 
@@ -614,7 +603,6 @@
   text-align: center;
   padding: 18px 8px;
   color: #f0e4a8;
-  border-left: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .tableRowAnim { animation: rowSlide 0.4s ease-out both; }
@@ -629,7 +617,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 8px;
   padding: 14px 0 0;
   margin-top: auto;
   opacity: 0;
@@ -666,7 +654,7 @@
 }
 
 .tableVerifyLogoDarwinex {
-  transform: translateY(-2px);
+  margin-left: 8px;
 }
 
 /* ══════════════════════════════════
