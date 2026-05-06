@@ -54,12 +54,16 @@ const X_EN = ["Apr '24","Jul '24","Oct '24","Jan '25","Apr '25","Jul '25","Oct '
 const X_DE = ["Apr '24","Jul '24","Okt '24","Jan '25","Apr '25","Jul '25","Okt '25","Jan '26","Apr '26"];
 
 // ── Ring chart (Box 2) ────────────────────────────────────────────────────────
-// Update MAX_DD / GAUGE_RANGE to shift the needle.
+// Update MAX_DD / GAUGE_RANGE to shift the ring fill.
 const MAX_DD     = 11;
 const GAUGE_RANGE = 20;
-const RING_CX = 65, RING_CY = 65, RING_R = 50;
-const RING_CIRC = +(2 * Math.PI * RING_R).toFixed(1);                     // ≈ 314.2
-const RING_DASH = +(RING_CIRC * (MAX_DD / GAUGE_RANGE)).toFixed(1);       // ≈ 172.8
+const RING_CX = 75, RING_CY = 75, RING_R = 60;
+const RING_CIRC = +(2 * Math.PI * RING_R).toFixed(1);               // ≈ 377.0
+const RING_DASH = +(RING_CIRC * (MAX_DD / GAUGE_RANGE)).toFixed(1); // ≈ 207.4
+
+// ── Metric bars — decorative normalized widths for Box 2 ─────────────────────
+// These are visual only; the numbers above are the authoritative values.
+const METRIC_BARS = [49, 66, 76]; // Volatility, Sharpe, Calmar
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 function IcChart() {
@@ -85,6 +89,13 @@ function IcPillar() {
       <line x1="6" y1="4" x2="6" y2="21" stroke="currentColor" strokeWidth="1.6" />
       <line x1="12" y1="4" x2="12" y2="21" stroke="currentColor" strokeWidth="1.6" />
       <line x1="18" y1="4" x2="18" y2="21" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+function IcCheck() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M5 12l5 5 9-9" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -154,11 +165,11 @@ type Copy = {
 
 const COPY: Record<Lang, Copy> = {
   en: {
-    badge:    "Capitalife Risk Suite",
-    h1:       "Understand risk.",
-    h2:       "Stay in control.",
-    sub:      "Historical strategy data, transparent risk metrics and clear investor safeguards give investors full visibility while keeping full control over their capital.",
-    b1title:  "Historical Strategy & Performance",
+    badge:      "Capitalife Control Framework",
+    h1:         "Risk in clear view.",
+    h2:         "Capital under control.",
+    sub:        "Historical strategy data, transparent risk metrics and clear safeguards give investors full visibility while keeping full control over their capital.",
+    b1title:    "Historical Strategy & Performance",
     b1backtest: "Backtested since 1970",
     kpis: [
       { value: "+72.0%", label: "Net return"       },
@@ -166,49 +177,49 @@ const COPY: Record<Lang, Copy> = {
       { value: "2024",   label: "Live since"        },
       { value: "–11.0%", label: "Max drawdown"      },
     ],
-    disclaimer:   "Historical strategy data shown for informational purposes.",
-    b2title:      "Strategy Risk Overview",
-    gaugeLabel:   "Controlled drawdown",
-    volLabel:     "Volatility",
-    sharpeLabel:  "Sharpe",
-    calmarLabel:  "Calmar",
-    b3title:      "Regulated Partners",
-    b3desc:       "Execution and partner infrastructure operate within regulated environments.",
-    b4title:      "Investor Safeguards",
+    disclaimer:  "Historical strategy data shown for informational purposes.",
+    b2title:     "Strategy Risk Overview",
+    gaugeLabel:  "Controlled drawdown",
+    volLabel:    "Volatility",
+    sharpeLabel: "Sharpe",
+    calmarLabel: "Calmar",
+    b3title:     "Regulated Partners",
+    b3desc:      "Execution and partner infrastructure operate within regulated environments.",
+    b4title:     "Investor Safeguards",
     safeguards: [
-      { title: "Client-owned accounts",  body: "Capital remains in the client's own broker account." },
-      { title: "No hidden fees",         body: "No additional investor fees for partner payouts."    },
-      { title: "Live monitoring",        body: "Ongoing visibility into portfolio and strategy development." },
-      { title: "Clear reporting",        body: "Transparent monthly performance and risk reporting." },
+      { title: "Client-owned accounts",  body: "Capital remains in the client's own broker account."           },
+      { title: "No hidden fees",         body: "No additional investor fees for partner payouts."               },
+      { title: "Live monitoring",        body: "Ongoing visibility into portfolio and strategy development."    },
+      { title: "Clear reporting",        body: "Transparent monthly performance and risk reporting."            },
     ],
   },
   de: {
-    badge:    "Capitalife Risiko-Suite",
-    h1:       "Risiko verstehen.",
-    h2:       "Kontrolle behalten.",
-    sub:      "Historische Strategiedaten, transparente Risikometriken und klare Schutzmechanismen geben Investoren volle Transparenz – bei voller Kontrolle über das eigene Kapital.",
-    b1title:  "Historische Strategie & Performance",
+    badge:      "Capitalife Kontrollsystem",
+    h1:         "Risiko klar im Blick.",
+    h2:         "Kapital unter Kontrolle.",
+    sub:        "Historische Strategiedaten, transparente Risikometriken und klare Schutzmechanismen geben Investoren volle Transparenz – bei voller Kontrolle über das eigene Kapital.",
+    b1title:    "Historische Strategie & Performance",
     b1backtest: "Backtesting seit 1970",
     kpis: [
-      { value: "+72,0%", label: "Nettorendite"     },
-      { value: "1970",   label: "Backtesting seit" },
-      { value: "2024",   label: "Live seit"         },
-      { value: "–11,0%", label: "Max. Drawdown"     },
+      { value: "+72,0%", label: "Nettorendite"      },
+      { value: "1970",   label: "Backtesting seit"  },
+      { value: "2024",   label: "Live seit"          },
+      { value: "–11,0%", label: "Max. Drawdown"      },
     ],
-    disclaimer:   "Historische Strategiedaten zu Informationszwecken dargestellt.",
-    b2title:      "Strategie-Risikoüberblick",
-    gaugeLabel:   "Kontrollierter Drawdown",
-    volLabel:     "Volatilität",
-    sharpeLabel:  "Sharpe",
-    calmarLabel:  "Calmar",
-    b3title:      "Regulierte Partner",
-    b3desc:       "Ausführungs- und Partnerinfrastruktur operieren in regulierten Umgebungen.",
-    b4title:      "Investorenschutz",
+    disclaimer:  "Historische Strategiedaten zu Informationszwecken dargestellt.",
+    b2title:     "Strategie Risikoübersicht",
+    gaugeLabel:  "Kontrollierter Drawdown",
+    volLabel:    "Volatilität",
+    sharpeLabel: "Sharpe",
+    calmarLabel: "Calmar",
+    b3title:     "Regulierte Partner",
+    b3desc:      "Ausführungs- und Partnerinfrastruktur operieren in regulierten Umgebungen.",
+    b4title:     "Investorenschutz",
     safeguards: [
-      { title: "Eigene Broker-Konten",        body: "Kapital verbleibt in eigenen Broker-Konten der Kunden."              },
-      { title: "Keine versteckten Gebühren",   body: "Keine zusätzlichen Investorengebühren für Partnerauszahlungen."      },
-      { title: "Live-Überwachung",             body: "Laufende Einsicht in Portfolio- und Strategieentwicklung."           },
-      { title: "Klare Berichte",               body: "Transparente monatliche Performance- und Risikoübersichten."         },
+      { title: "Eigene Broker-Konten",         body: "Kapital verbleibt in den Broker-Konten der Kunden."                },
+      { title: "Keine versteckten Gebühren",    body: "Keine zusätzlichen Investorengebühren für Partnerauszahlungen."   },
+      { title: "Live-Überwachung",              body: "Laufende Einsicht in Portfolio- und Strategieentwicklung."        },
+      { title: "Klare Berichte",                body: "Transparente monatliche Performance- und Risikoübersichten."      },
     ],
   },
 };
@@ -219,14 +230,20 @@ export default function RiskSuite() {
   const copy    = COPY[lang];
   const xLabels = lang === "de" ? X_DE : X_EN;
 
+  const riskMetrics = [
+    { lbl: copy.volLabel,    val: "9.8%", pct: METRIC_BARS[0]! },
+    { lbl: copy.sharpeLabel, val: "1.32", pct: METRIC_BARS[1]! },
+    { lbl: copy.calmarLabel, val: "1.91", pct: METRIC_BARS[2]! },
+  ];
+
   return (
     <section className={r("section")} id="risk-suite">
-      {/* Dark overlay + subtle gold ambience on top of background image */}
+      {/* Overlay: dark + gold ambience + edge fades */}
       <div className={r("bg")} aria-hidden />
 
       <div className={r("inner")}>
 
-        {/* ── Header ───────────────────────────────────────────── */}
+        {/* ── Header ── */}
         <div className={r("header")}>
           <div className={r("headerBadge")}>
             <IcShield />
@@ -234,15 +251,15 @@ export default function RiskSuite() {
           </div>
           <h2 className={r("headline")}>
             <span>{copy.h1}</span>{" "}
-            <span className={r("headlineGold")}>{copy.h2}</span>
+            <span className={r("headlineAccent")}>{copy.h2}</span>
           </h2>
           <p className={r("sub")}>{copy.sub}</p>
         </div>
 
-        {/* ── Asymmetric 5-col grid ────────────────────────────── */}
+        {/* ── Asymmetric 5-column grid ── */}
         <div className={r("grid")}>
 
-          {/* ── Box 1 top-left LARGE: Performance chart ── */}
+          {/* ── Box 1  top-left LARGE: Performance chart ── */}
           <div className={`${r("box")} ${r("boxPerf")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcChart /></span>
@@ -254,13 +271,13 @@ export default function RiskSuite() {
               <svg className={r("chartSvg")} viewBox={`0 0 ${CW} ${CH}`} preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="rs_lg" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="#b8922e" />
-                    <stop offset="45%"  stopColor="#f5e6a3" />
-                    <stop offset="100%" stopColor="#d4af55" />
+                    <stop offset="0%"   stopColor="#8a6920" />
+                    <stop offset="45%"  stopColor="#e8d898" />
+                    <stop offset="100%" stopColor="#b8922e" />
                   </linearGradient>
                   <linearGradient id="rs_ag" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%"   stopColor="#d4af55" stopOpacity="0.25" />
-                    <stop offset="80%"  stopColor="#d4af55" stopOpacity="0.03" />
+                    <stop offset="0%"   stopColor="#d4af55" stopOpacity="0.18" />
+                    <stop offset="85%"  stopColor="#d4af55" stopOpacity="0.02" />
                     <stop offset="100%" stopColor="#d4af55" stopOpacity="0" />
                   </linearGradient>
                 </defs>
@@ -287,9 +304,9 @@ export default function RiskSuite() {
                 <path d={CHART_AREA} fill="url(#rs_ag)" />
                 <path d={CHART_LINE} className={r("cLine")} />
 
-                {/* Endpoint glow dot */}
-                <circle cx={CHART_LX.toFixed(1)} cy={CHART_LY.toFixed(1)} r="5" fill="#f0dc96" opacity="0.3" />
-                <circle cx={CHART_LX.toFixed(1)} cy={CHART_LY.toFixed(1)} r="3" fill="#f0dc96" />
+                {/* Endpoint dot */}
+                <circle cx={CHART_LX.toFixed(1)} cy={CHART_LY.toFixed(1)} r="5" fill="rgba(232,216,152,0.25)" />
+                <circle cx={CHART_LX.toFixed(1)} cy={CHART_LY.toFixed(1)} r="2.8" fill="#e8d898" />
               </svg>
             </div>
 
@@ -305,101 +322,122 @@ export default function RiskSuite() {
             <p className={r("disclaim")}>{copy.disclaimer}</p>
           </div>
 
-          {/* ── Box 2 top-right SMALL: Risk ring chart ── */}
+          {/* ── Box 2  top-right SMALL: Risk widget (ring + metrics) ── */}
           <div className={`${r("box")} ${r("boxRisk")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcShield /></span>
               <span className={r("boxTitle")}>{copy.b2title}</span>
             </div>
 
-            <div className={r("ringWrap")}>
-              <svg viewBox="0 0 130 130" fill="none" className={r("ringSvg")}>
-                <defs>
-                  <linearGradient id="rs_rg" x1="0" y1="1" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="#3d2608" />
-                    <stop offset="60%"  stopColor="#c9a84e" />
-                    <stop offset="100%" stopColor="#f0dc96" />
-                  </linearGradient>
-                  <filter id="rs_rglow">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
-                </defs>
+            {/* Combined: ring on left, stacked metrics on right */}
+            <div className={r("riskWidget")}>
 
-                {/* Track */}
-                <circle cx={RING_CX} cy={RING_CY} r={RING_R}
-                  stroke="rgba(255,255,255,0.07)"
-                  strokeWidth="11"
-                />
-                {/* Active arc — starts at 12 o'clock via rotate(-90) */}
-                <circle cx={RING_CX} cy={RING_CY} r={RING_R}
-                  stroke="url(#rs_rg)"
-                  strokeWidth="11"
-                  strokeLinecap="round"
-                  strokeDasharray={`${RING_DASH} ${RING_CIRC}`}
-                  transform={`rotate(-90, ${RING_CX}, ${RING_CY})`}
-                  filter="url(#rs_rglow)"
-                />
-                {/* Center value */}
-                <text x={RING_CX} y={RING_CY - 5} textAnchor="middle" className={r("ringVal")}>
-                  {MAX_DD}%
-                </text>
-                <text x={RING_CX} y={RING_CY + 13} textAnchor="middle" className={r("ringLbl")}>
-                  {copy.gaugeLabel}
-                </text>
-              </svg>
-            </div>
+              <div className={r("ringArea")}>
+                <svg viewBox="0 0 150 150" fill="none" className={r("ringSvg")}>
+                  <defs>
+                    <linearGradient id="rs_rg" x1="0" y1="1" x2="1" y2="0">
+                      <stop offset="0%"   stopColor="#3d2608" />
+                      <stop offset="55%"  stopColor="#b8922e" />
+                      <stop offset="100%" stopColor="#e8d898" />
+                    </linearGradient>
+                    <filter id="rs_rglow">
+                      <feGaussianBlur stdDeviation="4" result="blur" />
+                      <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                  </defs>
 
-            <div className={r("statsRow")}>
-              <div className={r("statItem")}>
-                <span className={r("statLbl")}>{copy.volLabel}</span>
-                {/* Update value below as needed */}
-                <span className={r("statVal")}>9.8%</span>
+                  {/* Outer ambient ring */}
+                  <circle cx={RING_CX} cy={RING_CY} r={RING_R + 8}
+                    stroke="rgba(212,175,55,0.05)" strokeWidth="1"
+                  />
+                  {/* Track */}
+                  <circle cx={RING_CX} cy={RING_CY} r={RING_R}
+                    stroke="rgba(255,255,255,0.06)" strokeWidth="12"
+                  />
+                  {/* Active arc — 12 o'clock start */}
+                  <circle cx={RING_CX} cy={RING_CY} r={RING_R}
+                    stroke="url(#rs_rg)"
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                    strokeDasharray={`${RING_DASH} ${RING_CIRC}`}
+                    transform={`rotate(-90, ${RING_CX}, ${RING_CY})`}
+                    filter="url(#rs_rglow)"
+                  />
+
+                  {/* Center: percentage */}
+                  <text x={RING_CX} y={RING_CY - 4} textAnchor="middle" className={r("ringVal")}>
+                    {MAX_DD}%
+                  </text>
+                  {/* Center: label */}
+                  <text x={RING_CX} y={RING_CY + 14} textAnchor="middle" className={r("ringLbl")}>
+                    {copy.gaugeLabel}
+                  </text>
+                </svg>
               </div>
-              <div className={r("statDiv")} />
-              <div className={r("statItem")}>
-                <span className={r("statLbl")}>{copy.sharpeLabel}</span>
-                <span className={r("statVal")}>1.32</span>
+
+              {/* Stacked metrics with mini progress bars */}
+              <div className={r("riskMetrics")}>
+                {riskMetrics.map(({ lbl, val, pct }) => (
+                  <div key={lbl} className={r("riskMetricItem")}>
+                    <div className={r("riskMetricRow")}>
+                      <span className={r("riskMetricLbl")}>{lbl}</span>
+                      <span className={r("riskMetricVal")}>{val}</span>
+                    </div>
+                    <div className={r("riskBar")}>
+                      <div className={r("riskBarFill")} style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className={r("statDiv")} />
-              <div className={r("statItem")}>
-                <span className={r("statLbl")}>{copy.calmarLabel}</span>
-                <span className={r("statVal")}>1.91</span>
-              </div>
+
             </div>
           </div>
 
-          {/* ── Box 3 bottom-left SMALL: Regulated partners ── */}
+          {/* ── Box 3  bottom-left SMALL: Regulated partners ── */}
           <div className={`${r("box")} ${r("boxReg")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcPillar /></span>
               <span className={r("boxTitle")}>{copy.b3title}</span>
             </div>
 
-            {/* Visual: 3 shield icons with acronym */}
-            <div className={r("regVisual")}>
-              {(["FCA", "CySEC", "FSC"] as const).map((reg) => (
-                <div key={reg} className={r("regVisualItem")}>
-                  <span className={r("regVisualIco")}><IcShield /></span>
-                  <span className={r("regVisualName")}>{reg}</span>
-                </div>
-              ))}
+            {/* SVG: three connected regulator nodes */}
+            <div className={r("complianceViz")}>
+              <svg viewBox="0 0 260 72" fill="none" aria-hidden className={r("complianceSvg")}>
+                {/* Connection lines */}
+                <line x1="68" y1="36" x2="108" y2="36" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1="152" y1="36" x2="192" y2="36" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="3 3" />
+
+                {/* FCA node */}
+                <circle cx="40"  cy="36" r="28" stroke="rgba(255,255,255,0.06)"  strokeWidth="1" fill="rgba(255,255,255,0.025)" />
+                <circle cx="40"  cy="36" r="20" stroke="rgba(212,175,55,0.15)"  strokeWidth="1" fill="rgba(212,175,55,0.04)" />
+                <text x="40"  y="40" textAnchor="middle" fontSize="10" fontWeight="700" fill="rgba(255,255,255,0.82)" fontFamily="Inter,sans-serif">FCA</text>
+
+                {/* CySEC node */}
+                <circle cx="130" cy="36" r="28" stroke="rgba(255,255,255,0.06)"  strokeWidth="1" fill="rgba(255,255,255,0.025)" />
+                <circle cx="130" cy="36" r="20" stroke="rgba(212,175,55,0.15)"  strokeWidth="1" fill="rgba(212,175,55,0.04)" />
+                <text x="130" y="40" textAnchor="middle" fontSize="9"  fontWeight="700" fill="rgba(255,255,255,0.82)" fontFamily="Inter,sans-serif">CySEC</text>
+
+                {/* FSC node */}
+                <circle cx="220" cy="36" r="28" stroke="rgba(255,255,255,0.06)"  strokeWidth="1" fill="rgba(255,255,255,0.025)" />
+                <circle cx="220" cy="36" r="20" stroke="rgba(212,175,55,0.15)"  strokeWidth="1" fill="rgba(212,175,55,0.04)" />
+                <text x="220" y="40" textAnchor="middle" fontSize="10" fontWeight="700" fill="rgba(255,255,255,0.82)" fontFamily="Inter,sans-serif">FSC</text>
+              </svg>
             </div>
 
             <p className={r("boxDesc")}>{copy.b3desc}</p>
 
-            {/* Regulation badges — gold/white, no green */}
-            <div className={r("regList")}>
+            {/* Regulation items — white/gold, no green */}
+            <div className={r("regItems")}>
               {(["FCA-regulated", "CySEC-regulated", "FSC-regulated"] as const).map((b) => (
-                <span key={b} className={r("regBadge")}>
-                  <IcShield />
-                  {b}
-                </span>
+                <div key={b} className={r("regItem")}>
+                  <span className={r("regItemCheck")}><IcCheck /></span>
+                  <span className={r("regItemText")}>{b}</span>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* ── Box 4 bottom-right LARGE: Investor safeguards ── */}
+          {/* ── Box 4  bottom-right LARGE: Investor safeguards ── */}
           <div className={`${r("box")} ${r("boxSafe")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcShield /></span>
