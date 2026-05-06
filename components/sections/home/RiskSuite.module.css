@@ -2,6 +2,34 @@
    CAPITALIFE RISK SUITE
    ══════════════════════════════════════════════════════════════ */
 
+/* ── Keyframe animations ─────────────────────────────────────── */
+@keyframes rs_orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes rs_orbitRev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes rs_shieldPulse {
+  0%, 100% { opacity: 0.82; }
+  50%       { opacity: 1; }
+}
+@keyframes rs_nodePulse {
+  0%, 100% { opacity: 0.32; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 0.85; transform: translate(-50%, -50%) scale(1.4); }
+}
+@keyframes rs_netPulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.90; }
+}
+@keyframes rs_ringGlow {
+  0%, 100% { opacity: 0.30; }
+  50%       { opacity: 0.90; }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+
 .section {
   position: relative;
   width: 100%;
@@ -14,48 +42,42 @@
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  padding: 68px 24px 72px;
+  padding: 62px 24px 66px;
   box-sizing: border-box;
   isolation: isolate;
 }
 
-/* ── Overlay ──────────────────────────────────────────────────────────────── */
-/* Dark base + faint gold radial — sits over the background image */
+/* Dark overlay + faint gold radial */
 .bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle 58% at 62% 20%, rgba(196, 158, 42, 0.065), transparent 58%),
-    rgba(0, 0, 0, 0.80);
+    radial-gradient(circle 55% at 64% 22%, rgba(188, 152, 40, 0.06), transparent 56%),
+    rgba(0, 0, 0, 0.82);
 }
 
-/* Blend into the section above */
+/* Soft blend into section above */
 .bg::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 130px;
+  top: 0; left: 0; right: 0;
+  height: 140px;
   background: linear-gradient(to bottom, #000 0%, transparent 100%);
   pointer-events: none;
 }
 
-/* Blend into the section below */
+/* Soft blend into section below */
 .bg::after {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 130px;
+  bottom: 0; left: 0; right: 0;
+  height: 140px;
   background: linear-gradient(to top, #000 0%, transparent 100%);
   pointer-events: none;
 }
 
-/* ── Inner wrapper ── */
 .inner {
   position: relative;
   z-index: 1;
@@ -70,60 +92,60 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 13px;
   text-align: center;
-  margin-bottom: 38px;
+  margin-bottom: 34px;
 }
 
 .headerBadge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 30px;
-  padding: 0 14px;
+  height: 29px;
+  padding: 0 13px;
   border-radius: 100px;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.034);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.3px;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.46);
 }
 
 .headline {
   margin: 0;
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: clamp(28px, 3.3vw, 48px);
+  font-size: clamp(26px, 3.1vw, 46px);
   font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -0.024em;
-  color: rgba(255, 255, 255, 0.94);
+  letter-spacing: -0.022em;
+  color: rgba(255, 255, 255, 0.95);
 }
 
-/* Second half accent — soft warm white, not saturated gold */
+/* Second half: soft champagne — institutional, not saturated gold */
 .headlineAccent {
   color: #c4a660;
 }
 
 .sub {
   margin: 0;
-  max-width: 580px;
+  max-width: 560px;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.70;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.40);
 }
 
 /* ══════════════════════════════════
-   ASYMMETRIC 5-COLUMN GRID
+   GRID — 5 columns, diagonal asymmetry
    Row 1: [boxPerf 3/5] [boxRisk 2/5]
    Row 2: [boxReg  2/5] [boxSafe 3/5]
    ══════════════════════════════════ */
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  gap: 11px;
   align-items: stretch;
 }
 
@@ -133,42 +155,40 @@
 .boxSafe { grid-column: 3 / 6; }
 
 /* ══════════════════════════════════
-   BOX — liquid glass card
+   BOX — deep liquid glass card
    ══════════════════════════════════ */
 .box {
   position: relative;
-  border-radius: 18px;
-  /* Reduced opacity lets the background image bleed through */
+  border-radius: 17px;
+  /* Strong liquid glass: low opacity lets bg image bleed through */
   border: 1px solid rgba(255, 255, 255, 0.09);
   background:
-    linear-gradient(148deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%),
-    rgba(6, 5, 4, 0.62);
-  backdrop-filter: blur(32px) saturate(1.18);
-  -webkit-backdrop-filter: blur(32px) saturate(1.18);
+    linear-gradient(148deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 48%, transparent 100%),
+    rgba(5, 4, 3, 0.58);
+  backdrop-filter: blur(36px) saturate(1.20);
+  -webkit-backdrop-filter: blur(36px) saturate(1.20);
   box-shadow:
     inset 0 1.5px 0 rgba(255, 255, 255, 0.07),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.02),
-    0 10px 40px rgba(0, 0, 0, 0.38),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 10px 40px rgba(0, 0, 0, 0.36),
     0 0 0 0.5px rgba(255, 255, 255, 0.05);
-  padding: 20px 22px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* Top shimmer — fine warm white line */
+/* Top-edge shimmer */
 .box::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 12%;
-  right: 12%;
+  top: 0; left: 14%; right: 14%;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.14) 38%,
-    rgba(255, 255, 255, 0.07) 68%,
+    rgba(255, 255, 255, 0.13) 38%,
+    rgba(255, 255, 255, 0.06) 70%,
     transparent
   );
 }
@@ -178,17 +198,17 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   flex-shrink: 0;
 }
 
 .boxIco {
-  width: 28px;
-  height: 28px;
+  width: 27px;
+  height: 27px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
-  color: rgba(196, 168, 96, 0.90);
+  color: rgba(196, 168, 96, 0.88);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -197,9 +217,9 @@
 
 .boxTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.76);
+  color: rgba(255, 255, 255, 0.74);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -210,24 +230,24 @@
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  height: 22px;
-  padding: 0 10px;
+  height: 21px;
+  padding: 0 9px;
   border-radius: 100px;
-  border: 1px solid rgba(196, 166, 96, 0.22);
+  border: 1px solid rgba(196, 166, 96, 0.20);
   background: rgba(196, 166, 96, 0.05);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
-  color: rgba(196, 166, 96, 0.82);
+  color: rgba(196, 166, 96, 0.80);
   white-space: nowrap;
 }
 
 /* ══════════════════════════════════
-   BOX 1 — PERFORMANCE CHART
+   BOX 1 — BACKTESTING CHART
    ══════════════════════════════════ */
 .chartWrap {
   flex: 1;
-  min-height: 115px;
+  min-height: 108px;
   position: relative;
 }
 
@@ -239,55 +259,55 @@
 }
 
 .cGrid {
-  stroke: rgba(255, 255, 255, 0.045);
+  stroke: rgba(255, 255, 255, 0.04);
   stroke-width: 1;
 }
 
 .cYLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
-  fill: rgba(255, 255, 255, 0.26);
+  font-size: 9.5px;
+  fill: rgba(255, 255, 255, 0.24);
 }
 
 .cXLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 500;
-  fill: rgba(255, 255, 255, 0.30);
+  fill: rgba(255, 255, 255, 0.28);
 }
 
 .cLine {
   fill: none;
   stroke: url(#rs_lg);
-  stroke-width: 2.2;
+  stroke-width: 2.0;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 6px rgba(196, 160, 42, 0.44));
+  filter: drop-shadow(0 0 5px rgba(200, 168, 40, 0.38));
 }
 
 /* KPI strip */
 .kpiRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 13px 0 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.055);
-  margin-top: 12px;
+  padding: 11px 0 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 10px;
 }
 
 .kpiItem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 0 10px;
+  gap: 3px;
+  padding: 0 8px;
 }
 
 .kpiItem + .kpiItem {
-  border-left: 1px solid rgba(255, 255, 255, 0.055);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .kpiVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   line-height: 1;
   color: rgba(255, 255, 255, 0.92);
@@ -295,22 +315,21 @@
 
 .kpiLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
+  font-size: 9.5px;
   line-height: 1.3;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.33);
 }
 
 .disclaim {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.20);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.18);
   text-align: center;
 }
 
 /* ══════════════════════════════════
-   BOX 2 — RING CHART
-   Large ring top + 3 stats below
+   BOX 2 — RISK RING
    ══════════════════════════════════ */
 .ringWrap {
   flex: 1;
@@ -318,37 +337,39 @@
   align-items: center;
   justify-content: center;
   min-height: 0;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
 .ringSvg {
   display: block;
-  /* Ring fills box width; cap at a comfortable max so it doesn't overwhelm */
-  width: min(100%, 210px);
+  width: min(100%, 200px);
   height: auto;
 }
 
-/* Center value — large, near-white */
+/* Pulsing outer glow ring */
+.ringGlow {
+  animation: rs_ringGlow 4s ease-in-out infinite;
+}
+
 .ringVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 700;
   fill: rgba(255, 255, 255, 0.94);
 }
 
-/* Center label */
 .ringLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
-  fill: rgba(255, 255, 255, 0.36);
+  font-size: 9.5px;
+  fill: rgba(255, 255, 255, 0.34);
 }
 
-/* Stats row — 3 items with vertical dividers */
+/* Stats row — 4 items */
 .statsRow {
   display: flex;
   align-items: center;
-  padding: 14px 4px 4px;
-  border-top: 1px solid rgba(255, 255, 255, 0.055);
+  padding: 12px 2px 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   flex-shrink: 0;
 }
 
@@ -357,26 +378,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .statDiv {
   width: 1px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 28px;
+  background: rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
 }
 
 .statLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.36);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.34);
+  text-align: center;
 }
 
-/* Stat values — white, not gold */
 .statVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.90);
   line-height: 1;
@@ -386,19 +407,19 @@
    BOX 3 — REGULATED PARTNERS
    ══════════════════════════════════ */
 .boxDesc {
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 12.5px;
-  line-height: 1.64;
-  color: rgba(255, 255, 255, 0.40);
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.38);
   flex-shrink: 0;
 }
 
-/* 3 authority cards — information shown once, no redundancy */
+/* 3 authority cards side by side */
 .authGrid {
   display: flex;
-  gap: 8px;
-  flex: 1;
+  gap: 7px;
+  flex-shrink: 0;
 }
 
 .authCard {
@@ -407,21 +428,20 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 6px;
-  padding: 16px 8px 14px;
-  border-radius: 12px;
-  /* Liquid glass for sub-cards */
+  gap: 5px;
+  padding: 13px 6px 11px;
+  border-radius: 11px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    linear-gradient(160deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .authAcronym {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.90);
   letter-spacing: -0.01em;
@@ -429,45 +449,159 @@
 
 .authFull {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9px;
+  font-size: 8.5px;
   line-height: 1.45;
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(255, 255, 255, 0.30);
 }
 
-/* Verified chip — gold/white, no green */
 .authStatus {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 20px;
-  padding: 0 8px;
+  height: 19px;
+  padding: 0 7px;
   border-radius: 100px;
-  border: 1px solid rgba(196, 166, 96, 0.22);
-  background: rgba(196, 166, 96, 0.07);
+  border: 1px solid rgba(196, 166, 96, 0.20);
+  background: rgba(196, 166, 96, 0.06);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 600;
-  color: rgba(196, 166, 96, 0.86);
-  margin-top: 2px;
+  color: rgba(196, 166, 96, 0.84);
+}
+
+/* Animated network hub */
+.netWrap {
+  padding: 8px 0 4px;
+  flex-shrink: 0;
+}
+
+.netSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.netHub {
+  animation: rs_netPulse 2.8s ease-in-out infinite;
+}
+
+.netNode {
+  animation: rs_netPulse 3.2s ease-in-out infinite;
+}
+
+.netNodeB {
+  animation: rs_netPulse 3.2s ease-in-out 1.0s infinite;
+}
+
+.netNodeC {
+  animation: rs_netPulse 3.2s ease-in-out 1.8s infinite;
+}
+
+/* 3 benefit points */
+.b3Benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  flex: 1;
+}
+
+.b3Benefit {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.b3BenTitle {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.70);
+}
+
+.b3BenBody {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.36);
 }
 
 /* ══════════════════════════════════
-   BOX 4 — INVESTOR SAFEGUARDS
+   BOX 4 — INVESTOR PROTECTION
+   Shield + orbit + 2×2 cards
    ══════════════════════════════════ */
+
+/* Shield area with orbit rings */
+.shieldArea {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 118px;
+  flex-shrink: 0;
+}
+
+/* Outer orbit ring — rotating, carries 4 nodes */
+.orbitRingLg {
+  position: absolute;
+  width: 108px;
+  height: 108px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+  animation: rs_orbit 28s linear infinite;
+}
+
+/* Inner smaller ring — counter-rotating */
+.orbitRingSm {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border: 1px solid rgba(200, 175, 110, 0.08);
+  border-radius: 50%;
+  animation: rs_orbitRev 18s linear infinite;
+}
+
+/* Orbit nodes (children of orbitRingLg) */
+.orbitDot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(200, 175, 110, 0.48);
+  transform: translate(-50%, -50%);
+  animation: rs_nodePulse 3.2s ease-in-out infinite;
+}
+
+.orbitDot:nth-child(2) { animation-delay: 0.8s; }
+.orbitDot:nth-child(3) { animation-delay: 1.6s; }
+.orbitDot:nth-child(4) { animation-delay: 2.4s; }
+
+/* Central shield icon */
+.shieldCore {
+  position: relative;
+  z-index: 2;
+  animation: rs_shieldPulse 5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 2×2 safeguard grid */
 .sgGrid {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 9px;
 }
 
-/* Each card: horizontal icon + content layout */
+/* Horizontal layout: icon left + content right */
 .sgCard {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 12px;
+  gap: 11px;
+  padding: 14px 14px 14px 16px;
+  border-radius: 11px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.015) 100%);
@@ -483,27 +617,25 @@
 .sgCard::after {
   content: "";
   position: absolute;
-  left: 0;
-  top: 20%;
-  bottom: 20%;
+  left: 0; top: 20%; bottom: 20%;
   width: 2px;
-  background: linear-gradient(to bottom, transparent, rgba(196, 160, 50, 0.36), transparent);
+  background: linear-gradient(to bottom, transparent, rgba(196, 160, 50, 0.34), transparent);
   border-radius: 1px;
 }
 
 .sgCard:hover {
-  border-color: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.12);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%);
 }
 
 .sgIco {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
-  color: rgba(196, 168, 96, 0.88);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025));
+  color: rgba(196, 168, 96, 0.86);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -514,13 +646,13 @@
 .sgContent {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
 }
 
 .sgTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.88);
   line-height: 1.2;
@@ -528,9 +660,9 @@
 
 .sgBody {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.40);
 }
 
 /* ══════════════════════════════════
@@ -540,70 +672,52 @@
   .grid {
     grid-template-columns: 1fr 1fr;
   }
-
-  .boxPerf,
-  .boxRisk,
-  .boxReg,
-  .boxSafe {
+  .boxPerf, .boxRisk, .boxReg, .boxSafe {
     grid-column: auto;
   }
-
   .kpiRow {
     grid-template-columns: repeat(2, 1fr);
   }
-
   .kpiItem + .kpiItem {
     border-left: none;
   }
-
   .kpiItem:nth-child(2n) {
-    border-left: 1px solid rgba(255, 255, 255, 0.055);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
   }
 }
 
 @media (max-width: 720px) {
   .section {
-    padding: 48px 16px 52px;
+    padding: 44px 14px 48px;
   }
-
   .grid {
     grid-template-columns: 1fr;
   }
-
-  .boxPerf,
-  .boxRisk,
-  .boxReg,
-  .boxSafe {
+  .boxPerf, .boxRisk, .boxReg, .boxSafe {
     grid-column: auto;
   }
-
-  .authGrid {
-    flex-direction: column;
-    gap: 6px;
-  }
-
   .authCard {
     flex-direction: row;
-    align-items: center;
     text-align: left;
-    gap: 12px;
-    padding: 12px;
+    gap: 10px;
+    padding: 10px;
   }
-
-  .authFull {
-    font-size: 10px;
-  }
-
+  .authFull { font-size: 9.5px; }
   .sgGrid {
     grid-template-columns: 1fr;
   }
-
   .btBadge {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ringGlow,
+  .netHub, .netNode, .netNodeB, .netNodeC,
+  .orbitRingLg, .orbitRingSm, .orbitDot,
+  .shieldCore {
+    animation: none;
+  }
   .sgCard {
     transition: none;
   }
