@@ -1,0 +1,467 @@
+/* ══════════════════════════════════════════════════════════════
+   RISK SUITE SECTION
+   ══════════════════════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  width: 100%;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding: 88px 24px 96px;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+/* ── Ambient background ── */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 55% at 68% 24%, rgba(212, 175, 55, 0.07), transparent 60%),
+    radial-gradient(circle 42% at 22% 76%, rgba(212, 175, 55, 0.035), transparent 55%);
+}
+
+/* Large golden arc ring in background — matches reference */
+.bg::after {
+  content: "";
+  position: absolute;
+  width: min(92vw, 900px);
+  height: min(92vw, 900px);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-16%, -50%);
+  border: 1px solid rgba(212, 175, 55, 0.13);
+  box-shadow:
+    0 0 60px rgba(212, 175, 55, 0.05),
+    inset 0 0 60px rgba(212, 175, 55, 0.02);
+  pointer-events: none;
+}
+
+/* ── Layout ── */
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* ══════════════════════════════════
+   HEADER
+   ══════════════════════════════════ */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  margin-bottom: 52px;
+}
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.headline {
+  margin: 0;
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: clamp(34px, 4.2vw, 58px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: #f4f4f4;
+}
+
+.headlineGold {
+  color: #c9a84e;
+}
+
+.sub {
+  margin: 0;
+  max-width: 580px;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+/* ══════════════════════════════════
+   GRID
+   ══════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* ══════════════════════════════════
+   BOX — shared glass card
+   ══════════════════════════════════ */
+.box {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(10, 9, 8, 0.78);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.42);
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Subtle inner highlight */
+.box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.07) 0%, transparent 50%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Flex-column helper for boxes with flex spacer */
+.boxFlex {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Box header row */
+.boxHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-shrink: 0;
+}
+
+.boxIco {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  background: rgba(212, 175, 55, 0.07);
+  color: #c9a84e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.boxTitle {
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.84);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Backtested badge (box 1 header) */
+.btBadge {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 100px;
+  border: 1px solid rgba(201, 168, 78, 0.22);
+  background: rgba(201, 168, 78, 0.06);
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #c9a84e;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════
+   BOX 1 — PERFORMANCE CHART
+   ══════════════════════════════════ */
+.chartWrap {
+  flex: 1;
+  min-height: 130px;
+  position: relative;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.cGrid {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 1;
+}
+
+.cYLbl {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 10px;
+  fill: rgba(255, 255, 255, 0.32);
+}
+
+.cXLbl {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  fill: rgba(255, 255, 255, 0.38);
+}
+
+.cLine {
+  fill: none;
+  stroke: url(#rs_lg);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 7px rgba(226, 202, 123, 0.42));
+}
+
+/* KPI strip below chart */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 14px 0 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 12px;
+}
+
+.kpiItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 10px;
+}
+
+.kpiItem + .kpiItem {
+  border-left: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.kpiVal {
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1;
+  color: #e2ca7b;
+}
+
+.kpiLbl {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 10.5px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.disclaim {
+  margin: 8px 0 0;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.24);
+  text-align: center;
+}
+
+/* ══════════════════════════════════
+   BOX 2 — RISK GAUGE
+   ══════════════════════════════════ */
+.gaugeWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.gaugeSvg {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+}
+
+.gaugeVal {
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  fill: #e2ca7b;
+}
+
+.gaugeLbl {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 11px;
+  fill: rgba(255, 255, 255, 0.44);
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  padding: 16px 8px 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.statItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.statDiv {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.statLbl {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.statVal {
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #e2ca7b;
+  line-height: 1;
+}
+
+/* ══════════════════════════════════
+   BOX 3 — REGULATED PARTNERS
+   ══════════════════════════════════ */
+.boxDesc {
+  margin: 0 0 20px;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.50);
+}
+
+.regRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.regBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ══════════════════════════════════
+   BOX 4 — INVESTOR SAFEGUARDS
+   ══════════════════════════════════ */
+.sgGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sgCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.sgIco {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1px solid rgba(212, 175, 55, 0.14);
+  background: rgba(212, 175, 55, 0.07);
+  color: #c9a84e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sgLbl {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════ */
+@media (max-width: 1080px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpiRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kpiItem + .kpiItem {
+    border-left: none;
+  }
+
+  .kpiItem:nth-child(2n) {
+    border-left: 1px solid rgba(255, 255, 255, 0.055);
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 56px 16px 64px;
+  }
+
+  .sgGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .btBadge {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box { transition: none; }
+}
