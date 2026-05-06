@@ -11,7 +11,6 @@ function r(name: string): string {
 
 // ── Backtesting curve (1970–2026, cumulative return %) ─────────────────────────
 // 57 data points: index 0 = 1970, index 56 = 2026.
-// Do not recalculate from raw annual returns — use these directly.
 const BACKTEST_RAW = [
   -3.43, -5.60, -0.50, 2.10, 3.81, -6.00, -2.58, -0.03, 1.29, 1.13,
   11.37, 5.15, 6.28, 5.87, 6.58, 14.48, 9.24, 9.09, 13.04, 15.67,
@@ -22,16 +21,16 @@ const BACKTEST_RAW = [
 ];
 const BT_N = BACKTEST_RAW.length; // 57
 
-// ── Chart geometry ────────────────────────────────────────────────────────────
+// ── Chart geometry ─────────────────────────────────────────────────────────────
 const CW = 560, CH = 148;
 const BT_PL = 52, BT_PR = 18, BT_PT = 8, BT_PB = 22;
-const BT_uW = CW - BT_PL - BT_PR;
-const BT_uH = CH - BT_PT - BT_PB;
+const BT_uW  = CW - BT_PL - BT_PR;
+const BT_uH  = CH - BT_PT - BT_PB;
 const BT_MAX = 12000;
 
-const BT_Y_TICKS   = [0, 2500, 5000, 7500, 10000];
-const BT_X_IDXS    = [0, 10, 20, 30, 40, 50, 56];
-const BT_X_LBLS    = ["1970", "1980", "1990", "2000", "2010", "2020", "2026"];
+const BT_Y_TICKS = [0, 2500, 5000, 7500, 10000];
+const BT_X_IDXS  = [0, 10, 20, 30, 40, 50, 56];
+const BT_X_LBLS  = ["1970", "1980", "1990", "2000", "2010", "2020", "2026"];
 
 function btYPos(v: number): number {
   return BT_PT + BT_uH - (Math.max(0, v) / BT_MAX) * BT_uH;
@@ -64,25 +63,22 @@ function buildBtChart() {
 
 const { line: BT_LINE, area: BT_AREA, lastX: BT_LX, lastY: BT_LY } = buildBtChart();
 
-// ── Ring chart (Box 2) ────────────────────────────────────────────────────────
-// Update MAX_DD and GAUGE_RANGE to shift the fill.
-const MAX_DD      = 20.91;
-const GAUGE_RANGE = 30;
-const RING_CX     = 100;
-const RING_CY     = 100;
-const RING_R      = 80;
-const RING_CIRC   = +(2 * Math.PI * RING_R).toFixed(1);                     // ≈ 502.7
-const RING_FILL   = MAX_DD / GAUGE_RANGE;                                    // ≈ 0.697
-const RING_DASH   = +(RING_CIRC * RING_FILL).toFixed(1);                     // ≈ 350.4
-const RING_END_A  = -Math.PI / 2 + RING_FILL * 2 * Math.PI;
-const RING_EX     = +(RING_CX + RING_R * Math.cos(RING_END_A)).toFixed(1);  // ≈ 24.7
-const RING_EY     = +(RING_CY + RING_R * Math.sin(RING_END_A)).toFixed(1);  // ≈ 127.1
+// ── Ring chart (Box 2) — decorative control indicator ─────────────────────────
+// Arc fill at 72% as a visual "control level" — not tied to a specific metric.
+const RING_CX    = 100;
+const RING_CY    = 100;
+const RING_R     = 80;
+const RING_CIRC  = +(2 * Math.PI * RING_R).toFixed(1);                     // ≈ 502.7
+const RING_FILL  = 0.72;                                                    // visual fill
+const RING_DASH  = +(RING_CIRC * RING_FILL).toFixed(1);                    // ≈ 361.9
+const RING_END_A = -Math.PI / 2 + RING_FILL * 2 * Math.PI;
+const RING_EX    = +(RING_CX + RING_R * Math.cos(RING_END_A)).toFixed(1);  // ≈ 21.4
+const RING_EY    = +(RING_CY + RING_R * Math.sin(RING_END_A)).toFixed(1);  // ≈ 115.2
 
-// Tachometer ticks — just outside the ring track (ring outer edge ≈ R+7=87)
+// 24 tachometer tick marks outside the ring track
 const RTICK_N = 24;
-const RTICK_I = 88; // inner tick radius
-const RTICK_O = 94; // outer tick radius
-
+const RTICK_I = 88;
+const RTICK_O = 94;
 interface TickCoord { x1: number; y1: number; x2: number; y2: number; major: boolean }
 const RING_TICKS: TickCoord[] = Array.from({ length: RTICK_N }, (_, i) => {
   const a     = -Math.PI / 2 + (i / RTICK_N) * 2 * Math.PI;
@@ -96,15 +92,8 @@ const RING_TICKS: TickCoord[] = Array.from({ length: RTICK_N }, (_, i) => {
   };
 });
 
-// ── Compliance data ───────────────────────────────────────────────────────────
-const COMPLIANCE_DATA = [
-  { reg: "FCA",   full: "Financial Conduct Authority"   },
-  { reg: "CySEC", full: "Cyprus Securities Commission"  },
-  { reg: "FSC",   full: "Financial Services Commission" },
-] as const;
-
-// ── Icons ─────────────────────────────────────────────────────────────────────
-function IcChart() {
+// ── Icons ──────────────────────────────────────────────────────────────────────
+function IcChart(): ReactNode {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M3 17l6-6 4 4 8-8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -112,7 +101,8 @@ function IcChart() {
     </svg>
   );
 }
-function IcShield() {
+
+function IcShield(): ReactNode {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M12 2L4 6v5c0 5.25 3.4 10.15 8 11.25 4.6-1.1 8-6 8-11.25V6l-8-4z" stroke="currentColor" strokeWidth="1.6" />
@@ -120,27 +110,26 @@ function IcShield() {
     </svg>
   );
 }
-function IcPillar() {
+
+// Network / compliance icon for Box 3
+function IcNetwork(): ReactNode {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M3 21h18M3 4h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="6" y1="4" x2="6" y2="21" stroke="currentColor" strokeWidth="1.6" />
-      <line x1="12" y1="4" x2="12" y2="21" stroke="currentColor" strokeWidth="1.6" />
-      <line x1="18" y1="4" x2="18" y2="21" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="5"  cy="5"  r="2"   stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="19" cy="5"  r="2"   stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="5"  cy="19" r="2"   stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="19" cy="19" r="2"   stroke="currentColor" strokeWidth="1.6" />
+      <path d="M7 7l3.5 3.5M17 7l-3.5 3.5M7 17l3.5-3.5M17 17l-3.5-3.5"
+        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
-function IcCheck() {
+
+// Large central shield for Box 4
+function IcShieldLg(): ReactNode {
   return (
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M5 12l5 5 9-9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-// Large shield for Box 4
-function IcShieldLg() {
-  return (
-    <svg width="48" height="56" viewBox="0 0 52 60" fill="none" aria-hidden>
+    <svg width="46" height="54" viewBox="0 0 52 60" fill="none" aria-hidden>
       <path
         d="M26 2L4 10v16c0 16.8 11.8 32.5 22 36.9C36.2 58.5 48 42.8 48 26V10L26 2z"
         stroke="rgba(255,255,255,0.22)" strokeWidth="1.5"
@@ -159,50 +148,9 @@ function IcShieldLg() {
     </svg>
   );
 }
-function IcUser() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-function IcNoFee() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-function IcMonitor() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M6 11l3-3 3 3 3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function IcDoc() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M14 2v6h6M8 13h8M8 17h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function sgIcon(i: number): ReactNode {
-  if (i === 0) return <IcUser />;
-  if (i === 1) return <IcNoFee />;
-  if (i === 2) return <IcMonitor />;
-  return <IcDoc />;
-}
 
 // ── Copy ──────────────────────────────────────────────────────────────────────
 type StatItem  = { lbl: string; val: string };
-type Benefit   = { title: string; body: string };
 type KPI       = { value: string; label: string };
 type Safeguard = { title: string; body: string };
 
@@ -218,13 +166,13 @@ type Copy = {
   b1disclaimer: string;
   // Box 2
   b2title: string;
-  b2gaugeLabel: string;
+  b2center1: string;
+  b2center2: string;
+  b2subLine: string;
   b2stats: StatItem[];
   // Box 3
   b3title: string;
   b3desc: string;
-  b3compStatus: string;
-  b3benefits: Benefit[];
   // Box 4
   b4title: string;
   safeguards: Safeguard[];
@@ -232,23 +180,25 @@ type Copy = {
 
 const COPY: Record<Lang, Copy> = {
   en: {
-    badge: "Capitalife Control System",
-    h1:    "Risk transparency.",
-    h2:    "Capital under control.",
-    sub:   "Historical performance data, transparent risk metrics and clear safeguards provide full visibility while investors retain full control over their capital.",
+    badge: "For Investors",
+    h1:    "Transparency that",
+    h2:    "builds trust.",
+    sub:   "Clear visibility into strategy, structure and safeguards helps investors understand how everything is designed to communicate clarity, confidence and control.",
     // Box 1
     b1title:     "Historical Strategy & Performance",
     b1backtest:  "Backtesting since 1970",
     b1kpis: [
-      { value: "+11,564%", label: "Cumulative"       },
-      { value: "1970",     label: "Backtested since" },
-      { value: "2024",     label: "Live since"        },
-      { value: "–20.91%",  label: "Max drawdown"      },
+      { value: "+8.80%",  label: "Annual return"        },
+      { value: "1970",    label: "Backtested since"     },
+      { value: "2024",    label: "Live + shadow since"  },
+      { value: "−20.91%", label: "Max drawdown"         },
     ],
     b1disclaimer: "Historical strategy data shown for informational purposes.",
     // Box 2
-    b2title:      "Strategy Risk Overview",
-    b2gaugeLabel: "Max drawdown",
+    b2title:   "Strategy Risk Overview",
+    b2center1: "Controlled",
+    b2center2: "risk profile",
+    b2subLine: "Structured control across multiple market phases",
     b2stats: [
       { lbl: "Sharpe",        val: "1.63"  },
       { lbl: "Calmar",        val: "0.43"  },
@@ -256,71 +206,61 @@ const COPY: Record<Lang, Copy> = {
       { lbl: "Win rate",      val: "42.9%" },
     ],
     // Box 3
-    b3title:      "Regulated Partners",
-    b3desc:       "Partner infrastructure in regulated environments.",
-    b3compStatus: "Verified",
-    b3benefits: [
-      { title: "Regulated & monitored",  body: "Supervised by leading authorities."    },
-      { title: "High standards",         body: "Institutional-grade compliance."        },
-      { title: "Secure infrastructure",  body: "Protection for capital and data."       },
-    ],
+    b3title: "Regulated Partners",
+    b3desc:  "Collaboration with established and regulated partners.",
     // Box 4
     b4title: "Investor Protection",
     safeguards: [
-      { title: "Client-owned accounts",  body: "Capital remains in the client's broker accounts."           },
-      { title: "No hidden fees",         body: "No additional investor fees for partner payouts."            },
-      { title: "Live monitoring",        body: "Ongoing visibility into portfolio and strategy development." },
-      { title: "Clear reporting",        body: "Transparent monthly performance and risk reporting."         },
+      { title: "Existing broker accounts", body: "Capital remains within the investor's existing account structure."      },
+      { title: "No hidden fees",           body: "Structures and processes remain transparent and easy to understand."     },
+      { title: "Ongoing visibility",       body: "Developments and reporting can be reviewed on a regular basis."          },
+      { title: "Clear reporting",          body: "Relevant information is presented in a clear and structured way."        },
     ],
   },
   de: {
-    badge: "Capitalife Kontrollsystem",
-    h1:    "Risikotransparenz.",
-    h2:    "Kapital unter Kontrolle.",
-    sub:   "Historische Performancedaten, transparente Risikokennzahlen und klare Schutzmechanismen schaffen volle Transparenz – bei durchgehender Kontrolle über das eigene Kapital.",
+    badge: "Für Investoren",
+    h1:    "Transparenz, die",
+    h2:    "Vertrauen schafft.",
+    sub:   "Klare Einblicke in Strategie, Struktur und Schutzmechanismen geben Investoren Orientierung. Alles ist darauf ausgelegt, Vertrauen aufzubauen und Kontrolle einfach nachvollziehbar zu machen.",
     // Box 1
     b1title:     "Historische Strategie & Performance",
     b1backtest:  "Backtesting seit 1970",
     b1kpis: [
-      { value: "+11.564%", label: "Kumuliert"        },
-      { value: "1970",     label: "Backtesting seit"  },
-      { value: "2024",     label: "Live seit"          },
-      { value: "–20,91%",  label: "Max. Drawdown"      },
+      { value: "+8,80%",  label: "Jährliche Rendite"   },
+      { value: "1970",    label: "Backtesting seit"     },
+      { value: "2024",    label: "Live + Shadow seit"   },
+      { value: "−20,91%", label: "Max. Drawdown"        },
     ],
     b1disclaimer: "Historische Strategiedaten zu Informationszwecken dargestellt.",
     // Box 2
-    b2title:      "Strategie Risikoübersicht",
-    b2gaugeLabel: "Max. Drawdown",
+    b2title:   "Strategie Risikoübersicht",
+    b2center1: "Kontrolliertes",
+    b2center2: "Risikoprofil",
+    b2subLine: "Strukturierte Steuerung über mehrere Marktphasen",
     b2stats: [
-      { lbl: "Sharpe",        val: "1.63"  },
+      { lbl: "Sharpe",        val: "1,63"  },
       { lbl: "Calmar",        val: "0,43"  },
       { lbl: "Profit Factor", val: "1,24"  },
       { lbl: "Trefferquote",  val: "42,9%" },
     ],
     // Box 3
-    b3title:      "Regulierte Partner",
-    b3desc:       "Partnerinfrastruktur in regulierten Umgebungen.",
-    b3compStatus: "Verifiziert",
-    b3benefits: [
-      { title: "Reguliert & überwacht",  body: "Durch führende Behörden."               },
-      { title: "Hohe Standards",         body: "Compliance auf institutionellem Niveau." },
-      { title: "Sichere Infrastruktur",  body: "Schutz für Kapital und Daten."           },
-    ],
+    b3title: "Regulierte Partner",
+    b3desc:  "Zusammenarbeit mit etablierten und regulierten Partnern.",
     // Box 4
     b4title: "Investorenschutz",
     safeguards: [
-      { title: "Eigene Broker-Konten",         body: "Kapital verbleibt in den Broker-Konten der Kunden."              },
-      { title: "Keine versteckten Gebühren",    body: "Keine zusätzlichen Investorengebühren für Partnerauszahlungen." },
-      { title: "Live-Überwachung",              body: "Laufende Einsicht in Portfolio- und Strategieentwicklung."      },
-      { title: "Klare Berichte",                body: "Transparente monatliche Performance- und Risikoübersichten."    },
+      { title: "Eigene Broker-Konten",      body: "Kapital bleibt in der bestehenden Kontostruktur der Investoren."                    },
+      { title: "Keine versteckten Gebühren", body: "Strukturen und Abläufe bleiben transparent und nachvollziehbar."                   },
+      { title: "Laufende Einsicht",          body: "Entwicklungen und Berichte können regelmäßig nachvollzogen werden."               },
+      { title: "Klare Berichte",             body: "Wesentliche Informationen werden verständlich und strukturiert aufbereitet."       },
     ],
   },
 };
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Component ──────────────────────────────────────────────────────────────────
 export default function RiskSuite() {
   const { lang } = useLanguage();
-  const copy     = COPY[lang];
+  const copy = COPY[lang];
 
   return (
     <section className={r("section")} id="risk-suite">
@@ -330,9 +270,10 @@ export default function RiskSuite() {
 
         {/* ── Header ── */}
         <div className={r("header")}>
-          <div className={r("headerBadge")}>
-            <IcShield />
-            <span>{copy.badge}</span>
+          {/* Pill badge — same style as Strategy/other sections */}
+          <div className={r("headerPill")}>
+            <span className={r("pillDot")} />
+            <span className={r("pillText")}>{copy.badge}</span>
           </div>
           <h2 className={r("headline")}>
             <span>{copy.h1}</span>{" "}
@@ -344,7 +285,7 @@ export default function RiskSuite() {
         {/* ── 5-col asymmetric grid ── */}
         <div className={r("grid")}>
 
-          {/* ── Box 1  top-left LARGE: Backtesting chart ── */}
+          {/* ── Box 1: Backtesting chart ── */}
           <div className={`${r("box")} ${r("boxPerf")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcChart /></span>
@@ -356,18 +297,17 @@ export default function RiskSuite() {
               <svg className={r("chartSvg")} viewBox={`0 0 ${CW} ${CH}`} preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="rs_lg" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="#7a6030" />
-                    <stop offset="50%"  stopColor="#e8ddb8" />
-                    <stop offset="100%" stopColor="#a88c48" />
+                    <stop offset="0%"   stopColor="#5a4520" />
+                    <stop offset="50%"  stopColor="#ddd4aa" />
+                    <stop offset="100%" stopColor="#8a7038" />
                   </linearGradient>
                   <linearGradient id="rs_ag" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%"   stopColor="#c8a840" stopOpacity="0.16" />
-                    <stop offset="70%"  stopColor="#c8a840" stopOpacity="0.03" />
-                    <stop offset="100%" stopColor="#c8a840" stopOpacity="0" />
+                    <stop offset="0%"   stopColor="#c0a84a" stopOpacity="0.12" />
+                    <stop offset="100%" stopColor="#c0a84a" stopOpacity="0" />
                   </linearGradient>
                 </defs>
 
-                {/* Horizontal grid lines */}
+                {/* Subtle horizontal grid */}
                 {BT_Y_TICKS.map((v) => (
                   <g key={v}>
                     <line
@@ -397,13 +337,13 @@ export default function RiskSuite() {
                   </text>
                 ))}
 
-                {/* Area fill + line */}
+                {/* Fill + line */}
                 <path d={BT_AREA} fill="url(#rs_ag)" />
                 <path d={BT_LINE} className={r("cLine")} />
 
-                {/* Endpoint dot */}
-                <circle cx={BT_LX.toFixed(1)} cy={BT_LY.toFixed(1)} r="5.5" fill="rgba(232,220,184,0.18)" />
-                <circle cx={BT_LX.toFixed(1)} cy={BT_LY.toFixed(1)} r="2.8" fill="#e8ddb8" />
+                {/* Endpoint glow dot */}
+                <circle cx={BT_LX.toFixed(1)} cy={BT_LY.toFixed(1)} r="6" fill="rgba(220,210,170,0.14)" />
+                <circle cx={BT_LX.toFixed(1)} cy={BT_LY.toFixed(1)} r="2.5" fill="#ddd4aa" />
               </svg>
             </div>
 
@@ -419,53 +359,52 @@ export default function RiskSuite() {
             <p className={r("disclaim")}>{copy.b1disclaimer}</p>
           </div>
 
-          {/* ── Box 2  top-right SMALL: Risk ring + 4 stats ── */}
+          {/* ── Box 2: Risk ring ── */}
           <div className={`${r("box")} ${r("boxRisk")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcShield /></span>
               <span className={r("boxTitle")}>{copy.b2title}</span>
             </div>
 
-            {/* Technical ring visual */}
             <div className={r("ringWrap")}>
               <svg viewBox="0 0 200 200" fill="none" className={r("ringSvg")}>
                 <defs>
                   <linearGradient id="rs_rg" x1="0" y1="1" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="#2a1a04" />
-                    <stop offset="50%"  stopColor="#9a7030" />
-                    <stop offset="100%" stopColor="#e2d8b0" />
+                    <stop offset="0%"   stopColor="#1a1206" />
+                    <stop offset="45%"  stopColor="#8a6828" />
+                    <stop offset="100%" stopColor="#ddd4aa" />
                   </linearGradient>
                   <radialGradient id="rs_rdot" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%"   stopColor="#e2d8b0" stopOpacity="0.5" />
-                    <stop offset="100%" stopColor="#e2d8b0" stopOpacity="0" />
+                    <stop offset="0%"   stopColor="#ddd4aa" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="#ddd4aa" stopOpacity="0" />
                   </radialGradient>
                   <filter id="rs_rglow">
-                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feGaussianBlur stdDeviation="3.5" result="blur" />
                     <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                   </filter>
                 </defs>
 
-                {/* Outer ambient glow ring (pulsing) */}
+                {/* Outer ambient pulsing ring */}
                 <circle cx={RING_CX} cy={RING_CY} r={RING_R + 15}
-                  stroke="rgba(200,168,64,0.05)" strokeWidth="1"
+                  stroke="rgba(196,166,80,0.04)" strokeWidth="1"
                   className={r("ringGlow")}
                 />
 
-                {/* Tachometer tick marks */}
+                {/* 24 tachometer ticks */}
                 {RING_TICKS.map((t, i) => (
                   <line
                     key={i}
                     x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-                    stroke={t.major ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)"}
-                    strokeWidth={t.major ? "1.5" : "1"}
+                    stroke={t.major ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)"}
+                    strokeWidth={t.major ? "1.4" : "0.9"}
                   />
                 ))}
 
                 {/* Track */}
                 <circle cx={RING_CX} cy={RING_CY} r={RING_R}
-                  stroke="rgba(255,255,255,0.06)" strokeWidth="13"
+                  stroke="rgba(255,255,255,0.055)" strokeWidth="13"
                 />
-                {/* Active arc — 12 o'clock start, clockwise */}
+                {/* Active arc — clockwise from 12 o'clock */}
                 <circle cx={RING_CX} cy={RING_CY} r={RING_R}
                   stroke="url(#rs_rg)"
                   strokeWidth="13"
@@ -476,26 +415,29 @@ export default function RiskSuite() {
                 />
 
                 {/* Inner decorative ring */}
-                <circle cx={RING_CX} cy={RING_CY} r={RING_R - 18}
-                  stroke="rgba(255,255,255,0.04)" strokeWidth="1"
+                <circle cx={RING_CX} cy={RING_CY} r={RING_R - 19}
+                  stroke="rgba(255,255,255,0.035)" strokeWidth="1"
                 />
 
-                {/* Arc endpoint: glow halo + dot */}
-                <circle cx={RING_EX} cy={RING_EY} r="14" fill="url(#rs_rdot)" />
-                <circle cx={RING_EX} cy={RING_EY} r="4.5" fill="#e2d8b0" />
-                <circle cx={RING_EX} cy={RING_EY} r="2" fill="rgba(255,255,255,0.88)" />
+                {/* Arc endpoint glow + dot */}
+                <circle cx={RING_EX} cy={RING_EY} r="13" fill="url(#rs_rdot)" />
+                <circle cx={RING_EX} cy={RING_EY} r="4" fill="#ddd4aa" />
+                <circle cx={RING_EX} cy={RING_EY} r="1.8" fill="rgba(255,255,255,0.85)" />
 
-                {/* Center: value + label */}
-                <text x={RING_CX} y={RING_CY - 7} textAnchor="middle" className={r("ringVal")}>
-                  −{MAX_DD}%
+                {/* Center text: 2-line "Controlled risk profile" */}
+                <text x={RING_CX} y={RING_CY - 8} textAnchor="middle" className={r("ringCenter1")}>
+                  {copy.b2center1}
                 </text>
-                <text x={RING_CX} y={RING_CY + 12} textAnchor="middle" className={r("ringLbl")}>
-                  {copy.b2gaugeLabel}
+                <text x={RING_CX} y={RING_CY + 9} textAnchor="middle" className={r("ringCenter2")}>
+                  {copy.b2center2}
                 </text>
               </svg>
             </div>
 
-            {/* 4 stats below ring */}
+            {/* Subtitle below ring */}
+            <p className={r("b2SubLine")}>{copy.b2subLine}</p>
+
+            {/* 4 stats */}
             <div className={r("statsRow")}>
               {copy.b2stats.flatMap((s, i) => [
                 i > 0 ? <div key={`d${i}`} className={r("statDiv")} /> : null,
@@ -507,101 +449,157 @@ export default function RiskSuite() {
             </div>
           </div>
 
-          {/* ── Box 3  bottom-left SMALL: Regulated partners ── */}
+          {/* ── Box 3: Partner network ── */}
           <div className={`${r("box")} ${r("boxReg")}`}>
             <div className={r("boxHead")}>
-              <span className={r("boxIco")}><IcPillar /></span>
+              <span className={r("boxIco")}><IcNetwork /></span>
               <span className={r("boxTitle")}>{copy.b3title}</span>
             </div>
 
             <p className={r("boxDesc")}>{copy.b3desc}</p>
 
-            {/* 3 glass authority cards */}
-            <div className={r("authGrid")}>
-              {COMPLIANCE_DATA.map(({ reg, full }) => (
-                <div key={reg} className={r("authCard")}>
-                  <span className={r("authAcronym")}>{reg}</span>
-                  <span className={r("authFull")}>{full}</span>
-                  <div className={r("authStatus")}>
-                    <IcCheck />
-                    <span>{copy.b3compStatus}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* Partner & regulator network visualization */}
+            <div className={r("partnerWrap")}>
+              <svg viewBox="0 0 280 152" fill="none" aria-label="Partner network" className={r("partnerSvg")}>
+                <defs>
+                  <radialGradient id="rs_hubGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stopColor="rgba(196,166,80,0.20)" />
+                    <stop offset="100%" stopColor="rgba(196,166,80,0)" />
+                  </radialGradient>
+                  <radialGradient id="rs_hubInner" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stopColor="rgba(221,212,170,0.6)" />
+                    <stop offset="100%" stopColor="rgba(196,166,80,0.2)" />
+                  </radialGradient>
+                </defs>
 
-            {/* Animated network hub below cards */}
-            <div className={r("netWrap")}>
-              <svg viewBox="0 0 200 48" fill="none" aria-hidden className={r("netSvg")}>
-                {/* Lines from hub to outer nodes */}
-                <line x1="62" y1="24" x2="96" y2="24" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="104" y1="24" x2="138" y2="24" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="100" y1="10" x2="100" y2="16" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+                {/* ── Connecting lines with flow animation ── */}
+                {/* Hub → RoboForex */}
+                <line x1="140" y1="76" x2="70" y2="32"
+                  stroke="rgba(255,255,255,0.08)" strokeWidth="1"
+                  strokeDasharray="3 4" className={r("netLine")} />
+                {/* Hub → Vantage */}
+                <line x1="140" y1="76" x2="210" y2="32"
+                  stroke="rgba(255,255,255,0.08)" strokeWidth="1"
+                  strokeDasharray="3 4" className={r("netLineB")} />
+                {/* Hub → FCA */}
+                <line x1="140" y1="76" x2="52" y2="132"
+                  stroke="rgba(255,255,255,0.06)" strokeWidth="1"
+                  strokeDasharray="3 4" className={r("netLineC")} />
+                {/* Hub → CySEC */}
+                <line x1="140" y1="76" x2="140" y2="138"
+                  stroke="rgba(255,255,255,0.06)" strokeWidth="1"
+                  strokeDasharray="3 4" className={r("netLineD")} />
+                {/* Hub → FSC */}
+                <line x1="140" y1="76" x2="228" y2="132"
+                  stroke="rgba(255,255,255,0.06)" strokeWidth="1"
+                  strokeDasharray="3 4" className={r("netLineE")} />
 
-                {/* Left node */}
-                <circle cx="50" cy="24" r="8" stroke="rgba(255,255,255,0.08)" strokeWidth="1" fill="rgba(255,255,255,0.02)" />
-                <circle cx="50" cy="24" r="3" fill="rgba(255,255,255,0.22)" className={r("netNode")} />
+                {/* ── Partner nodes (top) ── */}
+                {/* RoboForex */}
+                <rect x="28" y="16" width="84" height="28" rx="14"
+                  fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
+                <text x="70" y="33" textAnchor="middle" className={r("partnerLabel")}>
+                  RoboForex
+                </text>
+                <circle cx="106" cy="30" r="3" fill="rgba(196,166,80,0.55)" className={r("partnerDot")} />
 
-                {/* Central hub */}
-                <circle cx="100" cy="24" r="11" stroke="rgba(200,175,110,0.18)" strokeWidth="1" fill="rgba(200,175,110,0.05)" />
-                <circle cx="100" cy="24" r="4.5" fill="rgba(200,175,110,0.5)" className={r("netHub")} />
+                {/* Vantage */}
+                <rect x="168" y="16" width="84" height="28" rx="14"
+                  fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
+                <text x="210" y="33" textAnchor="middle" className={r("partnerLabel")}>
+                  Vantage
+                </text>
+                <circle cx="246" cy="30" r="3" fill="rgba(196,166,80,0.55)" className={r("partnerDotB")} />
 
-                {/* Top satellite */}
-                <circle cx="100" cy="6" r="4" stroke="rgba(255,255,255,0.08)" strokeWidth="1" fill="rgba(255,255,255,0.02)" />
-                <circle cx="100" cy="6" r="2" fill="rgba(255,255,255,0.20)" className={r("netNodeB")} />
+                {/* ── Central compliance hub ── */}
+                {/* Ambient glow */}
+                <circle cx="140" cy="76" r="36" fill="url(#rs_hubGrad)" />
+                {/* Outer ring */}
+                <circle cx="140" cy="76" r="20"
+                  stroke="rgba(196,166,80,0.18)" strokeWidth="1"
+                  fill="rgba(196,166,80,0.03)" />
+                {/* Mid ring */}
+                <circle cx="140" cy="76" r="13"
+                  stroke="rgba(255,255,255,0.07)" strokeWidth="1"
+                  fill="rgba(255,255,255,0.02)" />
+                {/* Core dot (pulsing) */}
+                <circle cx="140" cy="76" r="5.5"
+                  fill="url(#rs_hubInner)" className={r("netHub")} />
+                {/* Checkmark inside hub */}
+                <path d="M135 76l3.5 3.5 6.5-6.5"
+                  stroke="rgba(255,255,255,0.60)" strokeWidth="1.4"
+                  strokeLinecap="round" strokeLinejoin="round" />
 
-                {/* Right node */}
-                <circle cx="150" cy="24" r="8" stroke="rgba(255,255,255,0.08)" strokeWidth="1" fill="rgba(255,255,255,0.02)" />
-                <circle cx="150" cy="24" r="3" fill="rgba(255,255,255,0.22)" className={r("netNodeC")} />
+                {/* ── Regulator nodes (bottom) ── */}
+                {/* FCA */}
+                <circle cx="52" cy="132" r="18"
+                  fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
+                <text x="52" y="130" textAnchor="middle" className={r("regLabel")}>FCA</text>
+                <text x="52" y="141" textAnchor="middle" className={r("regSub")}>regulated</text>
+
+                {/* CySEC */}
+                <circle cx="140" cy="138" r="18"
+                  fill="rgba(255,255,255,0.03)" stroke="rgba(196,166,80,0.15)" strokeWidth="1" />
+                <text x="140" y="136" textAnchor="middle" className={r("regLabel")}>CySEC</text>
+                <text x="140" y="147" textAnchor="middle" className={r("regSub")}>regulated</text>
+
+                {/* FSC */}
+                <circle cx="228" cy="132" r="18"
+                  fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
+                <text x="228" y="130" textAnchor="middle" className={r("regLabel")}>FSC</text>
+                <text x="228" y="141" textAnchor="middle" className={r("regSub")}>regulated</text>
               </svg>
-            </div>
-
-            {/* 3 benefit points — not a duplicate of the regulation list */}
-            <div className={r("b3Benefits")}>
-              {copy.b3benefits.map((b, i) => (
-                <div key={i} className={r("b3Benefit")}>
-                  <span className={r("b3BenTitle")}>{b.title}</span>
-                  <span className={r("b3BenBody")}>{b.body}</span>
-                </div>
-              ))}
             </div>
           </div>
 
-          {/* ── Box 4  bottom-right LARGE: Investor protection ── */}
+          {/* ── Box 4: Investor protection — shield center, cards around ── */}
           <div className={`${r("box")} ${r("boxSafe")}`}>
             <div className={r("boxHead")}>
               <span className={r("boxIco")}><IcShield /></span>
               <span className={r("boxTitle")}>{copy.b4title}</span>
             </div>
 
-            {/* Shield with orbit rings */}
-            <div className={r("shieldArea")}>
-              {/* Outer orbit ring (rotating) */}
-              <div className={r("orbitRingLg")}>
-                <div className={r("orbitDot")} style={{ top: "1%",  left: "50%" }} />
-                <div className={r("orbitDot")} style={{ top: "50%", left: "99%" }} />
-                <div className={r("orbitDot")} style={{ top: "99%", left: "50%" }} />
-                <div className={r("orbitDot")} style={{ top: "50%", left: "1%"  }} />
+            {/*
+              3-column grid layout:
+              [card 1] | [shield zone] | [card 2]
+              [card 3] | [shield zone] | [card 4]
+            */}
+            <div className={r("sgLayout")}>
+              {/* Card 1 — top left */}
+              <div className={`${r("sgCard")} ${r("sgCard1")}`}>
+                <span className={r("sgTitle")}>{copy.safeguards[0]!.title}</span>
+                <span className={r("sgBody")}>{copy.safeguards[0]!.body}</span>
               </div>
-              {/* Inner orbit ring (counter-rotating) */}
-              <div className={r("orbitRingSm")} />
-              {/* Central shield icon */}
-              <div className={r("shieldCore")}>
-                <IcShieldLg />
-              </div>
-            </div>
 
-            {/* 2×2 safeguard cards */}
-            <div className={r("sgGrid")}>
-              {copy.safeguards.map((sg, i) => (
-                <div key={i} className={r("sgCard")}>
-                  <span className={r("sgIco")}>{sgIcon(i)}</span>
-                  <div className={r("sgContent")}>
-                    <span className={r("sgTitle")}>{sg.title}</span>
-                    <span className={r("sgBody")}>{sg.body}</span>
-                  </div>
+              {/* Central shield — spans both rows */}
+              <div className={r("shieldZone")}>
+                <div className={r("orbitRingLg")}>
+                  <div className={r("orbitDot")} style={{ top: "1%",  left: "50%" }} />
+                  <div className={r("orbitDot")} style={{ top: "50%", left: "99%" }} />
+                  <div className={r("orbitDot")} style={{ top: "99%", left: "50%" }} />
+                  <div className={r("orbitDot")} style={{ top: "50%", left: "1%"  }} />
                 </div>
-              ))}
+                <div className={r("orbitRingSm")} />
+                <div className={r("shieldCore")}><IcShieldLg /></div>
+              </div>
+
+              {/* Card 2 — top right */}
+              <div className={`${r("sgCard")} ${r("sgCard2")}`}>
+                <span className={r("sgTitle")}>{copy.safeguards[1]!.title}</span>
+                <span className={r("sgBody")}>{copy.safeguards[1]!.body}</span>
+              </div>
+
+              {/* Card 3 — bottom left */}
+              <div className={`${r("sgCard")} ${r("sgCard3")}`}>
+                <span className={r("sgTitle")}>{copy.safeguards[2]!.title}</span>
+                <span className={r("sgBody")}>{copy.safeguards[2]!.body}</span>
+              </div>
+
+              {/* Card 4 — bottom right */}
+              <div className={`${r("sgCard")} ${r("sgCard4")}`}>
+                <span className={r("sgTitle")}>{copy.safeguards[3]!.title}</span>
+                <span className={r("sgBody")}>{copy.safeguards[3]!.body}</span>
+              </div>
             </div>
           </div>
 
