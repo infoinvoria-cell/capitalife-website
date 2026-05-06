@@ -5,58 +5,34 @@
 .section {
   position: relative;
   width: 100%;
-  background: #000;
+  /* Background image fills the section */
+  background-image: url('/Risk_Background.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #000;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  padding: 96px 24px 104px;
+  padding: 60px 24px 64px;
   box-sizing: border-box;
   isolation: isolate;
 }
 
-/* ── Ambient background ──────────────────────────────────────── */
+/* Dark overlay + subtle gold ambience — keeps text readable */
 .bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /* Stack: gold radial on top of dark overlay */
   background:
-    radial-gradient(circle 60% at 72% 20%, rgba(212, 175, 55, 0.07), transparent 60%),
-    radial-gradient(circle 44% at 18% 82%, rgba(212, 175, 55, 0.04), transparent 56%);
+    radial-gradient(circle 55% at 68% 22%, rgba(212, 175, 55, 0.07), transparent 58%),
+    rgba(0, 0, 0, 0.76);
 }
 
-/* Primary golden arc */
-.bg::after {
-  content: "";
-  position: absolute;
-  width: min(88vw, 860px);
-  height: min(88vw, 860px);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-14%, -50%);
-  border: 1px solid rgba(212, 175, 55, 0.14);
-  box-shadow:
-    0 0 80px rgba(212, 175, 55, 0.06),
-    inset 0 0 80px rgba(212, 175, 55, 0.025);
-  pointer-events: none;
-}
-
-/* Secondary smaller arc offset bottom-left */
-.bg::before {
-  content: "";
-  position: absolute;
-  width: min(52vw, 480px);
-  height: min(52vw, 480px);
-  border-radius: 50%;
-  bottom: -12%;
-  left: 2%;
-  border: 1px solid rgba(212, 175, 55, 0.055);
-  pointer-events: none;
-}
-
-/* ── Inner wrapper ───────────────────────────────────────────── */
+/* ── Layout ── */
 .inner {
   position: relative;
   z-index: 1;
@@ -71,22 +47,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: 36px;
 }
 
 .headerBadge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 18px;
+  gap: 7px;
+  height: 32px;
+  padding: 0 16px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.2px;
   color: rgba(255, 255, 255, 0.58);
@@ -95,7 +71,7 @@
 .headline {
   margin: 0;
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: clamp(34px, 4vw, 56px);
+  font-size: clamp(30px, 3.6vw, 52px);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.025em;
@@ -108,22 +84,22 @@
 
 .sub {
   margin: 0;
-  max-width: 600px;
+  max-width: 580px;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.65;
   color: rgba(255, 255, 255, 0.46);
 }
 
 /* ══════════════════════════════════
    ASYMMETRIC 5-COLUMN GRID
-   Top:    [BoxPerf 3/5] [BoxRisk 2/5]
-   Bottom: [BoxReg  2/5] [BoxSafe 3/5]
+   Row 1:  [boxPerf 3/5 large] [boxRisk 2/5 small]
+   Row 2:  [boxReg  2/5 small] [boxSafe 3/5 large]
    ══════════════════════════════════ */
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
+  gap: 12px;
   align-items: stretch;
 }
 
@@ -137,17 +113,17 @@
    ══════════════════════════════════ */
 .box {
   position: relative;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.035) 0%, transparent 55%),
-    rgba(8, 7, 6, 0.82);
-  backdrop-filter: blur(20px) saturate(1.1);
-  -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    linear-gradient(155deg, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+    rgba(6, 5, 4, 0.84);
+  backdrop-filter: blur(22px) saturate(1.1);
+  -webkit-backdrop-filter: blur(22px) saturate(1.1);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 12px 40px rgba(0, 0, 0, 0.48);
-  padding: 26px 28px;
+    0 10px 36px rgba(0, 0, 0, 0.52);
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -158,31 +134,31 @@
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 10%;
+  right: 10%;
   height: 1px;
   background: linear-gradient(
     90deg,
-    transparent 0%,
-    rgba(212, 175, 55, 0.28) 35%,
-    rgba(212, 175, 55, 0.14) 65%,
-    transparent 100%
+    transparent,
+    rgba(212, 175, 55, 0.3) 40%,
+    rgba(212, 175, 55, 0.15) 70%,
+    transparent
   );
 }
 
-/* ── Box header ── */
+/* ── Box header row ── */
 .boxHead {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 9px;
+  margin-bottom: 14px;
   flex-shrink: 0;
 }
 
 .boxIco {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   border: 1px solid rgba(212, 175, 55, 0.18);
   background: rgba(212, 175, 55, 0.08);
   color: #c9a84e;
@@ -194,7 +170,7 @@
 
 .boxTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.86);
   white-space: nowrap;
@@ -202,21 +178,20 @@
   text-overflow: ellipsis;
 }
 
-/* Backtested badge */
+/* "Backtested since 1970" badge */
 .btBadge {
   margin-left: auto;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  height: 26px;
-  padding: 0 11px;
+  height: 23px;
+  padding: 0 10px;
   border-radius: 100px;
-  border: 1px solid rgba(201, 168, 78, 0.24);
-  background: rgba(201, 168, 78, 0.07);
+  border: 1px solid rgba(201, 168, 78, 0.22);
+  background: rgba(201, 168, 78, 0.06);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.1px;
   color: #c9a84e;
   white-space: nowrap;
 }
@@ -226,7 +201,7 @@
    ══════════════════════════════════ */
 .chartWrap {
   flex: 1;
-  min-height: 140px;
+  min-height: 120px;
   position: relative;
 }
 
@@ -245,39 +220,39 @@
 .cYLbl {
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 10px;
-  fill: rgba(255, 255, 255, 0.3);
+  fill: rgba(255, 255, 255, 0.28);
 }
 
 .cXLbl {
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  fill: rgba(255, 255, 255, 0.36);
+  fill: rgba(255, 255, 255, 0.34);
 }
 
 .cLine {
   fill: none;
   stroke: url(#rs_lg);
-  stroke-width: 2.6;
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+  filter: drop-shadow(0 0 7px rgba(212, 175, 55, 0.5));
 }
 
 /* KPI strip */
 .kpiRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 16px 0 8px;
+  padding: 13px 0 6px;
   border-top: 1px solid rgba(255, 255, 255, 0.055);
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .kpiItem {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 0 12px;
+  gap: 4px;
+  padding: 0 10px;
 }
 
 .kpiItem + .kpiItem {
@@ -286,7 +261,7 @@
 
 .kpiVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1;
   color: #e2ca7b;
@@ -294,13 +269,13 @@
 
 .kpiLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.3;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.38);
 }
 
 .disclaim {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.22);
@@ -308,40 +283,40 @@
 }
 
 /* ══════════════════════════════════
-   BOX 2 — RISK GAUGE
+   BOX 2 — RING CHART
    ══════════════════════════════════ */
-.gaugeWrap {
+.ringWrap {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0 4px;
+  padding: 6px 0;
+  min-height: 120px;
 }
 
-.gaugeSvg {
-  width: 100%;
-  max-width: 230px;
+.ringSvg {
+  width: min(100%, 155px);
   height: auto;
 }
 
-.gaugeVal {
+.ringVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 38px;
+  font-size: 28px;
   font-weight: 700;
   fill: #e2ca7b;
 }
 
-.gaugeLbl {
+.ringLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
+  font-size: 9px;
   fill: rgba(255, 255, 255, 0.42);
 }
 
-/* Stats row (3 items) */
+/* Stats row — 3 items */
 .statsRow {
   display: flex;
   align-items: center;
-  padding: 16px 4px 6px;
+  padding: 14px 4px 4px;
   border-top: 1px solid rgba(255, 255, 255, 0.055);
   flex-shrink: 0;
 }
@@ -351,25 +326,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .statDiv {
   width: 1px;
-  height: 36px;
+  height: 32px;
   background: rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
 }
 
 .statLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.38);
 }
 
 .statVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #e2ca7b;
   line-height: 1;
@@ -378,106 +353,75 @@
 /* ══════════════════════════════════
    BOX 3 — REGULATED PARTNERS
    ══════════════════════════════════ */
-.boxDesc {
-  margin: 0 0 18px;
-  font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 13px;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.46);
+
+/* Visual row: 3 large shield icons with acronym label */
+.regVisual {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 14px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.035);
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
-/* Compliance status table */
-.compGrid {
+.regVisualItem {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  margin-bottom: 18px;
-}
-
-.compRow {
-  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
+  gap: 7px;
 }
 
-.compIco {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  border: 1px solid rgba(212, 175, 55, 0.14);
-  background: rgba(212, 175, 55, 0.06);
+.regVisualIco {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  background: rgba(212, 175, 55, 0.09);
   color: #c9a84e;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
-.compInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1;
-  min-width: 0;
-}
-
-.compReg {
+.regVisualName {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.78);
 }
 
-.compFull {
+.boxDesc {
+  margin: 0 0 14px;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.34);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.44);
 }
 
-.compStatus {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 22px;
-  padding: 0 9px;
-  border-radius: 100px;
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  color: rgba(74, 222, 128, 0.9);
-  font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-/* Badge pills at bottom */
-.regRow {
+/* Badge pills — gold/white only, no green */
+.regList {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 6px;
+  margin-top: auto;
 }
 
 .regBadge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 28px;
-  padding: 0 11px;
+  height: 26px;
+  padding: 0 10px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(212, 175, 55, 0.05);
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(212, 175, 55, 0.88);
 }
 
 /* ══════════════════════════════════
@@ -487,34 +431,34 @@
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 11px;
+  gap: 10px;
 }
 
 .sgCard {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 18px;
-  border-radius: 12px;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 11px;
   border: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(255, 255, 255, 0.025);
-  transition: border-color 0.25s ease, background 0.25s ease;
+  background: rgba(255, 255, 255, 0.022);
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .sgCard:hover {
-  border-color: rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.2);
   background: rgba(212, 175, 55, 0.04);
 }
 
 .sgTop {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 }
 
 .sgIco {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   border: 1px solid rgba(212, 175, 55, 0.16);
   background: rgba(212, 175, 55, 0.08);
@@ -527,7 +471,7 @@
 
 .sgTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.84);
   line-height: 1.2;
@@ -535,9 +479,9 @@
 
 .sgBody {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.46);
 }
 
 /* ══════════════════════════════════
@@ -548,13 +492,15 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .boxPerf, .boxRisk, .boxReg, .boxSafe {
+  .boxPerf,
+  .boxRisk,
+  .boxReg,
+  .boxSafe {
     grid-column: auto;
   }
 
   .kpiRow {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
   }
 
   .kpiItem + .kpiItem {
@@ -568,19 +514,18 @@
 
 @media (max-width: 720px) {
   .section {
-    padding: 60px 16px 72px;
+    padding: 48px 16px 56px;
   }
 
   .grid {
     grid-template-columns: 1fr;
   }
 
-  .boxPerf, .boxRisk, .boxReg, .boxSafe {
+  .boxPerf,
+  .boxRisk,
+  .boxReg,
+  .boxSafe {
     grid-column: auto;
-  }
-
-  .kpiRow {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .sgGrid {
@@ -593,5 +538,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sgCard { transition: none; }
+  .sgCard {
+    transition: none;
+  }
 }
