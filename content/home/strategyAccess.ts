@@ -19,7 +19,9 @@ export type StrategyAccessStep = { title: string; bullets: string[] };
 
 export type StrategyAccessContent = {
   label: string;
-  headline: string;
+  headlineLead: string;
+  headlineAccent: string;
+  headlineTrail: string;
   sub: string;
   steps: StrategyAccessStep[];
   highlights: string[];
@@ -29,44 +31,46 @@ export type StrategyAccessContent = {
 export const strategyAccessByLocale: Record<Locale, StrategyAccessContent> = {
   en: {
     label: "Strategy Access",
-    headline: "How structured strategy access works",
+    headlineLead: "How structured ",
+    headlineAccent: "strategy access",
+    headlineTrail: " works",
     sub:
-      "A clear structure makes access easier to understand. From the starting setup and risk factor to the illustrative allocation, each step is presented in a transparent and easy-to-follow way.",
+      "A clear structure makes the process easier to understand. Each step is shown transparently, from the starting setup to the illustrative allocation.",
     steps: [
       {
         title: "Starting point",
         bullets: [
-          "The investor defines the starting setup",
-          "The investment amount is shown as an example",
-          "The visual is used for easier understanding",
+          "Define the initial setup",
+          "Example investment amount",
+          "Purely illustrative",
         ],
       },
       {
         title: "Risk factor",
         bullets: [
-          "The risk factor influences the model logic",
-          "It helps illustrate the structural setup",
-          "The display is purely illustrative",
+          "Influences the model logic",
+          "Explains the structure",
+          "Not a forecast",
         ],
       },
       {
         title: "Strategy layer",
         bullets: [
-          "The Capitalife trading system represents the central strategy layer",
-          "This is where the structured logic comes together",
-          "The visual shows the conceptual process",
+          "Central Capitalife system",
+          "Structured strategy logic",
+          "Conceptual process",
         ],
       },
       {
         title: "Illustrative allocation",
         bullets: [
-          "The illustrative allocation is shown transparently",
-          "Investor and Capitalife shares are displayed separately",
-          "All values are for illustration only",
+          "Transparent example split",
+          "Investor and Capitalife shown separately",
+          "No commitment or forecast",
         ],
       },
     ],
-    highlights: ["Clearly structured", "Presented transparently", "Easy to follow"],
+    highlights: ["Clear structure", "Transparent model logic", "Easy to follow"],
     diagram: {
       investor: "Investor",
       investment: "Investment",
@@ -85,44 +89,46 @@ export const strategyAccessByLocale: Record<Locale, StrategyAccessContent> = {
   },
   de: {
     label: "Strategy Access",
-    headline: "So funktioniert strukturierter Strategy Access",
+    headlineLead: "So funktioniert strukturierter ",
+    headlineAccent: "Strategy Access",
+    headlineTrail: "",
     sub:
-      "Ein klarer Aufbau macht den Zugang leichter verständlich. Von der Ausgangsbasis über den Risikofaktor bis zur beispielhaften Verteilung wird jeder Schritt transparent und nachvollziehbar dargestellt.",
+      "Eine klare Struktur macht den Ablauf leichter verständlich. Jeder Schritt wird transparent dargestellt, von der Ausgangsbasis bis zur beispielhaften Aufteilung.",
     steps: [
       {
         title: "Ausgangspunkt",
         bullets: [
-          "Der Investor definiert die Ausgangsbasis",
-          "Die Investitionssumme wird beispielhaft dargestellt",
-          "Die Visualisierung dient der verständlichen Einordnung",
+          "Ausgangsbasis definieren",
+          "Beispielhafte Investitionssumme",
+          "Rein illustrative Darstellung",
         ],
       },
       {
         title: "Risikofaktor",
         bullets: [
-          "Der Risikofaktor beeinflusst die Modelllogik",
-          "Er dient der strukturellen Veranschaulichung",
-          "Die Darstellung ist rein illustrativ",
+          "Beeinflusst die Modelllogik",
+          "Erklärt die Struktur",
+          "Keine Prognose",
         ],
       },
       {
         title: "Strategieebene",
         bullets: [
-          "Das Capitalife Handelssystem bildet die zentrale Strategieebene",
-          "Hier läuft die strukturierte Logik zusammen",
-          "Die Darstellung zeigt den konzeptionellen Ablauf",
+          "Zentrales Capitalife System",
+          "Strukturierte Strategie-Logik",
+          "Konzeptioneller Ablauf",
         ],
       },
       {
-        title: "Beispielhafte Verteilung",
+        title: "Beispielhafte Aufteilung",
         bullets: [
-          "Die beispielhafte Verteilung wird transparent dargestellt",
-          "Anleger- und Capitalife-Anteil werden separat gezeigt",
-          "Alle Werte dienen ausschließlich der Illustration",
+          "Transparente Beispielaufteilung",
+          "Anleger und Capitalife separat dargestellt",
+          "Keine Zusage oder Prognose",
         ],
       },
     ],
-    highlights: ["Klar strukturiert", "Transparent dargestellt", "Leicht nachvollziehbar"],
+    highlights: ["Klare Struktur", "Transparente Modelllogik", "Leicht nachvollziehbar"],
     diagram: {
       investor: "Investor",
       investment: "Investment",
@@ -136,7 +142,7 @@ export const strategyAccessByLocale: Record<Locale, StrategyAccessContent> = {
       capitalifeShare: "Capitalife Anteil",
       capitalifeShareEx: "20 % Beispielanteil",
       figNote:
-        "Beispielhafte Darstellung zur Veranschaulichung des strukturierten Zugangs. Keine Zusage oder Prognose.",
+        "Beispielhafte Darstellung zur Erklärung des strukturierten Zugangs. Keine Zusage oder Prognose.",
     },
   },
 };

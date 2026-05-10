@@ -160,11 +160,11 @@
 }
 
 .pillDot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(248, 236, 212, 0.95) 0%, rgba(210, 188, 150, 0.65) 100%);
-  box-shadow: 0 0 10px rgba(232, 218, 190, 0.35);
+  background: radial-gradient(circle, rgba(255, 248, 236, 0.98) 0%, rgba(212, 175, 55, 0.55) 100%);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.38);
   flex-shrink: 0;
 }
 
@@ -203,7 +203,7 @@
   font-size: clamp(14px, 1.05vw, 15.5px);
   line-height: 1.48;
   letter-spacing: 0.01em;
-  color: rgba(255, 253, 248, 0.62);
+  color: rgba(255, 253, 248, 0.72);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -290,9 +290,10 @@
   width: 27px;
   height: 27px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 253, 246, 0.09);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 250, 242, 0.02));
-  color: rgba(228, 218, 196, 0.82);
+  border: 1px solid rgba(229, 205, 142, 0.28);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(212, 175, 55, 0.06));
+  color: rgba(236, 224, 198, 0.92);
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.08);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -404,18 +405,36 @@
 .kpiRow {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px 0;
-  padding: 12px 0 4px;
-  border-top: 1px solid rgba(255, 253, 246, 0.08);
+  gap: 10px 8px;
+  padding: 14px 0 6px;
+  border-top: 1px solid rgba(255, 253, 246, 0.1);
   margin-top: 10px;
 }
 
 .kpiItem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 0 6px;
+  gap: 0;
+  padding: 0 4px;
   min-width: 0;
+}
+
+.kpiCombined {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(11px, 0.95vw, 12.5px);
+  line-height: 1.42;
+}
+
+.kpiDash {
+  color: rgba(218, 195, 155, 0.55);
+  font-weight: 400;
+}
+
+.kpiLblInline {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-weight: 500;
+  color: rgba(255, 253, 248, 0.68);
 }
 
 .kpiItem + .kpiItem {
@@ -472,7 +491,7 @@
 
 .riskEngineSvg {
   display: block;
-  width: min(100%, 336px);
+  width: min(100%, 400px);
   height: auto;
   overflow: visible;
 }
@@ -526,15 +545,27 @@
 }
 
 .rkRotateSlow {
-  transform-origin: 170px 170px;
+  transform-origin: 190px 190px;
   transform-box: fill-box;
   animation: rs_riskOrbit 48s linear infinite;
 }
 
 .rkRotateRev {
-  transform-origin: 170px 170px;
+  transform-origin: 190px 190px;
   transform-box: fill-box;
   animation: rs_riskOrbitRev 32s linear infinite;
+}
+
+.rkQuadCross {
+  stroke: rgba(255, 253, 246, 0.055);
+  stroke-width: 0.78;
+  stroke-linecap: round;
+}
+
+.rkMicroTick {
+  stroke: rgba(228, 210, 175, 0.14);
+  stroke-width: 0.62;
+  stroke-linecap: round;
 }
 
 .rkTickOrbit {
@@ -726,8 +757,26 @@
 
 .regStatusDot {
   fill: #34d399;
-  stroke: rgba(255, 253, 246, 0.45);
+  stroke: rgba(255, 253, 246, 0.55);
   stroke-width: 0.65;
+}
+
+.regDotPulse {
+  fill: none;
+  stroke: rgba(52, 211, 153, 0.42);
+  stroke-width: 0.75;
+  animation: rs_regDotPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes rs_regDotPulse {
+  0%, 100% {
+    opacity: 0.35;
+    stroke-width: 0.65;
+  }
+  50% {
+    opacity: 0.85;
+    stroke-width: 0.95;
+  }
 }
 
 .regJunction {
@@ -954,8 +1003,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 7px;
-  padding: 10px 11px 11px;
+  gap: 6px;
+  padding: 9px 10px 10px;
   border-radius: 11px;
   border: 1px solid rgba(255, 253, 246, 0.095);
   background:
@@ -975,16 +1024,16 @@
 
 .sgCardIco {
   flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  border: 1px solid rgba(232, 218, 196, 0.22);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(232, 218, 190, 0.06));
-  color: rgba(238, 226, 198, 0.92);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(229, 205, 142, 0.32);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(212, 175, 55, 0.08));
+  color: rgba(242, 232, 210, 0.96);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 20px rgba(220, 200, 165, 0.08);
+  box-shadow: 0 0 22px rgba(212, 175, 55, 0.1);
 }
 
 /* Champagne accent — replaces gold bar */
@@ -1010,20 +1059,20 @@
 
 .sgTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: rgba(255, 253, 248, 0.98);
-  line-height: 1.28;
+  color: rgba(255, 253, 248, 0.99);
+  line-height: 1.26;
   min-width: 0;
   width: 100%;
 }
 
 .sgBody {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
+  font-size: 11.5px;
   line-height: 1.52;
-  color: rgba(255, 253, 248, 0.56);
+  color: rgba(255, 253, 248, 0.62);
   width: 100%;
   max-width: 100%;
   overflow-wrap: break-word;
@@ -1084,6 +1133,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .regDotPulse {
+    animation: none;
+    opacity: 0.55;
+  }
+
   .rkRotateSlow,
   .rkRotateRev,
   .rkSweepArm,

@@ -40,12 +40,7 @@ function IcWallet(): ReactNode {
         strokeWidth="1.4"
       />
       <path d="M4 9.5h16" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path
-        d="M16.5 14.2h.01"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
+      <path d="M16.5 14.2h.01" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -59,12 +54,7 @@ function IcGauge(): ReactNode {
         strokeWidth="1.4"
         strokeLinecap="round"
       />
-      <path
-        d="M12 13.2l3.2-5.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
+      <path d="M12 13.2l3.2-5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       <circle cx="12" cy="15.5" r="1.3" fill="currentColor" />
     </svg>
   );
@@ -88,12 +78,7 @@ function IcLayers(): ReactNode {
 function IcPercent(): ReactNode {
   return (
     <svg className={c("saIco")} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M7 15l10-10"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
+      <path d="M7 15l10-10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       <circle cx="8.5" cy="8.5" r="1.6" fill="currentColor" />
       <circle cx="15.5" cy="15.5" r="1.6" fill="currentColor" />
     </svg>
@@ -114,71 +99,99 @@ function IcShieldBadge(): ReactNode {
   );
 }
 
+function PairLine({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}): ReactNode {
+  return (
+    <p className={c("saBoxPair")}>
+      <span className={c("saBoxLbl")}>{label}</span>
+      <span className={c("saBoxEm")}> — </span>
+      <span className={c("saBoxVal")}>{value}</span>
+    </p>
+  );
+}
+
 export function StrategyAccessFlow({ diagram, visible }: Props) {
   const wrapClass = `${c("saFlow")}${visible ? ` ${c("saFlowVisible")}` : ""}`;
 
   return (
     <div className={wrapClass}>
-      <div className={c("saBox")} data-step="1">
-        <span className={c("saBoxIcoWrap")}><IcUser /></span>
-        <span className={c("saBoxLbl")}>{diagram.investor}</span>
-      </div>
+      <div className={c("saFlowPanel")}>
+        <div className={c("saFlowPanelGlow")} aria-hidden />
+        <div className={c("saFlowPanelMesh")} aria-hidden />
 
-      <div className={c("saConn")} aria-hidden>
-        <svg viewBox="0 0 100 42" preserveAspectRatio="xMidYMid meet" className={c("saConnSvg")}>
-          <path className={c("saPath")} d="M50 3v9" />
-          <path className={c("saPath")} d="M50 12L25 12v26" />
-          <path className={c("saPath")} d="M50 12l25 0v26" />
-          <circle className={c("saNode")} cx="50" cy="12" r="1.35" />
-        </svg>
-      </div>
-
-      <div className={c("saRow2")}>
-        <div className={c("saBox")} data-step="2">
-          <span className={c("saBoxIcoWrap")}><IcWallet /></span>
-          <span className={c("saBoxLbl")}>{diagram.investment}</span>
-          <span className={c("saBoxEx")}>{diagram.investmentEx}</span>
+        <div className={`${c("saBox")} ${c("saBoxInvestor")}`} data-step="1">
+          <span className={c("saBoxIcoWrap")}>
+            <IcUser />
+          </span>
+          <p className={c("saBoxInvestorLbl")}>{diagram.investor}</p>
         </div>
-        <div className={c("saBox")} data-step="3">
-          <span className={c("saBoxIcoWrap")}><IcGauge /></span>
-          <span className={c("saBoxLbl")}>{diagram.risk}</span>
-          <span className={c("saBoxEx")}>{diagram.riskEx}</span>
+
+        <div className={`${c("saConn")} ${c("saConnA")}`} aria-hidden>
+          <svg viewBox="0 0 100 42" preserveAspectRatio="xMidYMid meet" className={c("saConnSvg")}>
+            <path className={c("saPath")} d="M50 3v9" />
+            <path className={c("saPath")} d="M50 12L25 12v26" />
+            <path className={c("saPath")} d="M50 12l25 0v26" />
+            <circle className={c("saNode")} cx="50" cy="12" r="2.1" />
+          </svg>
         </div>
-      </div>
 
-      <div className={c("saConn")} aria-hidden>
-        <svg viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet" className={c("saConnSvg")}>
-          <path className={c("saPath")} d="M25 4v14h25v24" />
-          <path className={c("saPath")} d="M75 4v14H50v24" />
-          <circle className={c("saNode")} cx="50" cy="18" r="1.35" />
-        </svg>
-      </div>
-
-      <div className={c("saBox")} data-step="4">
-        <span className={c("saBoxIcoWrap")}><IcLayers /></span>
-        <span className={c("saBoxLbl")}>{diagram.cfs}</span>
-        <span className={c("saBoxExSm")}>{diagram.cfsEx}</span>
-      </div>
-
-      <div className={c("saConn")} aria-hidden>
-        <svg viewBox="0 0 100 42" preserveAspectRatio="xMidYMid meet" className={c("saConnSvg")}>
-          <path className={c("saPath")} d="M50 3v9" />
-          <path className={c("saPath")} d="M50 12L25 12v26" />
-          <path className={c("saPath")} d="M50 12l25 0v26" />
-          <circle className={c("saNode")} cx="50" cy="12" r="1.35" />
-        </svg>
-      </div>
-
-      <div className={c("saRow2")}>
-        <div className={c("saBox")} data-step="5">
-          <span className={c("saBoxIcoWrap")}><IcPercent /></span>
-          <span className={c("saBoxLbl")}>{diagram.investorShare}</span>
-          <span className={c("saBoxEx")}>{diagram.investorShareEx}</span>
+        <div className={c("saRow2")}>
+          <div className={c("saBox")} data-step="2">
+            <span className={c("saBoxIcoWrap")}>
+              <IcWallet />
+            </span>
+            <PairLine label={diagram.investment} value={diagram.investmentEx} />
+          </div>
+          <div className={c("saBox")} data-step="3">
+            <span className={c("saBoxIcoWrap")}>
+              <IcGauge />
+            </span>
+            <PairLine label={diagram.risk} value={diagram.riskEx} />
+          </div>
         </div>
-        <div className={c("saBox")} data-step="6">
-          <span className={c("saBoxIcoWrap")}><IcShieldBadge /></span>
-          <span className={c("saBoxLbl")}>{diagram.capitalifeShare}</span>
-          <span className={c("saBoxEx")}>{diagram.capitalifeShareEx}</span>
+
+        <div className={`${c("saConn")} ${c("saConnB")}`} aria-hidden>
+          <svg viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet" className={c("saConnSvg")}>
+            <path className={c("saPath")} d="M25 4v14h25v24" />
+            <path className={c("saPath")} d="M75 4v14H50v24" />
+            <circle className={c("saNode")} cx="50" cy="18" r="2.1" />
+          </svg>
+        </div>
+
+        <div className={c("saBox")} data-step="4">
+          <span className={c("saBoxIcoWrap")}>
+            <IcLayers />
+          </span>
+          <PairLine label={diagram.cfs} value={diagram.cfsEx} />
+        </div>
+
+        <div className={`${c("saConn")} ${c("saConnC")}`} aria-hidden>
+          <svg viewBox="0 0 100 42" preserveAspectRatio="xMidYMid meet" className={c("saConnSvg")}>
+            <path className={c("saPath")} d="M50 3v9" />
+            <path className={c("saPath")} d="M50 12L25 12v26" />
+            <path className={c("saPath")} d="M50 12l25 0v26" />
+            <circle className={c("saNode")} cx="50" cy="12" r="2.1" />
+          </svg>
+        </div>
+
+        <div className={c("saRow2")}>
+          <div className={c("saBox")} data-step="5">
+            <span className={c("saBoxIcoWrap")}>
+              <IcPercent />
+            </span>
+            <PairLine label={diagram.investorShare} value={diagram.investorShareEx} />
+          </div>
+          <div className={c("saBox")} data-step="6">
+            <span className={c("saBoxIcoWrap")}>
+              <IcShieldBadge />
+            </span>
+            <PairLine label={diagram.capitalifeShare} value={diagram.capitalifeShareEx} />
+          </div>
         </div>
       </div>
 

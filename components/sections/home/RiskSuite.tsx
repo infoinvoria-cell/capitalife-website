@@ -9,42 +9,34 @@ function r(name: string): string {
   return (raw as Record<string, string>)[name] ?? "";
 }
 
-// ── Illustrative model index (2010→2026): compounded-style series for chart visualization only ───
-const BT_YEAR_START = 2010;
-const BT_YEAR_END = 2026;
-const BT_N = BT_YEAR_END - BT_YEAR_START + 1;
+/** Fixed normal-cumulative visual series (chart only; not compounded / not equity math). */
+const normalCumulativeModelSeries = [
+  { year: 2010, value: 0 },
+  { year: 2011, value: 6.5 },
+  { year: 2012, value: 13.2 },
+  { year: 2013, value: 20.1 },
+  { year: 2014, value: 27.4 },
+  { year: 2015, value: 33.6 },
+  { year: 2016, value: 41.2 },
+  { year: 2017, value: 49.0 },
+  { year: 2018, value: 55.8 },
+  { year: 2019, value: 64.5 },
+  { year: 2020, value: 71.4 },
+  { year: 2021, value: 79.8 },
+  { year: 2022, value: 86.2 },
+  { year: 2023, value: 94.8 },
+  { year: 2024, value: 102.7 },
+  { year: 2025, value: 110.9 },
+  { year: 2026, value: 113.5 },
+] as const;
 
-/** Synthetic index level (base 100 at start); not raw trade data. */
-const BT_INDEX = (() => {
-  const out: number[] = [];
-  let v = 100;
-  out.push(v);
-  for (let i = 1; i < BT_N; i++) {
-    const wave = 0.048 * Math.sin(i * 0.82) + 0.03 * Math.cos(i * 1.35);
-    const drift = 0.1971 + wave * 0.065;
-    const r = Math.min(0.38, Math.max(-0.16, drift));
-    v *= 1 + r;
-    out.push(v);
-  }
-  return out;
-})();
+const BT_VALUES = normalCumulativeModelSeries.map((p) => p.value);
+const BT_N = BT_VALUES.length;
 
-const BT_CMIN = Math.min(...BT_INDEX);
-const BT_CMAX = Math.max(...BT_INDEX);
-const BT_PAD = Math.max((BT_CMAX - BT_CMIN) * 0.08, (BT_CMAX - BT_CMIN) * 0.02 + 8);
-const BT_SCALE_MIN = BT_CMIN - BT_PAD;
-const BT_SCALE_MAX = BT_CMAX + BT_PAD;
-
-const BT_TICK_N = 5;
-const BT_Y_TICKS = Array.from({ length: BT_TICK_N }, (_, i) => {
-  const t = i / (BT_TICK_N - 1);
-  return Math.round(BT_SCALE_MIN + t * (BT_SCALE_MAX - BT_SCALE_MIN));
-});
-
-const BT_Y_MINOR: number[] = [];
-for (let i = 0; i < BT_Y_TICKS.length - 1; i++) {
-  BT_Y_MINOR.push(Math.round((BT_Y_TICKS[i]! + BT_Y_TICKS[i + 1]!) / 2));
-}
+/** Y-axis domain — cumulative % scale (no large index numbers). */
+const BT_SCALE_MIN = 0;
+const BT_SCALE_MAX = 120;
+const BT_Y_TICKS = [0, 30, 60, 90, 120] as const;
 
 // ── Chart geometry ─────────────────────────────────────────────────────────────
 const CW = 560,
@@ -68,20 +60,13 @@ function btXFromIdx(idx: number): number {
   return BT_PL + (idx / (BT_N - 1)) * BT_uW;
 }
 
-/** Y-axis: model index (no % — illustrative series). */
-function btFmtY(v: number, lang: Lang): string {
-  const sep = lang === "de" ? "." : ",";
-  const rounded = Math.round(v);
-  const body = Math.abs(rounded)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-  if (rounded === 0) return "0";
-  return `${rounded < 0 ? "−" : ""}${body}`;
+function btFmtYPercent(v: number): string {
+  return `${v}%`;
 }
 
-/** Segment-wise path through illustrative index series. */
+/** Polyline through fixed normal-cumulative visual series. */
 function buildBtChart() {
-  const pts = BT_INDEX.map((v, i) => ({
+  const pts = BT_VALUES.map((v, i) => ({
     x: BT_PL + (i / (BT_N - 1)) * BT_uW,
     y: btYPos(v),
   }));
@@ -99,46 +84,42 @@ function buildBtChart() {
 
 const { line: BT_LINE, area: BT_AREA, lastX: BT_LX, lastY: BT_LY } = buildBtChart();
 
-// ── Risk engine radar (Box 2) — layered radar / signal visual ─────────────────
-const RK_CX = 170;
-const RK_CY = 170;
-const RK_R = 118;
-const RK_ANGLES = [-Math.PI / 2, 0, Math.PI / 2, Math.PI] as const;
-/** Visual footprint only — aligned loosely with risk KPI emphasis */
-const RK_NORM = [0.88, 0.76, 0.82, 0.79] as const;
-
-function rkPt(i: number, norm: number): { x: number; y: number } {
-  const a = RK_ANGLES[i]!;
-  return {
-    x: RK_CX + RK_R * norm * Math.cos(a),
-    y: RK_CY + RK_R * norm * Math.sin(a),
-  };
-}
-
-const RK_POLY_PTS = RK_NORM.map((n, i) => rkPt(i, n));
-const RK_POLY_D = (() => {
-  const p0 = RK_POLY_PTS[0]!;
-  let d = `M${p0.x.toFixed(2)},${p0.y.toFixed(2)}`;
-  for (let i = 1; i < RK_POLY_PTS.length; i++) {
-    const p = RK_POLY_PTS[i]!;
-    d += ` L${p.x.toFixed(2)},${p.y.toFixed(2)}`;
-  }
-  return `${d} Z`;
-})();
-
-const RK_RING_LEVELS = [0.28, 0.46, 0.64, 0.82, 1];
-const RK_SPOKE_N = 12;
+// ── Risk control visual (Box 2): rings, quadrants, nodes — no polygon / diamond ────────────────
+const RK_SZ = 380;
+const RK_CX = 190;
+const RK_CY = 190;
+const RK_R = 132;
+const RK_RING_LEVELS = [0.22, 0.36, 0.5, 0.64, 0.78, 0.92, 1] as const;
+const RK_CARDINAL = [-Math.PI / 2, 0, Math.PI / 2, Math.PI] as const;
+const RK_NODE_RING = 0.86;
+const RK_NODE_PTS = RK_CARDINAL.map((a) => ({
+  x: RK_CX + RK_R * RK_NODE_RING * Math.cos(a),
+  y: RK_CY + RK_R * RK_NODE_RING * Math.sin(a),
+}));
+const RK_SPOKE_N = 8;
 const RK_SPOKES: { x2: number; y2: number; faint: boolean }[] = Array.from(
   { length: RK_SPOKE_N },
   (_, i) => {
     const a = -Math.PI / 2 + (i / RK_SPOKE_N) * 2 * Math.PI;
     return {
-      x2: RK_CX + RK_R * 1.06 * Math.cos(a),
-      y2: RK_CY + RK_R * 1.06 * Math.sin(a),
-      faint: i % 3 !== 0,
+      x2: RK_CX + RK_R * 1.02 * Math.cos(a),
+      y2: RK_CY + RK_R * 1.02 * Math.sin(a),
+      faint: i % 2 === 1,
     };
   },
 );
+const RK_MICRO_N = 20;
+const RK_MICRO_TICKS = Array.from({ length: RK_MICRO_N }, (_, i) => {
+  const a = (i / RK_MICRO_N) * 2 * Math.PI;
+  const r1 = RK_R * 0.4;
+  const r2 = RK_R * 0.48;
+  return {
+    x1: RK_CX + r1 * Math.cos(a),
+    y1: RK_CY + r1 * Math.sin(a),
+    x2: RK_CX + r2 * Math.cos(a),
+    y2: RK_CY + r2 * Math.sin(a),
+  };
+});
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 function IcChart(): ReactNode {
@@ -159,21 +140,16 @@ function IcShield(): ReactNode {
   );
 }
 
-/** Classical bank / institution façade — Box 3 header */
+/** Institution / bank façade — Box 3 header */
 function IcInstitution(): ReactNode {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M12 2L4 6h16L12 2z" stroke="currentColor" strokeWidth="1.35" strokeLinejoin="round" />
-      <path d="M5 7.5h14" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.45" />
-      <path
-        d="M6 8.5V20M10 8.5V20M14 8.5V20M18 8.5V20"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-      />
-      <path d="M8 12h8M8 15.5h8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.35" />
-      <path d="M4 20.5h16" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-      <path d="M11 4.5h2v2h-2z" fill="currentColor" opacity="0.25" />
+      <path d="M12 2l9 5v2H3V7l9-5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M6 9h12" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" opacity="0.4" />
+      <path d="M7 10v10M10.5 10v10M14 10v10M17.5 10v10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M8.5 13h7M8.5 16h7" stroke="currentColor" strokeWidth="0.95" strokeLinecap="round" opacity="0.35" />
+      <path d="M5 20h14" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M11 4h2v2.5h-2z" fill="currentColor" opacity="0.22" />
     </svg>
   );
 }
@@ -181,7 +157,7 @@ function IcInstitution(): ReactNode {
 /** Investor Protection — per-card icons */
 function IcSgBroker(): ReactNode {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M4 10h16v10H4V10z" stroke="currentColor" strokeWidth="1.35" />
       <path d="M8 14h4M12 10V6l4-2 4 2v4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -190,7 +166,7 @@ function IcSgBroker(): ReactNode {
 
 function IcSgFees(): ReactNode {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.35" />
       <path d="M8 15l8-8M9 9h4v4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
     </svg>
@@ -199,7 +175,7 @@ function IcSgFees(): ReactNode {
 
 function IcSgVisibility(): ReactNode {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M12 7a7 7 0 0 1 7 5 7 7 0 0 1-14 0 7 7 0 0 1 7-5z"
         stroke="currentColor"
@@ -212,7 +188,7 @@ function IcSgVisibility(): ReactNode {
 
 function IcSgReport(): ReactNode {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M8 4h11v16H8V4z" stroke="currentColor" strokeWidth="1.35" />
       <path d="M8 8h11M8 12h7M8 16h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
@@ -230,8 +206,8 @@ const SG_ICONS: ReactNode[] = [
 function IcShieldLg(): ReactNode {
   return (
     <svg
-      width="120"
-      height="138"
+      width="128"
+      height="148"
       viewBox="0 0 52 60"
       fill="none"
       aria-hidden
@@ -343,7 +319,7 @@ const COPY: Record<Lang, Copy> = {
       { lbl: "Sharpe", val: "2.16" },
       { lbl: "Calmar", val: "1.45" },
       { lbl: "Profit Factor", val: "1.37" },
-      { lbl: "Win rate", val: "43.6%" },
+      { lbl: "Win Rate", val: "43.6%" },
     ],
     // Box 3
     b3title: "Regulated Partners",
@@ -491,19 +467,7 @@ export default function RiskSuite() {
                   />
                 ))}
 
-                {/* Fine horizontal minor grid */}
-                {BT_Y_MINOR.map((v) => (
-                  <line
-                    key={`ym-${v}`}
-                    x1={BT_PL}
-                    y1={btYPos(v)}
-                    x2={CW - BT_PR}
-                    y2={btYPos(v)}
-                    className={r("cGridMinor")}
-                  />
-                ))}
-
-                {/* Major horizontal grid + Y labels */}
+                {/* Horizontal guides + Y labels (0–120%) */}
                 {BT_Y_TICKS.map((v) => (
                   <g key={v}>
                     <line
@@ -514,12 +478,12 @@ export default function RiskSuite() {
                       className={r("cGrid")}
                     />
                     <text
-                      x={BT_PL - 5}
-                      y={btYPos(v) + 4}
+                      x={BT_PL - 6}
+                      y={btYPos(v) + 3.5}
                       className={r("cYLbl")}
                       textAnchor="end"
                     >
-                      {btFmtY(v, lang)}
+                      {btFmtYPercent(v)}
                     </text>
                   </g>
                 ))}
@@ -552,8 +516,11 @@ export default function RiskSuite() {
             <div className={r("kpiRow")}>
               {copy.b1kpis.map((k, i) => (
                 <div key={i} className={r("kpiItem")}>
-                  <span className={`${r("kpiVal")} ${r("kpiValGold")}`}>{k.value}</span>
-                  <span className={r("kpiLbl")}>{k.label}</span>
+                  <p className={r("kpiCombined")}>
+                    <span className={r("kpiValGold")}>{k.value}</span>
+                    <span className={r("kpiDash")}> — </span>
+                    <span className={r("kpiLblInline")}>{k.label}</span>
+                  </p>
                 </div>
               ))}
             </div>
@@ -569,29 +536,57 @@ export default function RiskSuite() {
             </div>
 
             <div className={r("riskEngineWrap")}>
-              <svg viewBox="0 0 340 340" fill="none" className={r("riskEngineSvg")} aria-hidden>
+              <svg viewBox={`0 0 ${RK_SZ} ${RK_SZ}`} fill="none" className={r("riskEngineSvg")} aria-hidden>
                 <defs>
-                  <linearGradient id="rs_rk_polyStroke" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,248,0.82)" />
-                    <stop offset="100%" stopColor="rgba(218,190,145,0.62)" />
+                  <linearGradient id="rs_rk_goldStroke" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="rgba(255,253,248,0.9)" />
+                    <stop offset="100%" stopColor="rgba(218,185,130,0.75)" />
                   </linearGradient>
-                  <filter id="rs_rk_sigBlur" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="1.8" />
+                  <filter id="rs_rk_nodeGlow" x="-80%" y="-80%" width="260%" height="260%">
+                    <feGaussianBlur stdDeviation="2.2" />
                   </filter>
                 </defs>
 
-                {/* Concentric risk rings */}
+                {/* Quadrant cross — separates four segments */}
+                <line
+                  x1={RK_CX}
+                  y1={RK_CY - RK_R * 1.02}
+                  x2={RK_CX}
+                  y2={RK_CY + RK_R * 1.02}
+                  className={r("rkQuadCross")}
+                />
+                <line
+                  x1={RK_CX - RK_R * 1.02}
+                  y1={RK_CY}
+                  x2={RK_CX + RK_R * 1.02}
+                  y2={RK_CY}
+                  className={r("rkQuadCross")}
+                />
+
+                {/* Concentric engine rings */}
                 {RK_RING_LEVELS.map((lv) => (
                   <circle
                     key={lv}
                     cx={RK_CX}
                     cy={RK_CY}
                     r={RK_R * lv}
-                    className={lv >= 0.95 ? r("rkRingOuter") : r("rkRing")}
+                    className={lv >= 0.98 ? r("rkRingOuter") : r("rkRing")}
                   />
                 ))}
 
-                {/* Radial spokes */}
+                {/* Micro signal ticks */}
+                {RK_MICRO_TICKS.map((t, i) => (
+                  <line
+                    key={`mic-${i}`}
+                    x1={t.x1}
+                    y1={t.y1}
+                    x2={t.x2}
+                    y2={t.y2}
+                    className={r("rkMicroTick")}
+                  />
+                ))}
+
+                {/* Eight directional spokes */}
                 {RK_SPOKES.map((s, i) => (
                   <line
                     key={i}
@@ -603,68 +598,57 @@ export default function RiskSuite() {
                   />
                 ))}
 
-                {/* Counter-rotating fine scale */}
+                {/* Outer orbit trace */}
                 <g className={r("rkRotateSlow")}>
                   <circle
                     cx={RK_CX}
                     cy={RK_CY}
-                    r={RK_R + 14}
+                    r={RK_R + 16}
                     className={r("rkTickOrbit")}
-                    strokeDasharray="1.5 7"
+                    strokeDasharray="2 9"
                   />
                 </g>
 
-                {/* Co-rotating dashed signal ring */}
                 <g className={r("rkRotateRev")}>
                   <circle
                     cx={RK_CX}
                     cy={RK_CY}
-                    r={RK_R + 7}
+                    r={RK_R + 9}
                     className={r("rkSignalRing")}
-                    strokeDasharray="4 10"
+                    strokeDasharray="5 11"
                   />
                 </g>
 
-                {/* Radar sweep — subtle rotating ray */}
+                {/* Radar sweep */}
                 <g transform={`translate(${RK_CX} ${RK_CY})`}>
                   <g className={r("rkSweepArm")}>
-                    <line
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2={-RK_R * 0.94}
-                      className={r("rkSweepRay")}
-                    />
+                    <line x1="0" y1="0" x2="0" y2={-RK_R * 0.96} className={r("rkSweepRay")} />
                   </g>
                 </g>
 
-                {/* Metric footprint — derived shape mirrors headline KPIs below */}
-                <path d={RK_POLY_D} className={r("rkPolyFill")} />
-                <path d={RK_POLY_D} className={r("rkPolyLine")} stroke="url(#rs_rk_polyStroke)" />
-
-                {/* Axis signal nodes */}
-                {RK_POLY_PTS.map((p, i) => (
-                  <g key={i}>
+                {/* Cardinal gold nodes */}
+                {RK_NODE_PTS.map((p, i) => (
+                  <g key={`n-${i}`}>
                     <circle
                       cx={p.x}
                       cy={p.y}
-                      r="10"
+                      r="11"
                       className={r("rkNodePulse")}
-                      filter="url(#rs_rk_sigBlur)"
-                      style={{ animationDelay: `${i * 0.85}s` }}
+                      filter="url(#rs_rk_nodeGlow)"
+                      style={{ animationDelay: `${i * 0.55}s` }}
                     />
-                    <circle cx={p.x} cy={p.y} r="3.2" className={r("rkNode")} />
-                    <circle cx={p.x} cy={p.y} r="1.2" fill="rgba(255,255,255,0.9)" />
+                    <circle cx={p.x} cy={p.y} r="4.2" className={r("rkNode")} />
+                    <circle cx={p.x} cy={p.y} r="1.6" fill="rgba(255,252,244,0.95)" />
                   </g>
                 ))}
 
-                {/* Center readout */}
-                <circle cx={RK_CX} cy={RK_CY} r="40" className={r("rkCoreRing")} />
-                <circle cx={RK_CX} cy={RK_CY} r="30" className={r("rkCoreInner")} />
-                <text x={RK_CX} y={RK_CY - 18} textAnchor="middle" className={r("ringCenter1")}>
+                {/* Center status */}
+                <circle cx={RK_CX} cy={RK_CY} r="44" className={r("rkCoreRing")} />
+                <circle cx={RK_CX} cy={RK_CY} r="33" className={r("rkCoreInner")} />
+                <text x={RK_CX} y={RK_CY - 20} textAnchor="middle" className={r("ringCenter1")}>
                   {copy.b2center1}
                 </text>
-                <text x={RK_CX} y={RK_CY + 10} textAnchor="middle" className={r("ringCenter2")}>
+                <text x={RK_CX} y={RK_CY + 12} textAnchor="middle" className={r("ringCenter2")}>
                   {copy.b2center2}
                 </text>
               </svg>
@@ -695,7 +679,7 @@ export default function RiskSuite() {
 
             <div className={r("regCanvas")}>
               <svg
-                viewBox="0 0 360 218"
+                viewBox="0 0 360 232"
                 fill="none"
                 className={r("regSvg")}
                 role="img"
@@ -707,106 +691,108 @@ export default function RiskSuite() {
               >
                 <defs>
                   <linearGradient id="rs_reg_ln" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,248,236,0.38)" />
-                    <stop offset="100%" stopColor="rgba(218,195,155,0.2)" />
+                    <stop offset="0%" stopColor="rgba(255,248,236,0.42)" />
+                    <stop offset="100%" stopColor="rgba(212,175,55,0.22)" />
                   </linearGradient>
                 </defs>
 
-                <rect x="18" y="14" width="132" height="48" rx="12" className={r("regLogoPlate")} />
-                <rect x="210" y="14" width="132" height="48" rx="12" className={r("regLogoPlate")} />
+                <rect x="16" y="14" width="144" height="52" rx="12" className={r("regLogoPlate")} />
+                <rect x="200" y="14" width="144" height="52" rx="12" className={r("regLogoPlate")} />
                 <image
                   href="/Roboforex.png"
-                  x="26"
-                  y="22"
-                  width="116"
-                  height="32"
+                  x="24"
+                  y="23"
+                  width="128"
+                  height="34"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
                 <image
                   href="/Vantage.png"
-                  x="218"
-                  y="22"
-                  width="116"
-                  height="32"
+                  x="208"
+                  y="23"
+                  width="128"
+                  height="34"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
 
-                {/* Small green status dots — clear of logo artwork */}
-                <circle cx="142" cy="66" r="3.2" className={r("regStatusDot")} />
-                <circle cx="334" cy="66" r="3.2" className={r("regStatusDot")} />
+                {/* Status: bottom-right of each plate — tiny pulse only around dot */}
+                <circle cx="154" cy="64" r="7" className={r("regDotPulse")} />
+                <circle cx="338" cy="64" r="7" className={r("regDotPulse")} />
+                <circle cx="154" cy="64" r="3.4" className={r("regStatusDot")} />
+                <circle cx="338" cy="64" r="3.4" className={r("regStatusDot")} />
 
                 <line
-                  x1="84"
-                  y1="66"
+                  x1="154"
+                  y1="64"
                   x2="180"
-                  y2="106"
+                  y2="112"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.05"
+                  strokeWidth="1.08"
                   strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowA")}
                 />
                 <line
-                  x1="276"
-                  y1="66"
+                  x1="338"
+                  y1="64"
                   x2="180"
-                  y2="106"
+                  y2="112"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.05"
+                  strokeWidth="1.08"
                   strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowB")}
                 />
-                <circle cx="180" cy="106" r="4" className={r("regJunction")} />
+                <circle cx="180" cy="112" r="4.5" className={r("regJunction")} />
 
                 <line
                   x1="180"
-                  y1="106"
+                  y1="112"
                   x2="72"
-                  y2="166"
+                  y2="174"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
+                  strokeWidth="1.02"
                   strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowC")}
                 />
                 <line
                   x1="180"
-                  y1="106"
+                  y1="112"
                   x2="180"
-                  y2="174"
+                  y2="178"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
+                  strokeWidth="1.02"
                   strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowD")}
                 />
                 <line
                   x1="180"
-                  y1="106"
+                  y1="112"
                   x2="288"
-                  y2="166"
+                  y2="174"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
+                  strokeWidth="1.02"
                   strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowE")}
                 />
 
-                <circle cx="72" cy="182" r="24" className={r("regSeal")} />
-                <text x="72" y="187" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="72" cy="192" r="27" className={r("regSeal")} />
+                <text x="72" y="197.5" textAnchor="middle" className={r("regSealLbl")}>
                   FCA
                 </text>
 
-                <circle cx="180" cy="182" r="24" className={r("regSeal")} />
-                <text x="180" y="187" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="180" cy="192" r="27" className={r("regSeal")} />
+                <text x="180" y="198" textAnchor="middle" className={r("regSealLbl")}>
                   CySEC
                 </text>
 
-                <circle cx="288" cy="182" r="24" className={r("regSeal")} />
-                <text x="288" y="187" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="288" cy="192" r="27" className={r("regSeal")} />
+                <text x="288" y="197.5" textAnchor="middle" className={r("regSealLbl")}>
                   FSC
                 </text>
               </svg>
