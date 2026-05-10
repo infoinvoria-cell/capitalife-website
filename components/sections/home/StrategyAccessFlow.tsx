@@ -2,26 +2,15 @@
 
 import type { ReactNode } from "react";
 
+import type { StrategyAccessDiagramCopy } from "@/content/home/strategyAccess";
+
 import raw from "./StrategyAccess.module.css";
 
 function c(n: string): string {
   return (raw as Record<string, string>)[n] ?? "";
 }
 
-export type StrategyAccessDiagramCopy = {
-  investor: string;
-  investment: string;
-  investmentEx: string;
-  risk: string;
-  riskEx: string;
-  cfs: string;
-  cfsEx: string;
-  outInv: string;
-  outInvEx: string;
-  outCap: string;
-  outCapEx: string;
-  figNote: string;
-};
+export type { StrategyAccessDiagramCopy };
 
 type Props = {
   diagram: StrategyAccessDiagramCopy;
@@ -183,13 +172,13 @@ export function StrategyAccessFlow({ diagram, visible }: Props) {
       <div className={c("saRow2")}>
         <div className={c("saBox")} data-step="5">
           <span className={c("saBoxIcoWrap")}><IcPercent /></span>
-          <span className={c("saBoxLbl")}>{diagram.outInv}</span>
-          <span className={c("saBoxEx")}>{diagram.outInvEx}</span>
+          <span className={c("saBoxLbl")}>{diagram.investorShare}</span>
+          <span className={c("saBoxEx")}>{diagram.investorShareEx}</span>
         </div>
         <div className={c("saBox")} data-step="6">
           <span className={c("saBoxIcoWrap")}><IcShieldBadge /></span>
-          <span className={c("saBoxLbl")}>{diagram.outCap}</span>
-          <span className={c("saBoxEx")}>{diagram.outCapEx}</span>
+          <span className={c("saBoxLbl")}>{diagram.capitalifeShare}</span>
+          <span className={c("saBoxEx")}>{diagram.capitalifeShareEx}</span>
         </div>
       </div>
 

@@ -68,6 +68,11 @@
   to   { stroke-dashoffset: 0; }
 }
 
+@keyframes rs_radarSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ═════════════════════════════════════════════════════════════ */
 
 .section {
@@ -87,16 +92,17 @@
   isolation: isolate;
 }
 
-/* Dark overlay + soft champagne / gold light */
+/* Dark overlay + Hero-adjacent champagne gold light */
 .bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle 56% at 54% 18%, rgba(232, 218, 188, 0.09), transparent 62%),
-    radial-gradient(circle 44% at 18% 72%, rgba(255, 248, 236, 0.045), transparent 58%),
-    radial-gradient(ellipse 70% 45% at 80% 35%, rgba(210, 190, 155, 0.035), transparent 55%),
+    radial-gradient(circle 58% at 52% 16%, rgba(212, 175, 55, 0.11), transparent 58%),
+    radial-gradient(circle 52% at 78% 38%, rgba(232, 218, 188, 0.07), transparent 55%),
+    radial-gradient(circle 42% at 14% 68%, rgba(255, 248, 236, 0.045), transparent 56%),
+    radial-gradient(ellipse 72% 48% at 82% 30%, rgba(210, 185, 145, 0.042), transparent 54%),
     rgba(0, 0, 0, 0.82);
 }
 
@@ -148,8 +154,9 @@
   height: 38px;
   padding: 0 20px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(229, 205, 142, 0.28);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(212, 175, 55, 0.05));
+  box-shadow: 0 0 28px rgba(212, 175, 55, 0.06);
 }
 
 .pillDot {
@@ -180,23 +187,34 @@
 
 .headlinePart {
   font-weight: 700;
-  color: rgba(255, 253, 248, 0.96);
+  color: rgba(255, 253, 248, 0.98);
 }
 
-/* Accent — soft gold / champagne */
+/* Last words — champagne gold (soft, not yellow) */
 .headlineAccent {
-  color: rgba(238, 226, 198, 0.97);
-  text-shadow: 0 0 42px rgba(232, 210, 170, 0.12);
+  color: rgba(236, 224, 196, 0.98);
+  text-shadow: 0 0 48px rgba(212, 175, 55, 0.14);
 }
 
 .sub {
   margin: 0;
-  max-width: 520px;
+  max-width: min(52rem, 92vw);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 13.5px;
-  line-height: 1.62;
-  color: rgba(255, 255, 255, 0.42);
-  white-space: pre-line;
+  font-size: clamp(14px, 1.05vw, 15.5px);
+  line-height: 1.48;
+  letter-spacing: 0.01em;
+  color: rgba(255, 253, 248, 0.62);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .sub {
+    -webkit-line-clamp: 4;
+    display: block;
+  }
 }
 
 /* ══════════════════════════════════
@@ -314,7 +332,7 @@
    ══════════════════════════════════ */
 .chartWrap {
   flex: 1;
-  min-height: 104px;
+  min-height: 118px;
 }
 
 .chartSvg {
@@ -325,32 +343,35 @@
 }
 
 .cGrid {
-  stroke: rgba(255, 255, 255, 0.072);
-  stroke-width: 0.88;
+  stroke: rgba(255, 253, 246, 0.045);
+  stroke-width: 0.72;
 }
 
 .cGridMinor {
-  stroke: rgba(255, 255, 255, 0.038);
-  stroke-width: 0.68;
-  stroke-dasharray: 3 5;
+  stroke: rgba(255, 253, 246, 0.022);
+  stroke-width: 0.58;
+  stroke-dasharray: 2 8;
 }
 
 .cGridVert {
-  stroke: rgba(255, 253, 246, 0.045);
-  stroke-width: 0.62;
+  stroke: rgba(255, 253, 246, 0.032);
+  stroke-width: 0.55;
 }
 
 .cYLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9.5px;
-  fill: rgba(255, 255, 255, 0.3);
+  font-size: 8.75px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  fill: rgba(232, 228, 220, 0.52);
 }
 
 .cXLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9.5px;
+  font-size: 8.75px;
   font-weight: 500;
-  fill: rgba(255, 255, 255, 0.34);
+  letter-spacing: 0.04em;
+  fill: rgba(236, 232, 224, 0.56);
 }
 
 /* Hairline underlay for depth */
@@ -409,22 +430,31 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
+.kpiValGold {
+  font-size: clamp(15px, 1.35vw, 17px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(244, 232, 208, 0.96);
+  text-shadow: 0 0 22px rgba(212, 175, 55, 0.14);
+}
+
 .kpiLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9px;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.38);
+  font-size: 10px;
+  line-height: 1.38;
+  font-weight: 500;
+  color: rgba(255, 253, 248, 0.58);
   hyphens: auto;
   overflow-wrap: anywhere;
 }
 
 .disclaim {
-  margin: 8px 4px 0;
+  margin: 10px 8px 0;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 8.25px;
-  line-height: 1.45;
+  font-size: 9px;
+  line-height: 1.5;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 248, 236, 0.42);
   text-align: center;
 }
 
@@ -442,19 +472,33 @@
 
 .riskEngineSvg {
   display: block;
-  width: min(100%, 292px);
+  width: min(100%, 336px);
   height: auto;
   overflow: visible;
+}
+
+.rkSweepArm {
+  transform-origin: 0 0;
+  transform-box: fill-box;
+  animation: rs_radarSweep 26s linear infinite;
+}
+
+.rkSweepRay {
+  stroke: rgba(242, 228, 200, 0.72);
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  opacity: 0.62;
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.42));
 }
 
 .b2SubLine {
   margin: 8px 2px 0;
   text-align: center;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9.5px;
+  font-size: 10px;
   line-height: 1.45;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.44);
+  color: rgba(238, 230, 212, 0.58);
   max-width: 42ch;
   align-self: center;
 }
@@ -482,15 +526,15 @@
 }
 
 .rkRotateSlow {
-  transform-origin: 150px 150px;
+  transform-origin: 170px 170px;
   transform-box: fill-box;
-  animation: rs_riskOrbit 52s linear infinite;
+  animation: rs_riskOrbit 48s linear infinite;
 }
 
 .rkRotateRev {
-  transform-origin: 150px 150px;
+  transform-origin: 170px 170px;
   transform-box: fill-box;
-  animation: rs_riskOrbitRev 34s linear infinite;
+  animation: rs_riskOrbitRev 32s linear infinite;
 }
 
 .rkTickOrbit {
@@ -561,9 +605,11 @@
 /* Stats row — 4 items */
 .statsRow {
   display: flex;
-  align-items: center;
-  padding: 10px 2px 4px;
-  border-top: 1px solid rgba(255, 253, 246, 0.07);
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 0 4px;
+  border-top: 1px solid rgba(255, 253, 246, 0.08);
   flex-shrink: 0;
   margin-top: 6px;
 }
@@ -573,7 +619,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
+  min-width: 0;
+  padding: 0 2px;
 }
 
 .statDiv {
@@ -585,18 +633,24 @@
 
 .statLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9px;
-  color: rgba(255, 255, 255, 0.36);
+  font-size: 9.5px;
+  font-weight: 500;
+  color: rgba(255, 253, 248, 0.5);
   text-align: center;
   letter-spacing: 0.02em;
 }
 
 .statVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 700;
   color: rgba(252, 248, 240, 0.94);
-  line-height: 1;
+  line-height: 1.05;
+}
+
+.statValGold {
+  color: rgba(244, 234, 214, 0.96);
+  text-shadow: 0 0 18px rgba(212, 175, 55, 0.12);
 }
 
 /* ══════════════════════════════════
@@ -670,25 +724,10 @@
 .regFlowD { animation: rs_flowLine 2.8s linear 1.35s infinite; }
 .regFlowE { animation: rs_flowLine 2.8s linear 1.8s infinite; }
 
-.regPartnerRingOuter {
-  fill: none;
-  stroke: rgba(252, 246, 232, 0.26);
-  stroke-width: 0.85;
-  animation: rs_regRingPulse 3.1s ease-in-out infinite;
-}
-
-.regPartnerLate .regPartnerRingOuter {
-  animation-delay: 0.85s;
-}
-
-.regPartnerRingGlow {
-  fill: rgba(252, 246, 232, 0.07);
-}
-
-.regPartnerDot {
-  fill: rgba(252, 246, 232, 0.96);
+.regStatusDot {
+  fill: #34d399;
   stroke: rgba(255, 253, 246, 0.45);
-  stroke-width: 0.55;
+  stroke-width: 0.65;
 }
 
 .regJunction {
@@ -706,10 +745,10 @@
 
 .regSealLbl {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  fill: rgba(252, 248, 240, 0.94);
+  letter-spacing: 0.07em;
+  fill: rgba(252, 248, 240, 0.96);
 }
 
 .regAuthNote {
@@ -730,6 +769,7 @@
    ══════════════════════════════════ */
 
 .box.boxSafe {
+  overflow: visible;
   background:
     linear-gradient(
       158deg,
@@ -755,9 +795,9 @@
 .sgLayout {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(172px, 208px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(196px, 236px) minmax(0, 1fr);
   grid-template-rows: 1fr 1fr;
-  gap: 9px 11px;
+  gap: 10px 12px;
   min-height: 0;
   align-items: stretch;
 }
@@ -777,7 +817,8 @@
   align-items: center;
   justify-content: center;
   overflow: visible;
-  min-height: 188px;
+  min-height: 204px;
+  padding: 10px 0;
 }
 
 /* Ambient halo behind shield */
@@ -813,37 +854,37 @@
 }
 
 .orbitSpinXL {
-  width: 198px;
-  height: 198px;
-  margin-left: -99px;
-  margin-top: -99px;
+  width: 178px;
+  height: 178px;
+  margin-left: -89px;
+  margin-top: -89px;
   animation: rs_orbit 52s linear infinite;
   z-index: 1;
 }
 
 .orbitSpinLg {
-  width: 168px;
-  height: 168px;
-  margin-left: -84px;
-  margin-top: -84px;
+  width: 154px;
+  height: 154px;
+  margin-left: -77px;
+  margin-top: -77px;
   animation: rs_orbit 38s linear infinite;
   z-index: 2;
 }
 
 .orbitSpinMd {
-  width: 142px;
-  height: 142px;
-  margin-left: -71px;
-  margin-top: -71px;
+  width: 132px;
+  height: 132px;
+  margin-left: -66px;
+  margin-top: -66px;
   animation: rs_orbitRev 30s linear infinite;
   z-index: 1;
 }
 
 .orbitSpinSm {
-  width: 118px;
-  height: 118px;
-  margin-left: -59px;
-  margin-top: -59px;
+  width: 112px;
+  height: 112px;
+  margin-left: -56px;
+  margin-top: -56px;
   animation: rs_orbitRev 22s linear infinite;
   z-index: 2;
 }
@@ -913,8 +954,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  padding: 11px 12px 12px;
+  gap: 7px;
+  padding: 10px 11px 11px;
   border-radius: 11px;
   border: 1px solid rgba(255, 253, 246, 0.095);
   background:
@@ -969,10 +1010,10 @@
 
 .sgTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: rgba(255, 253, 248, 0.96);
+  color: rgba(255, 253, 248, 0.98);
   line-height: 1.28;
   min-width: 0;
   width: 100%;
@@ -980,9 +1021,9 @@
 
 .sgBody {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10.5px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+  line-height: 1.52;
+  color: rgba(255, 253, 248, 0.56);
   width: 100%;
   max-width: 100%;
   overflow-wrap: break-word;
@@ -1045,13 +1086,13 @@
 @media (prefers-reduced-motion: reduce) {
   .rkRotateSlow,
   .rkRotateRev,
+  .rkSweepArm,
   .rkNodePulse,
   .regFlowA,
   .regFlowB,
   .regFlowC,
   .regFlowD,
   .regFlowE,
-  .regPartnerRingOuter,
   .regJunction,
   .shieldHalo,
   .orbitSpinXL,

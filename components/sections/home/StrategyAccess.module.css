@@ -45,15 +45,15 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1440px;
+  max-width: 1560px;
   margin: 0 auto;
-  padding: clamp(36px, 5vh, 56px) clamp(22px, 4vw, 56px);
+  padding: clamp(36px, 5vh, 56px) clamp(22px, 4vw, 58px);
   box-sizing: border-box;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+  grid-template-columns: minmax(0, 48fr) minmax(0, 52fr);
   gap: clamp(28px, 4vw, 52px);
   align-items: center;
 }
@@ -66,6 +66,7 @@
 
 .colCopy {
   min-width: 0;
+  max-width: min(100%, 720px);
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 2vh, 18px);
@@ -103,8 +104,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 6px;
-  padding: 14px 14px 16px;
+  gap: 8px;
+  padding: 16px 16px 17px;
   border-radius: 13px;
   border: 1px solid rgba(255, 253, 246, 0.09);
   background:
@@ -157,11 +158,12 @@
 
 .saFlow.saFlowVisible .saBox:hover {
   transform: translateY(-3px);
-  border-color: rgba(255, 253, 246, 0.16);
+  border-color: rgba(232, 218, 196, 0.22);
   box-shadow:
     inset 0 1px 0 rgba(255, 253, 246, 0.1),
     0 14px 44px rgba(0, 0, 0, 0.38),
-    0 0 0 1px rgba(232, 222, 198, 0.06);
+    0 0 0 1px rgba(212, 175, 55, 0.09),
+    0 0 32px rgba(212, 175, 55, 0.11);
 }
 
 .saBoxIcoWrap {
@@ -326,7 +328,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.72);
+  background: radial-gradient(circle, rgba(248, 236, 212, 0.95) 0%, rgba(210, 188, 150, 0.65) 100%);
+  box-shadow: 0 0 10px rgba(232, 218, 190, 0.35);
 }
 
 .pillText {
@@ -356,42 +359,89 @@
 }
 
 .steps {
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
-.step {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 10px 14px;
-  align-items: start;
+/* Institutional-Grade Investing methodCard-aligned premium cards */
+.stepCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: linear-gradient(116deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.014));
+  box-sizing: border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 253, 246, 0.05);
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
-.stepNum {
+.stepsVisible .stepCard {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stepsVisible .stepCard:nth-child(1) {
+  transition-delay: 0.05s;
+}
+.stepsVisible .stepCard:nth-child(2) {
+  transition-delay: 0.12s;
+}
+.stepsVisible .stepCard:nth-child(3) {
+  transition-delay: 0.19s;
+}
+.stepsVisible .stepCard:nth-child(4) {
+  transition-delay: 0.26s;
+}
+
+.stepCard:hover {
+  border-color: rgba(255, 253, 246, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 253, 246, 0.07),
+    0 8px 28px rgba(0, 0, 0, 0.22);
+}
+
+.stepCardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepNumBadge {
+  flex-shrink: 0;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  background: rgba(212, 175, 55, 0.06);
   font-family: var(--font-montserrat), Montserrat, sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: rgba(218, 208, 180, 0.75);
-  line-height: 1.5;
-  padding-top: 2px;
-}
-
-.stepBody {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  color: rgba(232, 218, 196, 0.92);
 }
 
 .stepTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
-  color: rgba(252, 248, 242, 0.92);
+  color: rgba(252, 248, 242, 0.96);
   letter-spacing: 0.02em;
+  line-height: 1.25;
 }
 
 .bullets {
@@ -400,7 +450,7 @@
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 12px;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.44);
 }
 
 .bullets li {
@@ -412,15 +462,24 @@
 }
 
 .highlights {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   padding: 14px 16px;
   list-style: none;
   border-radius: 12px;
-  border: 1px solid rgba(255, 253, 246, 0.07);
-  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 253, 246, 0.06),
+    0 12px 36px rgba(0, 0, 0, 0.28);
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-self: flex-end;
+  width: 100%;
+  max-width: min(100%, 380px);
+  box-sizing: border-box;
 }
 
 .hiItem {
@@ -456,10 +515,16 @@
 
   .colCopy {
     order: 1;
+    max-width: none;
   }
 
   .colDiagram {
     order: 2;
+  }
+
+  .highlights {
+    align-self: stretch;
+    max-width: none;
   }
 }
 
@@ -490,5 +555,11 @@
 
   .saBox:hover {
     transform: none;
+  }
+
+  .stepCard {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

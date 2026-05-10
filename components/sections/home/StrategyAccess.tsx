@@ -2,12 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { useLanguage, type Lang } from "@/lib/i18n/language";
-
-import {
-  StrategyAccessFlow,
-  type StrategyAccessDiagramCopy,
-} from "@/components/sections/home/StrategyAccessFlow";
+import { StrategyAccessFlow } from "@/components/sections/home/StrategyAccessFlow";
+import { strategyAccessByLocale } from "@/content/home/strategyAccess";
+import { useLanguage } from "@/lib/i18n/language";
 
 import raw from "./StrategyAccess.module.css";
 
@@ -15,135 +12,11 @@ function r(name: string): string {
   return (raw as Record<string, string>)[name] ?? "";
 }
 
-type StepBlock = { title: string; bullets: string[] };
-
-type StrategyAccessCopy = {
-  label: string;
-  headline: string;
-  sub: string;
-  steps: StepBlock[];
-  highlights: string[];
-  diagram: StrategyAccessDiagramCopy;
-};
-
-const COPY: Record<Lang, StrategyAccessCopy> = {
-  en: {
-    label: "Strategy Access",
-    headline: "How structured strategy access works",
-    sub:
-      "A clear process makes strategy access easier to understand. From the starting setup and risk factor to the illustrative distribution, each step is presented in a transparent and easy-to-follow way.",
-    steps: [
-      {
-        title: "Starting point",
-        bullets: [
-          "The investor defines the initial setup",
-          "Illustrated with an example investment amount",
-          "The visual is for demonstration purposes only",
-        ],
-      },
-      {
-        title: "Risk factor",
-        bullets: [
-          "The risk factor influences the model example",
-          "It helps explain the structural logic",
-          "It is not a statement about actual outcomes",
-        ],
-      },
-      {
-        title: "Strategy layer",
-        bullets: [
-          "The Capitalife trading system represents the central strategy layer",
-          "This is where the structure comes together",
-          "The visual only shows an example process",
-        ],
-      },
-      {
-        title: "Illustrative distribution",
-        bullets: [
-          "The resulting distribution is shown transparently",
-          "Investor and Capitalife are displayed separately",
-          "All values are purely illustrative",
-        ],
-      },
-    ],
-    highlights: ["Clear structure", "Transparent model logic", "Easy to understand"],
-    diagram: {
-      investor: "Investor",
-      investment: "Investment",
-      investmentEx: "20,000",
-      risk: "Risk factor",
-      riskEx: "×1.5",
-      cfs: "Capitalife trading system",
-      cfsEx: "30% p.a. × 1.5 × 20k",
-      outInv: "Investor",
-      outInvEx: "80% profit share",
-      outCap: "Capitalife",
-      outCapEx: "20% profit share",
-      figNote: "Illustrative example — not a commitment or forecast.",
-    },
-  },
-  de: {
-    label: "Strategy Access",
-    headline: "So funktioniert der strukturierte Zugang",
-    sub:
-      "Ein klarer Ablauf hilft dabei, den Zugang zur Strategie einfach zu verstehen. Von der Ausgangsbasis über den Risikofaktor bis zur beispielhaften Aufteilung bleibt jeder Schritt transparent nachvollziehbar.",
-    steps: [
-      {
-        title: "Ausgangsbasis",
-        bullets: [
-          "Investor definiert die Ausgangsbasis",
-          "Beispielhaft mit einem Investitionsbetrag",
-          "Die Darstellung dient nur zur Veranschaulichung",
-        ],
-      },
-      {
-        title: "Risikofaktor",
-        bullets: [
-          "Der Risikofaktor beeinflusst die Modellrechnung",
-          "Er dient als vereinfachtes Beispiel für die Struktur",
-          "Keine Aussage über reale Ergebnisse",
-        ],
-      },
-      {
-        title: "Strategieebene",
-        bullets: [
-          "Das Capitalife Handelssystem bildet die zentrale Strategieebene",
-          "Hier wird die Struktur des Modells zusammengeführt",
-          "Die Visualisierung zeigt nur einen Beispielablauf",
-        ],
-      },
-      {
-        title: "Beispielhafte Aufteilung",
-        bullets: [
-          "Die Ergebnisverteilung wird transparent dargestellt",
-          "Investor und Capitalife werden separat ausgewiesen",
-          "Die Werte dienen ausschließlich als illustrative Darstellung",
-        ],
-      },
-    ],
-    highlights: ["Klare Struktur", "Transparente Modelllogik", "Einfach nachvollziehbare Darstellung"],
-    diagram: {
-      investor: "Investor",
-      investment: "Investment",
-      investmentEx: "20.000",
-      risk: "Risikofaktor",
-      riskEx: "×1,5",
-      cfs: "Capitalife Handelssystem",
-      cfsEx: "30 % p.a. × 1,5 × 20k",
-      outInv: "Investor",
-      outInvEx: "80 % Gewinnaufteilung",
-      outCap: "Capitalife",
-      outCapEx: "20 % Gewinnaufteilung",
-      figNote: "Beispielhafte Darstellung — keine Zusage oder Prognose.",
-    },
-  },
-};
-
 export default function StrategyAccess() {
   const { lang } = useLanguage();
   const rootRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const copy = COPY[lang];
+  const copy = strategyAccessByLocale[lang];
 
   useEffect(() => {
     const el = rootRef.current;
@@ -190,18 +63,20 @@ export default function StrategyAccess() {
 
             <p className={r("sub")}>{copy.sub}</p>
 
-            <ol className={r("steps")}>
+            <ol className={`${r("steps")}${visible ? ` ${r("stepsVisible")}` : ""}`}>
               {copy.steps.map((step, i) => (
-                <li key={step.title} className={r("step")}>
-                  <span className={r("stepNum")}>{String(i + 1)}</span>
-                  <div className={r("stepBody")}>
+                <li key={step.title} className={r("stepCard")}>
+                  <div className={r("stepCardHead")}>
+                    <span className={r("stepNumBadge")} aria-hidden>
+                      {i + 1}
+                    </span>
                     <span className={r("stepTitle")}>{step.title}</span>
-                    <ul className={r("bullets")}>
-                      {step.bullets.map((b, j) => (
-                        <li key={`${step.title}-${j}`}>{b}</li>
-                      ))}
-                    </ul>
                   </div>
+                  <ul className={r("bullets")}>
+                    {step.bullets.map((b, j) => (
+                      <li key={`${step.title}-${j}`}>{b}</li>
+                    ))}
+                  </ul>
                 </li>
               ))}
             </ol>

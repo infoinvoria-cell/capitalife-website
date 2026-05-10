@@ -9,29 +9,29 @@ function r(name: string): string {
   return (raw as Record<string, string>)[name] ?? "";
 }
 
-// ── Annual returns % (1970–2026), then simple cumulative sum (NOT compounded) ───
-const BT_ANNUAL = [
-  -3.43, -2.25, 5.41, 2.61, 1.67, -9.45, 3.64, 2.62, 1.32, -0.16,
-  10.13, -5.59, 1.08, -0.39, 0.67, 7.42, -4.58, -0.14, 3.62, 2.33,
-  -0.53, -2.67, 9.53, 6.74, 6.04, 13.68, 6.65, 12.54, 3.64, 14.16,
-  7.76, 0.62, 16.34, 17.37, -3.69, 4.85, 29.46, 16.02, -12.44, 34.88,
-  28.6, 18.07, 4.89, 25.29, 18.43, 6.6, 20.9, 23.23, 6.29, 38.38,
-  25.77, 27.37, 8.39, 25.63, 26.15, 28.35, 0.65,
-];
-const BT_N = BT_ANNUAL.length;
+// ── Illustrative model index (2010→2026): compounded-style series for chart visualization only ───
+const BT_YEAR_START = 2010;
+const BT_YEAR_END = 2026;
+const BT_N = BT_YEAR_END - BT_YEAR_START + 1;
 
-/** Cumulative % = sum of annual returns (additive, not compounded). */
-const BACKTEST_CUMULATIVE = (() => {
-  let s = 0;
-  return BT_ANNUAL.map((r) => {
-    s += r;
-    return s;
-  });
+/** Synthetic index level (base 100 at start); not raw trade data. */
+const BT_INDEX = (() => {
+  const out: number[] = [];
+  let v = 100;
+  out.push(v);
+  for (let i = 1; i < BT_N; i++) {
+    const wave = 0.048 * Math.sin(i * 0.82) + 0.03 * Math.cos(i * 1.35);
+    const drift = 0.1971 + wave * 0.065;
+    const r = Math.min(0.38, Math.max(-0.16, drift));
+    v *= 1 + r;
+    out.push(v);
+  }
+  return out;
 })();
 
-const BT_CMIN = Math.min(...BACKTEST_CUMULATIVE);
-const BT_CMAX = Math.max(...BACKTEST_CUMULATIVE);
-const BT_PAD = Math.max((BT_CMAX - BT_CMIN) * 0.07, 100);
+const BT_CMIN = Math.min(...BT_INDEX);
+const BT_CMAX = Math.max(...BT_INDEX);
+const BT_PAD = Math.max((BT_CMAX - BT_CMIN) * 0.08, (BT_CMAX - BT_CMIN) * 0.02 + 8);
 const BT_SCALE_MIN = BT_CMIN - BT_PAD;
 const BT_SCALE_MAX = BT_CMAX + BT_PAD;
 
@@ -47,12 +47,16 @@ for (let i = 0; i < BT_Y_TICKS.length - 1; i++) {
 }
 
 // ── Chart geometry ─────────────────────────────────────────────────────────────
-const CW = 560, CH = 148;
-const BT_PL = 52, BT_PR = 18, BT_PT = 8, BT_PB = 22;
-const BT_uW  = CW - BT_PL - BT_PR;
-const BT_uH  = CH - BT_PT - BT_PB;
-const BT_X_IDXS  = [0, 10, 20, 30, 40, 50, 56];
-const BT_X_LBLS  = ["1970", "1980", "1990", "2000", "2010", "2020", "2026"];
+const CW = 560,
+  CH = 162;
+const BT_PL = 54,
+  BT_PR = 20,
+  BT_PT = 10,
+  BT_PB = 28;
+const BT_uW = CW - BT_PL - BT_PR;
+const BT_uH = CH - BT_PT - BT_PB;
+const BT_X_IDXS = [0, 4, 8, 12, 16];
+const BT_X_LBLS = ["2010", "2014", "2018", "2022", "2026"];
 
 function btYPos(v: number): number {
   const span = BT_SCALE_MAX - BT_SCALE_MIN || 1;
@@ -64,19 +68,20 @@ function btXFromIdx(idx: number): number {
   return BT_PL + (idx / (BT_N - 1)) * BT_uW;
 }
 
+/** Y-axis: model index (no % — illustrative series). */
 function btFmtY(v: number, lang: Lang): string {
   const sep = lang === "de" ? "." : ",";
   const rounded = Math.round(v);
   const body = Math.abs(rounded)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-  if (rounded === 0) return "0%";
-  return `${rounded < 0 ? "−" : ""}${body}%`;
+  if (rounded === 0) return "0";
+  return `${rounded < 0 ? "−" : ""}${body}`;
 }
 
-/** Segment-wise linear path through additive cumulative series. */
+/** Segment-wise path through illustrative index series. */
 function buildBtChart() {
-  const pts = BACKTEST_CUMULATIVE.map((v, i) => ({
+  const pts = BT_INDEX.map((v, i) => ({
     x: BT_PL + (i / (BT_N - 1)) * BT_uW,
     y: btYPos(v),
   }));
@@ -95,13 +100,12 @@ function buildBtChart() {
 const { line: BT_LINE, area: BT_AREA, lastX: BT_LX, lastY: BT_LY } = buildBtChart();
 
 // ── Risk engine radar (Box 2) — layered radar / signal visual ─────────────────
-// Normalized radii (0–1) derived from published metrics for a coherent footprint.
-const RK_CX = 150;
-const RK_CY = 150;
-const RK_R  = 102;
+const RK_CX = 170;
+const RK_CY = 170;
+const RK_R = 118;
 const RK_ANGLES = [-Math.PI / 2, 0, Math.PI / 2, Math.PI] as const;
-/** Sharpe, Calmar, profit factor, win rate — visual mapping, not a second data table */
-const RK_NORM = [0.80, 0.54, 0.66, 0.58] as const;
+/** Visual footprint only — aligned loosely with risk KPI emphasis */
+const RK_NORM = [0.88, 0.76, 0.82, 0.79] as const;
 
 function rkPt(i: number, norm: number): { x: number; y: number } {
   const a = RK_ANGLES[i]!;
@@ -155,36 +159,21 @@ function IcShield(): ReactNode {
   );
 }
 
-/** Classical institutional façade — Box 3 header */
+/** Classical bank / institution façade — Box 3 header */
 function IcInstitution(): ReactNode {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M12 2L4 6h16L12 2z" stroke="currentColor" strokeWidth="1.35" strokeLinejoin="round" />
+      <path d="M5 7.5h14" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.45" />
       <path
-        d="M12 2.5l8.5 4.2v1.6H3.5V6.7L12 2.5z"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinejoin="round"
-      />
-      <path d="M5.5 11h2.3v8H5.5v-8zm5.1 0h2.3v8h-2.3v-8zm5.2 0H18v8h-2.2v-8z" fill="currentColor" opacity="0.34" />
-      <path
-        d="M4.5 8.2h15"
+        d="M6 8.5V20M10 8.5V20M14 8.5V20M18 8.5V20"
         stroke="currentColor"
         strokeWidth="1.25"
         strokeLinecap="round"
       />
-      <path
-        d="M3.5 19.5h17"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12 4.8v2.4"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeLinecap="round"
-        opacity="0.45"
-      />
+      <path d="M8 12h8M8 15.5h8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.35" />
+      <path d="M4 20.5h16" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M11 4.5h2v2h-2z" fill="currentColor" opacity="0.25" />
     </svg>
   );
 }
@@ -241,8 +230,8 @@ const SG_ICONS: ReactNode[] = [
 function IcShieldLg(): ReactNode {
   return (
     <svg
-      width="132"
-      height="152"
+      width="120"
+      height="138"
       viewBox="0 0 52 60"
       fill="none"
       aria-hidden
@@ -333,27 +322,28 @@ const COPY: Record<Lang, Copy> = {
     headlineLead: "Transparency that ",
     headlineAccent: "builds trust.",
     sub:
-      "Clear visibility into strategy, structure and safeguards\nhelps investors understand the setup more easily and build confidence.",
-    // Box 1
-    b1title:    "Historical Strategy & Performance",
-    b1backtest: "Backtesting since 1970",
+      "Clear visibility into strategy, structure and safeguards helps investors understand the setup and build long-term confidence.",
+    // Box 1 — Portfolio 2.0 / Vantage Ultimate model history (illustrative chart separate)
+    b1title: "Historical Strategy & Performance",
+    b1backtest: "Backtesting since 2010",
     b1kpis: [
-      { value: "+8.80%", label: "Annual return" },
-      { value: "1970", label: "Backtested since" },
-      { value: "2024", label: "Live + shadow since" },
-      { value: "−20.91%", label: "Max drawdown" },
+      { value: "+19.71% p.a.", label: "Annual model performance" },
+      { value: "−13.61%", label: "Max drawdown" },
+      { value: "2.16", label: "Sharpe Ratio" },
+      { value: "1.45", label: "Calmar Ratio" },
     ],
-    b1disclaimer: "Historical strategy data is shown for informational purposes only.",
+    b1disclaimer:
+      "Backtesting and model history shown for informational purposes only. No guarantee of future results.",
     // Box 2
-    b2title:   "Strategy Risk Overview",
+    b2title: "Strategy Risk Overview",
     b2center1: "Controlled",
     b2center2: "risk profile",
-    b2sub: "Structured control across multiple market phases",
+    b2sub: "Structured risk control across multiple market phases",
     b2stats: [
-      { lbl: "Sharpe", val: "1.63" },
-      { lbl: "Calmar", val: "0.43" },
-      { lbl: "Profit Factor", val: "1.24" },
-      { lbl: "Win Rate", val: "42.9%" },
+      { lbl: "Sharpe", val: "2.16" },
+      { lbl: "Calmar", val: "1.45" },
+      { lbl: "Profit Factor", val: "1.37" },
+      { lbl: "Win rate", val: "43.6%" },
     ],
     // Box 3
     b3title: "Regulated Partners",
@@ -385,38 +375,35 @@ const COPY: Record<Lang, Copy> = {
     headlineLead: "Transparenz, die ",
     headlineAccent: "Vertrauen schafft.",
     sub:
-      "Klare Einblicke in Strategie, Struktur und Schutzmechanismen\nhelfen Investoren, den Ablauf einfach zu verstehen und Vertrauen aufzubauen.",
-    // Box 1
-    b1title:    "Historische Strategie & Performance",
-    b1backtest: "Backtesting seit 1970",
+      "Klare Einblicke in Strategie, Struktur und Schutzmechanismen helfen Investoren, den Ablauf zu verstehen und Vertrauen aufzubauen.",
+    b1title: "Historische Strategie & Performance",
+    b1backtest: "Backtesting seit 2010",
     b1kpis: [
-      { value: "+8,80%", label: "Jährliche Rendite" },
-      { value: "1970", label: "Backtesting seit" },
-      { value: "2024", label: "Live + Shadow seit" },
-      { value: "−20,91%", label: "Max. Drawdown" },
+      { value: "+19,71 % p.a.", label: "Jährliche Modellperformance" },
+      { value: "−13,61 %", label: "Max. Drawdown" },
+      { value: "2,16", label: "Sharpe Ratio" },
+      { value: "1,45", label: "Calmar Ratio" },
     ],
-    b1disclaimer: "Historische Strategiedaten dienen ausschließlich Informationszwecken.",
-    // Box 2
-    b2title:   "Strategie Risikoübersicht",
+    b1disclaimer:
+      "Backtesting- und Modellhistorie zu Informationszwecken. Keine Garantie für zukünftige Ergebnisse.",
+    b2title: "Strategie-Risikoübersicht",
     b2center1: "Kontrolliertes",
     b2center2: "Risikoprofil",
-    b2sub: "Strukturierte Steuerung über mehrere Marktphasen",
+    b2sub: "Strukturierte Risikosteuerung über mehrere Marktphasen",
     b2stats: [
-      { lbl: "Sharpe", val: "1,63" },
-      { lbl: "Calmar", val: "0,43" },
-      { lbl: "Profit Factor", val: "1,24" },
-      { lbl: "Win Rate", val: "42,9%" },
+      { lbl: "Sharpe", val: "2,16" },
+      { lbl: "Calmar", val: "1,45" },
+      { lbl: "Profit Factor", val: "1,37" },
+      { lbl: "Trefferquote", val: "43,6 %" },
     ],
-    // Box 3
     b3title: "Regulierte Partner",
     b3desc: "Zusammenarbeit mit etablierten und regulierten Partnern.",
     b3authNote: "Reguliert und überwacht durch anerkannte Behörden.",
-    // Box 4
-    b4title: "Investorschutz",
+    b4title: "Investorenschutz",
     safeguards: [
       {
-        title: "Eigene Broker-Konten",
-        body: "Kapital verbleibt in den bestehenden Broker-Konten der Kunden.",
+        title: "Bestehende Broker-Konten",
+        body: "Kapital bleibt innerhalb der bestehenden Kontostruktur des Investors.",
       },
       {
         title: "Keine versteckten Gebühren",
@@ -542,9 +529,9 @@ export default function RiskSuite() {
                   <text
                     key={idx}
                     x={(BT_PL + (idx / (BT_N - 1)) * BT_uW).toFixed(1)}
-                    y={CH - 5}
+                    y={CH - 8}
                     className={r("cXLbl")}
-                    textAnchor={i === BT_X_IDXS.length - 1 ? "end" : "middle"}
+                    textAnchor={i === 0 ? "start" : i === BT_X_IDXS.length - 1 ? "end" : "middle"}
                   >
                     {BT_X_LBLS[i]}
                   </text>
@@ -565,7 +552,7 @@ export default function RiskSuite() {
             <div className={r("kpiRow")}>
               {copy.b1kpis.map((k, i) => (
                 <div key={i} className={r("kpiItem")}>
-                  <span className={r("kpiVal")}>{k.value}</span>
+                  <span className={`${r("kpiVal")} ${r("kpiValGold")}`}>{k.value}</span>
                   <span className={r("kpiLbl")}>{k.label}</span>
                 </div>
               ))}
@@ -582,23 +569,16 @@ export default function RiskSuite() {
             </div>
 
             <div className={r("riskEngineWrap")}>
-              <svg viewBox="0 0 300 300" fill="none" className={r("riskEngineSvg")} aria-hidden>
+              <svg viewBox="0 0 340 340" fill="none" className={r("riskEngineSvg")} aria-hidden>
                 <defs>
-                  <radialGradient id="rs_rk_bg" cx="50%" cy="44%" r="72%">
-                    <stop offset="0%" stopColor="rgba(252,246,232,0.14)" />
-                    <stop offset="48%" stopColor="rgba(232,220,196,0.05)" />
-                    <stop offset="100%" stopColor="rgba(22,20,17,0.02)" />
-                  </radialGradient>
                   <linearGradient id="rs_rk_polyStroke" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,248,0.72)" />
-                    <stop offset="100%" stopColor="rgba(218,202,168,0.55)" />
+                    <stop offset="0%" stopColor="rgba(255,253,248,0.82)" />
+                    <stop offset="100%" stopColor="rgba(218,190,145,0.62)" />
                   </linearGradient>
                   <filter id="rs_rk_sigBlur" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="1.8" />
                   </filter>
                 </defs>
-
-                <circle cx={RK_CX} cy={RK_CY} r={RK_R + 46} fill="url(#rs_rk_bg)" />
 
                 {/* Concentric risk rings */}
                 {RK_RING_LEVELS.map((lv) => (
@@ -628,7 +608,7 @@ export default function RiskSuite() {
                   <circle
                     cx={RK_CX}
                     cy={RK_CY}
-                    r={RK_R + 11}
+                    r={RK_R + 14}
                     className={r("rkTickOrbit")}
                     strokeDasharray="1.5 7"
                   />
@@ -639,10 +619,23 @@ export default function RiskSuite() {
                   <circle
                     cx={RK_CX}
                     cy={RK_CY}
-                    r={RK_R + 5}
+                    r={RK_R + 7}
                     className={r("rkSignalRing")}
                     strokeDasharray="4 10"
                   />
+                </g>
+
+                {/* Radar sweep — subtle rotating ray */}
+                <g transform={`translate(${RK_CX} ${RK_CY})`}>
+                  <g className={r("rkSweepArm")}>
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2={-RK_R * 0.94}
+                      className={r("rkSweepRay")}
+                    />
+                  </g>
                 </g>
 
                 {/* Metric footprint — derived shape mirrors headline KPIs below */}
@@ -666,12 +659,12 @@ export default function RiskSuite() {
                 ))}
 
                 {/* Center readout */}
-                <circle cx={RK_CX} cy={RK_CY} r="36" className={r("rkCoreRing")} />
-                <circle cx={RK_CX} cy={RK_CY} r="27" className={r("rkCoreInner")} />
-                <text x={RK_CX} y={RK_CY - 16} textAnchor="middle" className={r("ringCenter1")}>
+                <circle cx={RK_CX} cy={RK_CY} r="40" className={r("rkCoreRing")} />
+                <circle cx={RK_CX} cy={RK_CY} r="30" className={r("rkCoreInner")} />
+                <text x={RK_CX} y={RK_CY - 18} textAnchor="middle" className={r("ringCenter1")}>
                   {copy.b2center1}
                 </text>
-                <text x={RK_CX} y={RK_CY + 4} textAnchor="middle" className={r("ringCenter2")}>
+                <text x={RK_CX} y={RK_CY + 10} textAnchor="middle" className={r("ringCenter2")}>
                   {copy.b2center2}
                 </text>
               </svg>
@@ -685,7 +678,7 @@ export default function RiskSuite() {
                 i > 0 ? <div key={`d${i}`} className={r("statDiv")} /> : null,
                 <div key={s.lbl} className={r("statItem")}>
                   <span className={r("statLbl")}>{s.lbl}</span>
-                  <span className={r("statVal")}>{s.val}</span>
+                  <span className={`${r("statVal")} ${r("statValGold")}`}>{s.val}</span>
                 </div>,
               ])}
             </div>
@@ -702,7 +695,7 @@ export default function RiskSuite() {
 
             <div className={r("regCanvas")}>
               <svg
-                viewBox="0 0 340 214"
+                viewBox="0 0 360 218"
                 fill="none"
                 className={r("regSvg")}
                 role="img"
@@ -714,54 +707,41 @@ export default function RiskSuite() {
               >
                 <defs>
                   <linearGradient id="rs_reg_ln" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,246,0.32)" />
-                    <stop offset="100%" stopColor="rgba(228,212,180,0.14)" />
+                    <stop offset="0%" stopColor="rgba(255,248,236,0.38)" />
+                    <stop offset="100%" stopColor="rgba(218,195,155,0.2)" />
                   </linearGradient>
-                  <filter id="rs_reg_nodeBlur">
-                    <feGaussianBlur stdDeviation="1.4" />
-                  </filter>
                 </defs>
 
-                {/* Partner tier — logos clear of pulse indicators */}
-                <rect x="28" y="12" width="108" height="44" rx="11" className={r("regLogoPlate")} />
-                <rect x="204" y="12" width="108" height="44" rx="11" className={r("regLogoPlate")} />
+                <rect x="18" y="14" width="132" height="48" rx="12" className={r("regLogoPlate")} />
+                <rect x="210" y="14" width="132" height="48" rx="12" className={r("regLogoPlate")} />
                 <image
                   href="/Roboforex.png"
-                  x="36"
-                  y="19"
-                  width="92"
-                  height="30"
+                  x="26"
+                  y="22"
+                  width="116"
+                  height="32"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
                 <image
                   href="/Vantage.png"
-                  x="212"
-                  y="19"
-                  width="92"
-                  height="30"
+                  x="218"
+                  y="22"
+                  width="116"
+                  height="32"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
 
-                {/* Active rings below logo plates (not on artwork) */}
-                <g>
-                  <circle cx="82" cy="72" r="16" className={r("regPartnerRingOuter")} />
-                  <circle cx="82" cy="72" r="10" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
-                  <circle cx="82" cy="72" r="3.4" className={r("regPartnerDot")} />
-                </g>
-                <g className={r("regPartnerLate")}>
-                  <circle cx="258" cy="72" r="16" className={r("regPartnerRingOuter")} />
-                  <circle cx="258" cy="72" r="10" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
-                  <circle cx="258" cy="72" r="3.4" className={r("regPartnerDot")} />
-                </g>
+                {/* Small green status dots — clear of logo artwork */}
+                <circle cx="142" cy="66" r="3.2" className={r("regStatusDot")} />
+                <circle cx="334" cy="66" r="3.2" className={r("regStatusDot")} />
 
-                {/* Lines: partner nodes → junction → regulators (symmetric) */}
                 <line
-                  x1="82"
-                  y1="72"
-                  x2="170"
-                  y2="108"
+                  x1="84"
+                  y1="66"
+                  x2="180"
+                  y2="106"
                   stroke="url(#rs_reg_ln)"
                   strokeWidth="1.05"
                   strokeLinecap="round"
@@ -769,23 +749,23 @@ export default function RiskSuite() {
                   className={r("regFlowA")}
                 />
                 <line
-                  x1="258"
-                  y1="72"
-                  x2="170"
-                  y2="108"
+                  x1="276"
+                  y1="66"
+                  x2="180"
+                  y2="106"
                   stroke="url(#rs_reg_ln)"
                   strokeWidth="1.05"
                   strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowB")}
                 />
-                <circle cx="170" cy="108" r="4" className={r("regJunction")} />
+                <circle cx="180" cy="106" r="4" className={r("regJunction")} />
 
                 <line
-                  x1="170"
-                  y1="108"
+                  x1="180"
+                  y1="106"
                   x2="72"
-                  y2="164"
+                  y2="166"
                   stroke="url(#rs_reg_ln)"
                   strokeWidth="1"
                   strokeLinecap="round"
@@ -793,10 +773,10 @@ export default function RiskSuite() {
                   className={r("regFlowC")}
                 />
                 <line
-                  x1="170"
-                  y1="108"
-                  x2="170"
-                  y2="172"
+                  x1="180"
+                  y1="106"
+                  x2="180"
+                  y2="174"
                   stroke="url(#rs_reg_ln)"
                   strokeWidth="1"
                   strokeLinecap="round"
@@ -804,10 +784,10 @@ export default function RiskSuite() {
                   className={r("regFlowD")}
                 />
                 <line
-                  x1="170"
-                  y1="108"
-                  x2="268"
-                  y2="164"
+                  x1="180"
+                  y1="106"
+                  x2="288"
+                  y2="166"
                   stroke="url(#rs_reg_ln)"
                   strokeWidth="1"
                   strokeLinecap="round"
@@ -815,18 +795,18 @@ export default function RiskSuite() {
                   className={r("regFlowE")}
                 />
 
-                <circle cx="72" cy="176" r="23" className={r("regSeal")} />
-                <text x="72" y="180.5" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="72" cy="182" r="24" className={r("regSeal")} />
+                <text x="72" y="187" textAnchor="middle" className={r("regSealLbl")}>
                   FCA
                 </text>
 
-                <circle cx="170" cy="176" r="23" className={r("regSeal")} />
-                <text x="170" y="181" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="180" cy="182" r="24" className={r("regSeal")} />
+                <text x="180" y="187" textAnchor="middle" className={r("regSealLbl")}>
                   CySEC
                 </text>
 
-                <circle cx="268" cy="176" r="23" className={r("regSeal")} />
-                <text x="268" y="180.5" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="288" cy="182" r="24" className={r("regSeal")} />
+                <text x="288" y="187" textAnchor="middle" className={r("regSealLbl")}>
                   FSC
                 </text>
               </svg>
