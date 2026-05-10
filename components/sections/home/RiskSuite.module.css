@@ -23,9 +23,21 @@
   0%, 100% { opacity: 0.30; }
   50%       { opacity: 0.85; }
 }
-@keyframes rs_ringGlow {
-  0%, 100% { opacity: 0.25; }
-  50%       { opacity: 0.80; }
+@keyframes rs_riskOrbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes rs_riskOrbitRev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes rs_riskSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes rs_rkNodeGlow {
+  0%, 100% { opacity: 0.28; }
+  50%       { opacity: 0.62; }
 }
 /* Flowing dashes along connecting lines */
 @keyframes rs_flowLine {
@@ -168,6 +180,11 @@
 
 .boxPerf { grid-column: 1 / 4; }
 .boxRisk { grid-column: 4 / 6; }
+
+/* Softer chrome on risk card icon — aligns with champagne / off-white palette */
+.boxRisk .boxIco {
+  color: rgba(228, 218, 196, 0.78);
+}
 .boxReg  { grid-column: 1 / 3; }
 .boxSafe { grid-column: 3 / 6; }
 
@@ -274,8 +291,19 @@
 }
 
 .cGrid {
-  stroke: rgba(255, 255, 255, 0.035);
-  stroke-width: 1;
+  stroke: rgba(255, 255, 255, 0.048);
+  stroke-width: 0.85;
+}
+
+.cGridMinor {
+  stroke: rgba(255, 255, 255, 0.022);
+  stroke-width: 0.65;
+  stroke-dasharray: 3 5;
+}
+
+.cGridVert {
+  stroke: rgba(255, 255, 255, 0.026);
+  stroke-width: 0.55;
 }
 
 .cYLbl {
@@ -291,13 +319,30 @@
   fill: rgba(255, 255, 255, 0.26);
 }
 
+/* Hairline underlay for depth */
+.cLineUnder {
+  fill: none;
+  stroke: rgba(45, 42, 36, 0.35);
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+
 .cLine {
   fill: none;
   stroke: url(#rs_lg);
-  stroke-width: 1.8;
+  stroke-width: 1.35;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 4px rgba(192, 160, 36, 0.28));
+}
+
+.cEndGlow {
+  fill: rgba(238, 228, 204, 0.14);
+}
+
+.cEndHalo {
+  fill: rgba(244, 236, 216, 0.11);
 }
 
 /* KPI strip */
@@ -344,41 +389,132 @@
 }
 
 /* ══════════════════════════════════
-   BOX 2 — RISK RING
+   BOX 2 — RISK ENGINE (radar / layers)
    ══════════════════════════════════ */
-.ringWrap {
+.riskEngineWrap {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 0;
-  padding: 0;
+  padding: 4px 0 2px;
 }
 
-.ringSvg {
+.riskEngineSvg {
   display: block;
-  width: min(100%, 185px);
+  width: min(100%, 198px);
   height: auto;
+  overflow: visible;
 }
 
-.ringGlow {
-  animation: rs_ringGlow 4.5s ease-in-out infinite;
+.rkRing {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.045);
+  stroke-width: 0.75;
 }
 
-/* Center text in ring */
+.rkRingOuter {
+  fill: none;
+  stroke: rgba(252, 246, 232, 0.09);
+  stroke-width: 0.85;
+}
+
+.rkSpoke {
+  stroke: rgba(255, 255, 255, 0.065);
+  stroke-width: 0.65;
+}
+
+.rkSpokeFaint {
+  stroke: rgba(255, 255, 255, 0.032);
+  stroke-width: 0.55;
+}
+
+.rkRotateSlow {
+  transform-origin: 110px 110px;
+  transform-box: fill-box;
+  animation: rs_riskOrbit 52s linear infinite;
+}
+
+.rkRotateRev {
+  transform-origin: 110px 110px;
+  transform-box: fill-box;
+  animation: rs_riskOrbitRev 34s linear infinite;
+}
+
+.rkTickOrbit {
+  fill: none;
+  stroke-width: 0.65;
+  opacity: 0.85;
+}
+
+.rkSignalRing {
+  fill: none;
+  stroke-width: 0.75;
+  opacity: 0.9;
+}
+
+.rkSweep {
+  transform-origin: 110px 110px;
+  transform-box: fill-box;
+  animation: rs_riskSweep 14s linear infinite;
+  opacity: 0.95;
+}
+
+.rkSweepLine {
+  stroke: rgba(252, 248, 238, 0.42);
+  stroke-width: 0.85;
+  stroke-linecap: round;
+}
+
+.rkPolyFill {
+  fill: rgba(248, 242, 228, 0.075);
+}
+
+.rkPolyLine {
+  fill: none;
+  stroke-width: 1.15;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.92;
+}
+
+.rkNodePulse {
+  fill: rgba(252, 246, 232, 0.12);
+  animation: rs_rkNodeGlow 4s ease-in-out infinite;
+}
+
+.rkNode {
+  fill: rgba(228, 218, 192, 0.38);
+  stroke: rgba(255, 253, 246, 0.35);
+  stroke-width: 0.85;
+}
+
+.rkCoreRing {
+  fill: rgba(255, 255, 255, 0.025);
+  stroke: rgba(255, 255, 255, 0.085);
+  stroke-width: 0.9;
+}
+
+.rkCoreInner {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.045);
+  stroke-width: 0.65;
+}
+
+/* Center readout */
 .ringCenter1 {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
-  fill: rgba(255, 255, 255, 0.90);
-  letter-spacing: 0.2px;
+  fill: rgba(255, 253, 248, 0.92);
+  letter-spacing: 0.14px;
 }
 
 .ringCenter2 {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 400;
-  fill: rgba(255, 255, 255, 0.58);
+  fill: rgba(255, 255, 255, 0.48);
 }
 
 /* Subtitle below ring */
@@ -420,15 +556,16 @@
 .statLbl {
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(255, 255, 255, 0.36);
   text-align: center;
+  letter-spacing: 0.02em;
 }
 
 .statVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
   font-size: 14.5px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.90);
+  color: rgba(252, 248, 240, 0.94);
   line-height: 1;
 }
 
@@ -676,7 +813,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ringGlow,
+  .rkSweep,
+  .rkRotateSlow,
+  .rkRotateRev,
+  .rkNodePulse,
   .netHub, .netLine, .netLineB, .netLineC, .netLineD, .netLineE,
   .partnerDot, .partnerDotB,
   .orbitRingLg, .orbitRingSm, .orbitDot, .shieldCore {
