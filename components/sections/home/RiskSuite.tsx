@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 import { useLanguage, type Lang } from "@/lib/i18n/language";
 import raw from "./RiskSuite.module.css";
@@ -9,46 +10,92 @@ function r(name: string): string {
   return (raw as Record<string, string>)[name] ?? "";
 }
 
-/** Fixed normal-cumulative visual series (chart only; not compounded / not equity math). */
-const normalCumulativeModelSeries = [
-  { year: 2010, value: 0 },
-  { year: 2011, value: 6.5 },
-  { year: 2012, value: 13.2 },
-  { year: 2013, value: 20.1 },
-  { year: 2014, value: 27.4 },
-  { year: 2015, value: 33.6 },
-  { year: 2016, value: 41.2 },
-  { year: 2017, value: 49.0 },
-  { year: 2018, value: 55.8 },
-  { year: 2019, value: 64.5 },
-  { year: 2020, value: 71.4 },
-  { year: 2021, value: 79.8 },
-  { year: 2022, value: 86.2 },
-  { year: 2023, value: 94.8 },
-  { year: 2024, value: 102.7 },
-  { year: 2025, value: 110.9 },
-  { year: 2026, value: 113.5 },
+/** Annual returns (1970→2026). Visual series is additive cumulative: cum = prev + returnPct (no compounding). */
+const BT_ANNUAL_RETURNS: Array<{ year: number; ret: number }> = [
+  { year: 1970, ret: -3.43 },
+  { year: 1971, ret: -2.25 },
+  { year: 1972, ret: 5.41 },
+  { year: 1973, ret: 2.61 },
+  { year: 1974, ret: 1.67 },
+  { year: 1975, ret: -9.45 },
+  { year: 1976, ret: 3.64 },
+  { year: 1977, ret: 2.62 },
+  { year: 1978, ret: 1.32 },
+  { year: 1979, ret: -0.16 },
+  { year: 1980, ret: 10.13 },
+  { year: 1981, ret: -5.59 },
+  { year: 1982, ret: 1.08 },
+  { year: 1983, ret: -0.39 },
+  { year: 1984, ret: 0.67 },
+  { year: 1985, ret: 7.42 },
+  { year: 1986, ret: -4.58 },
+  { year: 1987, ret: -0.14 },
+  { year: 1988, ret: 3.62 },
+  { year: 1989, ret: 2.33 },
+  { year: 1990, ret: -0.53 },
+  { year: 1991, ret: -2.67 },
+  { year: 1992, ret: 9.53 },
+  { year: 1993, ret: 6.74 },
+  { year: 1994, ret: 6.04 },
+  { year: 1995, ret: 13.68 },
+  { year: 1996, ret: 6.65 },
+  { year: 1997, ret: 12.54 },
+  { year: 1998, ret: 3.64 },
+  { year: 1999, ret: 14.16 },
+  { year: 2000, ret: 7.76 },
+  { year: 2001, ret: 0.62 },
+  { year: 2002, ret: 16.34 },
+  { year: 2003, ret: 17.37 },
+  { year: 2004, ret: -3.69 },
+  { year: 2005, ret: 4.85 },
+  { year: 2006, ret: 29.46 },
+  { year: 2007, ret: 16.02 },
+  { year: 2008, ret: -12.44 },
+  { year: 2009, ret: 34.88 },
+  { year: 2010, ret: 28.6 },
+  { year: 2011, ret: 18.07 },
+  { year: 2012, ret: 4.89 },
+  { year: 2013, ret: 25.29 },
+  { year: 2014, ret: 18.43 },
+  { year: 2015, ret: 6.6 },
+  { year: 2016, ret: 20.9 },
+  { year: 2017, ret: 23.23 },
+  { year: 2018, ret: 6.29 },
+  { year: 2019, ret: 38.38 },
+  { year: 2020, ret: 25.77 },
+  { year: 2021, ret: 27.37 },
+  { year: 2022, ret: 8.39 },
+  { year: 2023, ret: 25.63 },
+  { year: 2024, ret: 26.15 },
+  { year: 2025, ret: 28.35 },
+  { year: 2026, ret: 0.65 },
 ] as const;
 
-const BT_VALUES = normalCumulativeModelSeries.map((p) => p.value);
+const BT_YEARS = BT_ANNUAL_RETURNS.map((p) => p.year);
+const BT_VALUES = BT_ANNUAL_RETURNS.reduce<number[]>((acc, p, i) => {
+  const prev = i === 0 ? 0 : acc[i - 1]!;
+  acc.push(prev + p.ret);
+  return acc;
+}, []);
 const BT_N = BT_VALUES.length;
 
-/** Y-axis domain — cumulative % scale (no large index numbers). */
+/** Y-axis domain — additive cumulative scale (ends ~+530%). */
 const BT_SCALE_MIN = 0;
-const BT_SCALE_MAX = 120;
-const BT_Y_TICKS = [0, 30, 60, 90, 120] as const;
+const BT_SCALE_MAX = 600;
+const BT_Y_TICKS = [0, 100, 200, 300, 400, 500, 600] as const;
 
 // ── Chart geometry ─────────────────────────────────────────────────────────────
-const CW = 560,
-  CH = 162;
+const CW = 520,
+  CH = 148;
 const BT_PL = 54,
   BT_PR = 20,
   BT_PT = 10,
   BT_PB = 28;
 const BT_uW = CW - BT_PL - BT_PR;
 const BT_uH = CH - BT_PT - BT_PB;
-const BT_X_IDXS = [0, 4, 8, 12, 16];
-const BT_X_LBLS = ["2010", "2014", "2018", "2022", "2026"];
+const BT_X_YEARS = [1970, 1980, 1990, 2000, 2010, 2020, 2026] as const;
+const BT_X_IDXS = BT_X_YEARS.map((y) => Math.max(0, BT_YEARS.indexOf(y)));
+const BT_X_LBLS = BT_X_YEARS.map((y) => String(y));
 
 function btYPos(v: number): number {
   const span = BT_SCALE_MAX - BT_SCALE_MIN || 1;
@@ -84,42 +131,7 @@ function buildBtChart() {
 
 const { line: BT_LINE, area: BT_AREA, lastX: BT_LX, lastY: BT_LY } = buildBtChart();
 
-// ── Risk control visual (Box 2): rings, quadrants, nodes — no polygon / diamond ────────────────
-const RK_SZ = 380;
-const RK_CX = 190;
-const RK_CY = 190;
-const RK_R = 132;
-const RK_RING_LEVELS = [0.22, 0.36, 0.5, 0.64, 0.78, 0.92, 1] as const;
-const RK_CARDINAL = [-Math.PI / 2, -Math.PI / 6, 0, Math.PI / 2, Math.PI] as const;
-const RK_NODE_RING = 0.86;
-const RK_NODE_PTS = RK_CARDINAL.map((a) => ({
-  x: RK_CX + RK_R * RK_NODE_RING * Math.cos(a),
-  y: RK_CY + RK_R * RK_NODE_RING * Math.sin(a),
-}));
-const RK_SPOKE_N = 8;
-const RK_SPOKES: { x2: number; y2: number; faint: boolean }[] = Array.from(
-  { length: RK_SPOKE_N },
-  (_, i) => {
-    const a = -Math.PI / 2 + (i / RK_SPOKE_N) * 2 * Math.PI;
-    return {
-      x2: RK_CX + RK_R * 1.02 * Math.cos(a),
-      y2: RK_CY + RK_R * 1.02 * Math.sin(a),
-      faint: i % 2 === 1,
-    };
-  },
-);
-const RK_MICRO_N = 20;
-const RK_MICRO_TICKS = Array.from({ length: RK_MICRO_N }, (_, i) => {
-  const a = (i / RK_MICRO_N) * 2 * Math.PI;
-  const r1 = RK_R * 0.4;
-  const r2 = RK_R * 0.48;
-  return {
-    x1: RK_CX + r1 * Math.cos(a),
-    y1: RK_CY + r1 * Math.sin(a),
-    x2: RK_CX + r2 * Math.cos(a),
-    y2: RK_CY + r2 * Math.sin(a),
-  };
-});
+// ── Risk control (Box 2): robust metric rows (no radar / no abstract visuals) ────────────────
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 function IcChart(): ReactNode {
@@ -279,9 +291,7 @@ type Copy = {
   b1disclaimer: string;
   // Box 2
   b2title: string;
-  b2center1: string;
-  b2center2: string;
-  b2sub: string;
+  b2status: string;
   b2stats: StatItem[];
   // Box 3
   b3title: string;
@@ -301,25 +311,23 @@ const COPY: Record<Lang, Copy> = {
       "Clear visibility into strategy, structure and safeguards helps investors understand the setup and build long-term confidence.",
     // Box 1 — Portfolio 2.0 / Vantage Ultimate model history (illustrative chart separate)
     b1title: "Historical Strategy & Performance",
-    b1backtest: "Backtesting since 2010",
+    b1backtest: "Backtesting since 1970",
     b1kpis: [
-      { value: "+19.71% p.a.", label: "Annual model performance" },
-      { value: "−13.61%", label: "Max drawdown" },
-      { value: "2.16", label: "Sharpe Ratio" },
-      { value: "1.45", label: "Calmar Ratio" },
+      { value: "+8.90% p.a.", label: "Annual performance" },
+      { value: "−20.91%", label: "Max drawdown" },
+      { value: "1.63", label: "Sharpe Ratio" },
+      { value: "0.43", label: "Calmar Ratio" },
     ],
     b1disclaimer:
       "Backtesting and model history shown for informational purposes only. No guarantee of future results.",
     // Box 2
     b2title: "Strategy Risk Overview",
-    b2center1: "Controlled",
-    b2center2: "risk profile",
-    b2sub: "Structured risk control across multiple market phases",
+    b2status: "Controlled risk profile",
     b2stats: [
-      { lbl: "Sharpe", val: "2.16" },
-      { lbl: "Calmar", val: "1.45" },
-      { lbl: "Profit Factor", val: "1.37" },
-      { lbl: "Win Rate", val: "43.6%" },
+      { lbl: "Sharpe Ratio", val: "1.63" },
+      { lbl: "Calmar Ratio", val: "0.43" },
+      { lbl: "Profit Factor", val: "1.24" },
+      { lbl: "Win Rate", val: "42.9%" },
     ],
     // Box 3
     b3title: "Regulated Partners",
@@ -353,29 +361,27 @@ const COPY: Record<Lang, Copy> = {
     sub:
       "Klare Einblicke in Strategie, Struktur und Schutzmechanismen helfen Investoren, den Aufbau besser zu verstehen und langfristiges Vertrauen aufzubauen.",
     b1title: "Historische Strategie & Performance",
-    b1backtest: "Backtesting seit 2010",
+    b1backtest: "Backtesting seit 1970",
     b1kpis: [
-      { value: "+19,71 % p.a.", label: "Jährliche Modellperformance" },
-      { value: "−13,61 %", label: "Max. Drawdown" },
-      { value: "2,16", label: "Sharpe Ratio" },
-      { value: "1,45", label: "Calmar Ratio" },
+      { value: "+8,90 % p.a.", label: "Jährliche Performance" },
+      { value: "−20,91 %", label: "Max. Drawdown" },
+      { value: "1,63", label: "Sharpe Ratio" },
+      { value: "0,43", label: "Calmar Ratio" },
     ],
     b1disclaimer:
       "Backtesting- und Modellhistorie dienen ausschließlich Informationszwecken. Keine Garantie für zukünftige Ergebnisse.",
     b2title: "Strategie-Risikoüberblick",
-    b2center1: "Kontrolliertes",
-    b2center2: "Risikoprofil",
-    b2sub: "Strukturierte Risikosteuerung über verschiedene Marktphasen",
+    b2status: "Kontrolliertes Risikoprofil",
     b2stats: [
-      { lbl: "Sharpe", val: "2,16" },
-      { lbl: "Calmar", val: "1,45" },
-      { lbl: "Profit Factor", val: "1,37" },
-      { lbl: "Trefferquote", val: "43,6 %" },
+      { lbl: "Sharpe Ratio", val: "1,63" },
+      { lbl: "Calmar Ratio", val: "0,43" },
+      { lbl: "Profit Factor", val: "1,24" },
+      { lbl: "Trefferquote", val: "42,9 %" },
     ],
     b3title: "Regulierte Partner",
     b3desc: "Zusammenarbeit mit etablierten und regulierten Partnern.",
     b3authNote: "Reguliert und überwacht durch anerkannte Behörden.",
-    b4title: "Investorschutz",
+    b4title: "Investorenschutz",
     safeguards: [
       {
         title: "Bestehende Broker-Konten",
@@ -402,6 +408,22 @@ export default function RiskSuite() {
   const { lang } = useLanguage();
   const copy = COPY[lang];
 
+  const riskBarPct = (lbl: string): number => {
+    switch (lbl) {
+      case "Sharpe Ratio":
+        return 78;
+      case "Calmar Ratio":
+        return 32;
+      case "Profit Factor":
+        return 58;
+      case "Win Rate":
+      case "Trefferquote":
+        return 52;
+      default:
+        return 50;
+    }
+  };
+
   return (
     <section className={r("section")} id="risk-suite">
       <div className={r("bg")} aria-hidden />
@@ -422,7 +444,7 @@ export default function RiskSuite() {
           <p className={r("sub")}>{copy.sub}</p>
         </div>
 
-        {/* ── 2x2 premium grid ── */}
+        {/* ── 2x2 grid ── */}
         <div className={r("grid")}>
 
           {/* ── Box 1: Backtesting chart ── */}
@@ -535,136 +557,21 @@ export default function RiskSuite() {
               <span className={r("boxTitle")}>{copy.b2title}</span>
             </div>
 
-            <div className={r("riskEngineWrap")}>
-              <svg viewBox={`0 0 ${RK_SZ} ${RK_SZ}`} fill="none" className={r("riskEngineSvg")} aria-hidden>
-                <defs>
-                  <linearGradient id="rs_rk_goldStroke" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,248,0.9)" />
-                    <stop offset="100%" stopColor="rgba(218,185,130,0.75)" />
-                  </linearGradient>
-                  <filter id="rs_rk_nodeGlow" x="-80%" y="-80%" width="260%" height="260%">
-                    <feGaussianBlur stdDeviation="2.2" />
-                  </filter>
-                </defs>
-
-                {/* Quadrant cross — separates four segments */}
-                <line
-                  x1={RK_CX}
-                  y1={RK_CY - RK_R * 1.02}
-                  x2={RK_CX}
-                  y2={RK_CY + RK_R * 1.02}
-                  className={r("rkQuadCross")}
-                />
-                <line
-                  x1={RK_CX - RK_R * 1.02}
-                  y1={RK_CY}
-                  x2={RK_CX + RK_R * 1.02}
-                  y2={RK_CY}
-                  className={r("rkQuadCross")}
-                />
-
-                {/* Concentric engine rings */}
-                {RK_RING_LEVELS.map((lv) => (
-                  <circle
-                    key={lv}
-                    cx={RK_CX}
-                    cy={RK_CY}
-                    r={RK_R * lv}
-                    className={lv >= 0.98 ? r("rkRingOuter") : r("rkRing")}
-                  />
-                ))}
-
-                {/* Micro signal ticks */}
-                {RK_MICRO_TICKS.map((t, i) => (
-                  <line
-                    key={`mic-${i}`}
-                    x1={t.x1}
-                    y1={t.y1}
-                    x2={t.x2}
-                    y2={t.y2}
-                    className={r("rkMicroTick")}
-                  />
-                ))}
-
-                {/* Eight directional spokes */}
-                {RK_SPOKES.map((s, i) => (
-                  <line
-                    key={i}
-                    x1={RK_CX}
-                    y1={RK_CY}
-                    x2={s.x2}
-                    y2={s.y2}
-                    className={s.faint ? r("rkSpokeFaint") : r("rkSpoke")}
-                  />
-                ))}
-
-                {/* Outer orbit trace */}
-                <g className={r("rkRotateSlow")}>
-                  <circle
-                    cx={RK_CX}
-                    cy={RK_CY}
-                    r={RK_R + 16}
-                    className={r("rkTickOrbit")}
-                    strokeDasharray="2 9"
-                  />
-                </g>
-
-                <g className={r("rkRotateRev")}>
-                  <circle
-                    cx={RK_CX}
-                    cy={RK_CY}
-                    r={RK_R + 9}
-                    className={r("rkSignalRing")}
-                    strokeDasharray="5 11"
-                  />
-                </g>
-
-                {/* Radar sweep */}
-                <g transform={`translate(${RK_CX} ${RK_CY})`}>
-                  <g className={r("rkSweepArm")}>
-                    <line x1="0" y1="0" x2="0" y2={-RK_R * 0.96} className={r("rkSweepRay")} />
-                  </g>
-                </g>
-
-                {/* Cardinal gold nodes */}
-                {RK_NODE_PTS.map((p, i) => (
-                  <g key={`n-${i}`}>
-                    <circle
-                      cx={p.x}
-                      cy={p.y}
-                      r="11"
-                      className={r("rkNodePulse")}
-                      filter="url(#rs_rk_nodeGlow)"
-                      style={{ animationDelay: `${i * 0.55}s` }}
-                    />
-                    <circle cx={p.x} cy={p.y} r="4.2" className={r("rkNode")} />
-                    <circle cx={p.x} cy={p.y} r="1.6" fill="rgba(255,252,244,0.95)" />
-                  </g>
-                ))}
-
-                {/* Center status */}
-                <circle cx={RK_CX} cy={RK_CY} r="44" className={r("rkCoreRing")} />
-                <circle cx={RK_CX} cy={RK_CY} r="33" className={r("rkCoreInner")} />
-                <text x={RK_CX} y={RK_CY - 20} textAnchor="middle" className={r("ringCenter1")}>
-                  {copy.b2center1}
-                </text>
-                <text x={RK_CX} y={RK_CY + 12} textAnchor="middle" className={r("ringCenter2")}>
-                  {copy.b2center2}
-                </text>
-              </svg>
+            <div className={r("riskStatus")}>
+              <span className={r("riskStatusDot")} aria-hidden />
+              <span className={r("riskStatusTxt")}>{copy.b2status}</span>
             </div>
 
-            <p className={r("b2SubLine")}>{copy.b2sub}</p>
-
-            {/* 4 stats */}
-            <div className={r("statsRow")}>
-              {copy.b2stats.flatMap((s, i) => [
-                i > 0 ? <div key={`d${i}`} className={r("statDiv")} /> : null,
-                <div key={s.lbl} className={r("statItem")}>
-                  <span className={r("statLbl")}>{s.lbl}</span>
-                  <span className={`${r("statVal")} ${r("statValGold")}`}>{s.val}</span>
-                </div>,
-              ])}
+            <div className={r("riskRows")}>
+              {copy.b2stats.map((m) => (
+                <div key={m.lbl} className={r("riskRow")}>
+                  <span className={r("riskLbl")}>{m.lbl}</span>
+                  <div className={r("riskBar")} aria-hidden>
+                    <div className={r("riskBarFill")} style={{ width: `${riskBarPct(m.lbl)}%` }} />
+                  </div>
+                  <span className={r("riskVal")}>{m.val}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -677,125 +584,19 @@ export default function RiskSuite() {
 
             <p className={r("regDesc")}>{copy.b3desc}</p>
 
-            <div className={r("regCanvas")}>
-              <svg
-                viewBox="0 0 360 232"
-                fill="none"
-                className={r("regSvg")}
-                role="img"
-                aria-label={
-                  lang === "de"
-                    ? "Partnerlogos mit Verbindung zu Aufsichtsbehörden"
-                    : "Partner logos linked to supervisory authorities"
-                }
-              >
-                <defs>
-                  <linearGradient id="rs_reg_ln" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,248,236,0.42)" />
-                    <stop offset="100%" stopColor="rgba(212,175,55,0.22)" />
-                  </linearGradient>
-                </defs>
+            <div className={r("regLogos")}>
+              <div className={r("regLogoCard")}>
+                <Image src="/Roboforex.png" alt="RoboForex" width={160} height={44} className={r("regLogoImg2")} />
+              </div>
+              <div className={r("regLogoCard")}>
+                <Image src="/Vantage.png" alt="Vantage" width={160} height={44} className={r("regLogoImg2")} />
+              </div>
+            </div>
 
-                <rect x="16" y="14" width="144" height="52" rx="12" className={r("regLogoPlate")} />
-                <rect x="200" y="14" width="144" height="52" rx="12" className={r("regLogoPlate")} />
-                <image
-                  href="/Roboforex.png"
-                  x="24"
-                  y="23"
-                  width="128"
-                  height="34"
-                  preserveAspectRatio="xMidYMid meet"
-                  className={r("regLogoImg")}
-                />
-                <image
-                  href="/Vantage.png"
-                  x="208"
-                  y="23"
-                  width="128"
-                  height="34"
-                  preserveAspectRatio="xMidYMid meet"
-                  className={r("regLogoImg")}
-                />
-
-                {/* Status: near each plate (outside logo area) — tiny pulse only around dot */}
-                <circle cx="166" cy="66" r="7" className={r("regDotPulse")} />
-                <circle cx="350" cy="66" r="7" className={r("regDotPulse")} />
-                <circle cx="166" cy="66" r="3.4" className={r("regStatusDot")} />
-                <circle cx="350" cy="66" r="3.4" className={r("regStatusDot")} />
-
-                <line
-                  x1="166"
-                  y1="66"
-                  x2="180"
-                  y2="112"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.08"
-                  strokeLinecap="round"
-                  strokeDasharray="3 5"
-                  className={r("regFlowA")}
-                />
-                <line
-                  x1="350"
-                  y1="66"
-                  x2="180"
-                  y2="112"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.08"
-                  strokeLinecap="round"
-                  strokeDasharray="3 5"
-                  className={r("regFlowB")}
-                />
-                <circle cx="180" cy="112" r="4.5" className={r("regJunction")} />
-
-                <line
-                  x1="180"
-                  y1="112"
-                  x2="72"
-                  y2="174"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.02"
-                  strokeLinecap="round"
-                  strokeDasharray="3 5"
-                  className={r("regFlowC")}
-                />
-                <line
-                  x1="180"
-                  y1="112"
-                  x2="180"
-                  y2="178"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.02"
-                  strokeLinecap="round"
-                  strokeDasharray="3 5"
-                  className={r("regFlowD")}
-                />
-                <line
-                  x1="180"
-                  y1="112"
-                  x2="288"
-                  y2="174"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1.02"
-                  strokeLinecap="round"
-                  strokeDasharray="3 5"
-                  className={r("regFlowE")}
-                />
-
-                <circle cx="72" cy="192" r="27" className={r("regSeal")} />
-                <text x="72" y="197.5" textAnchor="middle" className={r("regSealLbl")}>
-                  FCA
-                </text>
-
-                <circle cx="180" cy="192" r="27" className={r("regSeal")} />
-                <text x="180" y="198" textAnchor="middle" className={r("regSealLbl")}>
-                  CySEC
-                </text>
-
-                <circle cx="288" cy="192" r="27" className={r("regSeal")} />
-                <text x="288" y="197.5" textAnchor="middle" className={r("regSealLbl")}>
-                  FSC
-                </text>
-              </svg>
+            <div className={r("regChips")} aria-label={lang === "de" ? "Regulierungen" : "Regulations"}>
+              <span className={r("regChip")}>FCA</span>
+              <span className={r("regChip")}>CySEC</span>
+              <span className={r("regChip")}>FSC</span>
             </div>
 
             <p className={r("regAuthNote")}>{copy.b3authNote}</p>
@@ -824,23 +625,6 @@ export default function RiskSuite() {
               {/* Central shield — spans both rows */}
               <div className={r("shieldZone")}>
                 <div className={r("shieldHalo")} aria-hidden />
-                <div className={r("orbitSpinXL")} aria-hidden>
-                  <div className={r("orbitRingXL")} />
-                </div>
-                <div className={r("orbitSpinLg")}>
-                  <div className={r("orbitRingLg")}>
-                    <div className={r("orbitDot")} style={{ top: "1%", left: "50%" }} />
-                    <div className={r("orbitDot")} style={{ top: "50%", left: "99%" }} />
-                    <div className={r("orbitDot")} style={{ top: "99%", left: "50%" }} />
-                    <div className={r("orbitDot")} style={{ top: "50%", left: "1%" }} />
-                  </div>
-                </div>
-                <div className={r("orbitSpinMd")} aria-hidden>
-                  <div className={r("orbitRingMd")} />
-                </div>
-                <div className={r("orbitSpinSm")} aria-hidden>
-                  <div className={r("orbitRingSm")} />
-                </div>
                 <div className={r("shieldCore")}>
                   <IcShieldLg />
                 </div>

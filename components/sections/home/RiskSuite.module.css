@@ -78,16 +78,17 @@
 .section {
   position: relative;
   width: 100%;
-  background:
-    radial-gradient(ellipse 120% 80% at 50% -10%, rgba(236, 224, 196, 0.08), transparent 58%),
-    radial-gradient(circle 42% at 18% 26%, rgba(212, 175, 95, 0.08), transparent 55%),
-    radial-gradient(circle 46% at 86% 68%, rgba(232, 218, 188, 0.06), transparent 58%),
-    #040405;
+  min-height: 100svh;
+  background-image: url('/Risk_Background.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #000;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  padding: 62px 24px 66px;
+  padding: 40px 22px;
   box-sizing: border-box;
   isolation: isolate;
 }
@@ -99,10 +100,10 @@
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle 60% at 52% 14%, rgba(212, 175, 95, 0.14), transparent 60%),
-    radial-gradient(circle 52% at 82% 42%, rgba(232, 218, 188, 0.09), transparent 58%),
-    radial-gradient(circle 48% at 14% 72%, rgba(255, 248, 236, 0.06), transparent 62%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.82) 55%, rgba(0, 0, 0, 0.76) 100%);
+    radial-gradient(circle 58% at 52% 14%, rgba(212, 175, 55, 0.12), transparent 60%),
+    radial-gradient(circle 52% at 78% 38%, rgba(232, 218, 188, 0.08), transparent 58%),
+    radial-gradient(circle 44% at 14% 72%, rgba(255, 248, 236, 0.05), transparent 62%),
+    rgba(0, 0, 0, 0.82);
 }
 
 /* Soft blend into section above */
@@ -129,7 +130,10 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1320px;
+  max-width: 1480px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ══════════════════════════════════
@@ -139,9 +143,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   text-align: center;
-  margin-bottom: 34px;
+  margin-bottom: 14px;
 }
 
 /* Pill badge — matches Strategy section exactly */
@@ -197,10 +201,10 @@
 
 .sub {
   margin: 0;
-  max-width: min(62ch, 92vw);
+  max-width: min(78ch, 92vw);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: clamp(14.5px, 1.08vw, 16px);
-  line-height: 1.5;
+  font-size: clamp(14px, 1.02vw, 15.5px);
+  line-height: 1.48;
   letter-spacing: 0.01em;
   color: rgba(255, 253, 248, 0.76);
   display: -webkit-box;
@@ -224,8 +228,10 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(12px, 1.2vw, 16px);
+  gap: 10px;
   align-items: stretch;
+  flex: 1;
+  min-height: 0;
 }
 
 .boxPerf { grid-column: 1; grid-row: 1; }
@@ -256,10 +262,11 @@
     inset 0 -1px 0 rgba(0, 0, 0, 0.12),
     0 18px 60px rgba(0, 0, 0, 0.42),
     0 0 0 0.5px rgba(236, 224, 196, 0.06);
-  padding: 18px 20px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Top-edge shimmer */
@@ -353,7 +360,7 @@
   background:
     radial-gradient(circle 120% at 20% 10%, rgba(236, 224, 196, 0.06), transparent 56%),
     rgba(0, 0, 0, 0.18);
-  padding: 10px 10px 6px;
+  padding: 8px 8px 6px;
 }
 
 .chartSvg {
@@ -425,8 +432,8 @@
 .kpiRow {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px 8px;
-  padding: 14px 0 6px;
+  gap: 8px 8px;
+  padding: 10px 0 4px;
   border-top: 1px solid rgba(255, 253, 246, 0.1);
   margin-top: 10px;
 }
@@ -488,7 +495,7 @@
 }
 
 .disclaim {
-  margin: 10px 8px 0;
+  margin: 6px 8px 0;
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 9px;
   line-height: 1.5;
@@ -498,210 +505,83 @@
 }
 
 /* ══════════════════════════════════
-   BOX 2 — RISK ENGINE (radar / layers)
+   BOX 2 — RISK OVERVIEW (robust rows)
    ══════════════════════════════════ */
-.riskEngineWrap {
-  flex: 1;
-  display: flex;
+.riskStatus {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 0;
-  padding: 2px 0 0;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 253, 246, 0.11);
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 253, 246, 0.06);
 }
 
-.riskEngineSvg {
-  display: block;
-  width: min(100%, 400px);
-  height: auto;
-  overflow: visible;
+.riskStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.9);
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.24);
 }
 
-.rkSweepArm {
-  transform-origin: 0 0;
-  transform-box: fill-box;
-  animation: rs_radarSweep 26s linear infinite;
-}
-
-.rkSweepRay {
-  stroke: rgba(242, 228, 200, 0.72);
-  stroke-width: 1.45;
-  stroke-linecap: round;
-  opacity: 0.62;
-  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.42));
-}
-
-.b2SubLine {
-  margin: 8px 2px 0;
-  text-align: center;
-  font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-  color: rgba(238, 230, 212, 0.62);
-  max-width: 42ch;
-  align-self: center;
-}
-
-.rkRing {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.055);
-  stroke-width: 0.78;
-}
-
-.rkRingOuter {
-  fill: none;
-  stroke: rgba(238, 224, 198, 0.14);
-  stroke-width: 0.88;
-}
-
-.rkSpoke {
-  stroke: rgba(255, 255, 255, 0.078);
-  stroke-width: 0.68;
-}
-
-.rkSpokeFaint {
-  stroke: rgba(255, 255, 255, 0.04);
-  stroke-width: 0.56;
-}
-
-.rkRotateSlow {
-  transform-origin: 190px 190px;
-  transform-box: fill-box;
-  animation: rs_riskOrbit 48s linear infinite;
-}
-
-.rkRotateRev {
-  transform-origin: 190px 190px;
-  transform-box: fill-box;
-  animation: rs_riskOrbitRev 32s linear infinite;
-}
-
-.rkQuadCross {
-  stroke: rgba(255, 253, 246, 0.06);
-  stroke-width: 0.85;
-  stroke-linecap: round;
-}
-
-.rkMicroTick {
-  stroke: rgba(228, 210, 175, 0.16);
-  stroke-width: 0.68;
-  stroke-linecap: round;
-}
-
-.rkTickOrbit {
-  fill: none;
-  stroke: rgba(232, 218, 190, 0.22);
-  stroke-width: 0.68;
-  opacity: 0.88;
-}
-
-.rkSignalRing {
-  fill: none;
-  stroke: rgba(248, 238, 218, 0.2);
-  stroke-width: 0.78;
-  opacity: 0.92;
-}
-
-.rkPolyFill {
-  fill: rgba(248, 236, 212, 0.09);
-}
-
-.rkPolyLine {
-  fill: none;
-  stroke-width: 1.22;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  opacity: 0.94;
-}
-
-.rkNodePulse {
-  fill: rgba(252, 246, 232, 0.14);
-  animation: rs_rkNodeGlow 4s ease-in-out infinite;
-}
-
-.rkNode {
-  fill: rgba(236, 224, 196, 0.44);
-  stroke: rgba(255, 253, 246, 0.38);
-  stroke-width: 0.85;
-}
-
-.rkCoreRing {
-  fill: rgba(255, 253, 248, 0.04);
-  stroke: rgba(232, 218, 196, 0.22);
-  stroke-width: 0.95;
-}
-
-.rkCoreInner {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.055);
-  stroke-width: 0.68;
-}
-
-/* Center readout */
-.ringCenter1 {
+.riskStatusTxt {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  fill: rgba(255, 253, 248, 0.96);
-  letter-spacing: 0.14px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 253, 248, 0.92);
 }
 
-.ringCenter2 {
-  font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11.5px;
-  font-weight: 500;
-  fill: rgba(238, 230, 212, 0.85);
-}
-
-/* Stats row — 4 items */
-.statsRow {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 10px 0 4px;
-  border-top: 1px solid rgba(255, 253, 246, 0.08);
-  flex-shrink: 0;
-  margin-top: 6px;
-}
-
-.statItem {
-  flex: 1;
+.riskRows {
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+}
+
+.riskRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  gap: 10px;
   align-items: center;
-  gap: 4px;
-  min-width: 0;
-  padding: 0 2px;
+  padding: 10px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 253, 246, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  box-shadow: inset 0 1px 0 rgba(255, 253, 246, 0.06);
 }
 
-.statDiv {
-  width: 1px;
-  height: 26px;
-  background: rgba(255, 255, 255, 0.07);
-  flex-shrink: 0;
-}
-
-.statLbl {
+.riskLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 9.5px;
-  font-weight: 500;
-  color: rgba(255, 253, 248, 0.5);
-  text-align: center;
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 253, 248, 0.72);
 }
 
-.statVal {
+.riskBar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 253, 246, 0.06);
+  border: 1px solid rgba(255, 253, 246, 0.07);
+  overflow: hidden;
+}
+
+.riskBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(236, 224, 196, 0.75), rgba(212, 175, 95, 0.42));
+  box-shadow: 0 0 18px rgba(212, 175, 95, 0.12);
+}
+
+.riskVal {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  color: rgba(252, 248, 240, 0.94);
-  line-height: 1.05;
-}
-
-.statValGold {
-  color: rgba(244, 234, 214, 0.96);
-  text-shadow: 0 0 18px rgba(212, 175, 55, 0.12);
+  color: rgba(244, 232, 208, 0.92);
 }
 
 /* ══════════════════════════════════
@@ -741,83 +621,51 @@
   flex-shrink: 0;
 }
 
-.regCanvas {
-  flex: 1;
+.regLogos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.regLogoCard {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 253, 246, 0.1);
+  background: rgba(0, 0, 0, 0.18);
+  padding: 12px 10px;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  min-height: 0;
-  padding: 2px 0 6px;
+  min-height: 66px;
 }
 
-.regSvg {
-  width: 100%;
-  max-width: 360px;
+.regLogoImg2 {
+  opacity: 0.98;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.28));
   height: auto;
-  display: block;
-  overflow: visible;
+  max-width: 100%;
 }
 
-.regLogoPlate {
-  fill: rgba(255, 255, 255, 0.038);
-  stroke: rgba(255, 253, 246, 0.09);
-  stroke-width: 0.9;
+.regChips {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
-.regLogoImg {
-  opacity: 0.96;
-  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.22));
-}
-
-.regFlowA { animation: rs_flowLine 2.8s linear infinite; }
-.regFlowB { animation: rs_flowLine 2.8s linear 0.45s infinite; }
-.regFlowC { animation: rs_flowLine 2.8s linear 0.9s infinite; }
-.regFlowD { animation: rs_flowLine 2.8s linear 1.35s infinite; }
-.regFlowE { animation: rs_flowLine 2.8s linear 1.8s infinite; }
-
-.regStatusDot {
-  fill: #34d399;
-  stroke: rgba(255, 253, 246, 0.55);
-  stroke-width: 0.65;
-}
-
-.regDotPulse {
-  fill: none;
-  stroke: rgba(52, 211, 153, 0.42);
-  stroke-width: 0.75;
-  animation: rs_regDotPulse 2.6s ease-in-out infinite;
-}
-
-@keyframes rs_regDotPulse {
-  0%, 100% {
-    opacity: 0.35;
-    stroke-width: 0.65;
-  }
-  50% {
-    opacity: 0.85;
-    stroke-width: 0.95;
-  }
-}
-
-.regJunction {
-  fill: rgba(252, 246, 232, 0.92);
-  stroke: rgba(255, 253, 246, 0.45);
-  stroke-width: 0.65;
-  animation: rs_regJunction 3.8s ease-in-out infinite;
-}
-
-.regSeal {
-  fill: rgba(255, 255, 255, 0.025);
-  stroke: rgba(255, 253, 246, 0.095);
-  stroke-width: 0.85;
-}
-
-.regSealLbl {
+.regChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 253, 246, 0.11);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.07em;
-  fill: rgba(252, 248, 240, 0.96);
+  letter-spacing: 0.06em;
+  color: rgba(255, 253, 248, 0.9);
 }
 
 .regAuthNote {
@@ -906,7 +754,7 @@
     rgba(238, 224, 198, 0.1) 42%,
     transparent 68%
   );
-  animation: rs_shieldHalo 7.5s ease-in-out infinite;
+  animation: none;
   z-index: 0;
   pointer-events: none;
 }
@@ -1012,7 +860,7 @@
 .shieldCore {
   position: relative;
   z-index: 4;
-  animation: rs_shieldPulse 5.5s ease-in-out infinite;
+  animation: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1146,30 +994,16 @@
   .kpiRow {
     grid-template-columns: repeat(2, 1fr);
   }
+  .regLogos {
+    grid-template-columns: 1fr;
+  }
+  .regChips {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .regDotPulse {
-    animation: none;
-    opacity: 0.55;
-  }
-
-  .rkRotateSlow,
-  .rkRotateRev,
-  .rkSweepArm,
-  .rkNodePulse,
-  .regFlowA,
-  .regFlowB,
-  .regFlowC,
-  .regFlowD,
-  .regFlowE,
-  .regJunction,
   .shieldHalo,
-  .orbitSpinXL,
-  .orbitSpinLg,
-  .orbitSpinMd,
-  .orbitSpinSm,
-  .orbitDot,
   .shieldCore {
     animation: none;
   }
