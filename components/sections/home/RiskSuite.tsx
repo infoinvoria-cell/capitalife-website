@@ -141,39 +141,95 @@ function IcShield(): ReactNode {
   );
 }
 
-// Network / compliance icon for Box 3
-function IcNetwork(): ReactNode {
+/** Classical institutional façade — Box 3 header */
+function IcInstitution(): ReactNode {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="5"  cy="5"  r="2"   stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="19" cy="5"  r="2"   stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="5"  cy="19" r="2"   stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="19" cy="19" r="2"   stroke="currentColor" strokeWidth="1.6" />
-      <path d="M7 7l3.5 3.5M17 7l-3.5 3.5M7 17l3.5-3.5M17 17l-3.5-3.5"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <path
+        d="M12 2.5l8.5 4.2v1.6H3.5V6.7L12 2.5z"
+        stroke="currentColor"
+        strokeWidth="1.35"
+        strokeLinejoin="round"
+      />
+      <path d="M5.5 11h2.3v8H5.5v-8zm5.1 0h2.3v8h-2.3v-8zm5.2 0H18v8h-2.2v-8z" fill="currentColor" opacity="0.34" />
+      <path
+        d="M4.5 8.2h15"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+      />
+      <path
+        d="M3.5 19.5h17"
+        stroke="currentColor"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+      />
+      <path
+        d="M12 4.8v2.4"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeLinecap="round"
+        opacity="0.45"
+      />
     </svg>
   );
 }
 
-// Large central shield for Box 4
+/** Hero-scale shield glyph — Investor Protection centerpiece */
 function IcShieldLg(): ReactNode {
   return (
-    <svg width="46" height="54" viewBox="0 0 52 60" fill="none" aria-hidden>
+    <svg
+      width="96"
+      height="111"
+      viewBox="0 0 52 60"
+      fill="none"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="ip_sg_outer" x1="10" y1="4" x2="42" y2="56" gradientUnits="userSpaceOnUse">
+          <stop stopColor="rgba(255,253,248,0.62)" />
+          <stop offset="0.45" stopColor="rgba(232,222,198,0.42)" />
+          <stop offset="1" stopColor="rgba(210,198,170,0.38)" />
+        </linearGradient>
+        <linearGradient id="ip_sg_inner" x1="26" y1="14" x2="26" y2="52" gradientUnits="userSpaceOnUse">
+          <stop stopColor="rgba(255,255,255,0.08)" />
+          <stop offset="1" stopColor="rgba(255,250,242,0.03)" />
+        </linearGradient>
+        <filter id="ip_sg_glow" x="-35%" y="-35%" width="170%" height="170%">
+          <feGaussianBlur stdDeviation="1.4" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {/* Soft outer glow stroke */}
       <path
         d="M26 2L4 10v16c0 16.8 11.8 32.5 22 36.9C36.2 58.5 48 42.8 48 26V10L26 2z"
-        stroke="rgba(255,255,255,0.22)" strokeWidth="1.5"
-        fill="rgba(255,255,255,0.05)"
+        stroke="url(#ip_sg_outer)"
+        strokeWidth="2.05"
+        fill="rgba(255,253,246,0.04)"
+        opacity="0.95"
+      />
+      <path
+        d="M26 2L4 10v16c0 16.8 11.8 32.5 22 36.9C36.2 58.5 48 42.8 48 26V10L26 2z"
+        stroke="rgba(255,253,248,0.14)"
+        strokeWidth="1.35"
+        fill="url(#ip_sg_inner)"
+        filter="url(#ip_sg_glow)"
       />
       <path
         d="M26 13L14 19v9c0 10.5 7.4 20.3 12 22.8 4.6-2.5 12-12.3 12-22.8V19L26 13z"
-        stroke="rgba(255,255,255,0.09)" strokeWidth="1"
-        fill="rgba(255,255,255,0.02)"
+        stroke="rgba(255,253,246,0.16)"
+        strokeWidth="1.05"
+        fill="rgba(255,255,255,0.025)"
       />
       <path
         d="M19 30l5 5 9-9"
-        stroke="rgba(255,255,255,0.52)" strokeWidth="1.6"
-        strokeLinecap="round" strokeLinejoin="round"
+        stroke="rgba(248,242,228,0.72)"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -561,105 +617,181 @@ export default function RiskSuite() {
             </div>
           </div>
 
-          {/* ── Box 3: Partner network ── */}
+          {/* ── Box 3: Regulated partners ── */}
           <div className={`${r("box")} ${r("boxReg")}`}>
             <div className={r("boxHead")}>
-              <span className={r("boxIco")}><IcNetwork /></span>
+              <span className={r("boxIco")}><IcInstitution /></span>
               <span className={r("boxTitle")}>{copy.b3title}</span>
             </div>
 
-            <p className={r("boxDesc")}>{copy.b3desc}</p>
+            <p className={r("regDesc")}>{copy.b3desc}</p>
 
-            {/* Partner & regulator network visualization */}
-            <div className={r("partnerWrap")}>
-              <svg viewBox="0 0 280 152" fill="none" aria-label="Partner network" className={r("partnerSvg")}>
+            <div className={r("regCanvas")}>
+              <svg
+                viewBox="0 0 340 224"
+                fill="none"
+                className={r("regSvg")}
+                role="img"
+                aria-label={
+                  lang === "de"
+                    ? "Regulierte Broker-Logos und Verbindung zu FCA, CySEC und FSC"
+                    : "Broker logos and links to FCA, CySEC, and FSC"
+                }
+              >
                 <defs>
-                  <radialGradient id="rs_hubGrad" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%"   stopColor="rgba(196,166,80,0.20)" />
-                    <stop offset="100%" stopColor="rgba(196,166,80,0)" />
+                  <radialGradient id="rs_reg_hubGlow" cx="50%" cy="42%" r="58%">
+                    <stop offset="0%" stopColor="rgba(252,246,232,0.16)" />
+                    <stop offset="100%" stopColor="rgba(252,246,232,0)" />
                   </radialGradient>
-                  <radialGradient id="rs_hubInner" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%"   stopColor="rgba(221,212,170,0.6)" />
-                    <stop offset="100%" stopColor="rgba(196,166,80,0.2)" />
+                  <radialGradient id="rs_reg_hubCore" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="rgba(250,244,230,0.95)" />
+                    <stop offset="100%" stopColor="rgba(215,204,176,0.42)" />
                   </radialGradient>
+                  <linearGradient id="rs_reg_ln" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="rgba(255,253,246,0.2)" />
+                    <stop offset="100%" stopColor="rgba(228,218,196,0.07)" />
+                  </linearGradient>
+                  <filter id="rs_reg_nodeBlur">
+                    <feGaussianBlur stdDeviation="1.4" />
+                  </filter>
                 </defs>
 
-                {/* ── Connecting lines with flow animation ── */}
-                {/* Hub → RoboForex */}
-                <line x1="140" y1="76" x2="70" y2="32"
-                  stroke="rgba(255,255,255,0.08)" strokeWidth="1"
-                  strokeDasharray="3 4" className={r("netLine")} />
-                {/* Hub → Vantage */}
-                <line x1="140" y1="76" x2="210" y2="32"
-                  stroke="rgba(255,255,255,0.08)" strokeWidth="1"
-                  strokeDasharray="3 4" className={r("netLineB")} />
-                {/* Hub → FCA */}
-                <line x1="140" y1="76" x2="52" y2="132"
-                  stroke="rgba(255,255,255,0.06)" strokeWidth="1"
-                  strokeDasharray="3 4" className={r("netLineC")} />
-                {/* Hub → CySEC */}
-                <line x1="140" y1="76" x2="140" y2="138"
-                  stroke="rgba(255,255,255,0.06)" strokeWidth="1"
-                  strokeDasharray="3 4" className={r("netLineD")} />
-                {/* Hub → FSC */}
-                <line x1="140" y1="76" x2="228" y2="132"
-                  stroke="rgba(255,255,255,0.06)" strokeWidth="1"
-                  strokeDasharray="3 4" className={r("netLineE")} />
+                {/* Depth panel */}
+                <rect
+                  x="16"
+                  y="54"
+                  width="308"
+                  height="116"
+                  rx="16"
+                  className={r("regDepthPanel")}
+                />
 
-                {/* ── Partner nodes (top) ── */}
-                {/* RoboForex */}
-                <rect x="28" y="16" width="84" height="28" rx="14"
-                  fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
-                <text x="70" y="33" textAnchor="middle" className={r("partnerLabel")}>
-                  RoboForex
+                {/* Links: hub (170, 114) ↔ partners & regulators */}
+                <line
+                  x1="170"
+                  y1="114"
+                  x2="82"
+                  y2="46"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="1"
+                  strokeDasharray="3 5"
+                  className={r("regFlowA")}
+                />
+                <line
+                  x1="170"
+                  y1="114"
+                  x2="258"
+                  y2="46"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="1"
+                  strokeDasharray="3 5"
+                  className={r("regFlowB")}
+                />
+                <line
+                  x1="170"
+                  y1="114"
+                  x2="68"
+                  y2="174"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="0.9"
+                  strokeDasharray="3 5"
+                  opacity={0.88}
+                  className={r("regFlowC")}
+                />
+                <line
+                  x1="170"
+                  y1="114"
+                  x2="170"
+                  y2="178"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="0.9"
+                  strokeDasharray="3 5"
+                  opacity={0.88}
+                  className={r("regFlowD")}
+                />
+                <line
+                  x1="170"
+                  y1="114"
+                  x2="272"
+                  y2="174"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="0.9"
+                  strokeDasharray="3 5"
+                  opacity={0.88}
+                  className={r("regFlowE")}
+                />
+
+                {/* Logo plates + PNG marks (same assets as Hero) */}
+                <rect x="28" y="16" width="108" height="42" rx="11" className={r("regLogoPlate")} />
+                <rect x="204" y="16" width="108" height="42" rx="11" className={r("regLogoPlate")} />
+                <image
+                  href="/Roboforex.png"
+                  x="38"
+                  y="23"
+                  width="88"
+                  height="28"
+                  preserveAspectRatio="xMidYMid meet"
+                  className={r("regLogoImg")}
+                />
+                <image
+                  href="/Vantage.png"
+                  x="214"
+                  y="23"
+                  width="88"
+                  height="28"
+                  preserveAspectRatio="xMidYMid meet"
+                  className={r("regLogoImg")}
+                />
+
+                {/* Partner nodes: dot + pulsing rings */}
+                <g>
+                  <circle cx="82" cy="44" r="15" className={r("regPartnerRingOuter")} />
+                  <circle cx="82" cy="44" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
+                  <circle cx="82" cy="44" r="3.2" className={r("regPartnerDot")} />
+                </g>
+                <g className={r("regPartnerLate")}>
+                  <circle cx="258" cy="44" r="15" className={r("regPartnerRingOuter")} />
+                  <circle cx="258" cy="44" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
+                  <circle cx="258" cy="44" r="3.2" className={r("regPartnerDot")} />
+                </g>
+
+                {/* Compliance hub */}
+                <circle cx="170" cy="114" r="46" fill="url(#rs_reg_hubGlow)" />
+                <circle cx="170" cy="114" r="22" className={r("regHubDisk")} />
+                <circle cx="170" cy="114" r="14.5" className={r("regHubDiskInner")} />
+                <circle cx="170" cy="114" r="6.5" fill="url(#rs_reg_hubCore)" className={r("regHubCore")} />
+                <path
+                  d="M164.5 114l3 3 8.5-8.5"
+                  stroke="rgba(42,40,36,0.42)"
+                  strokeWidth="1.35"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+
+                {/* Regulators — inset from edges, compact labels */}
+                <circle cx="68" cy="182" r="19.5" className={r("regSeal")} />
+                <text x="68" y="178.5" textAnchor="middle" className={r("regSealLbl")}>
+                  FCA
                 </text>
-                <circle cx="106" cy="30" r="3" fill="rgba(196,166,80,0.55)" className={r("partnerDot")} />
-
-                {/* Vantage */}
-                <rect x="168" y="16" width="84" height="28" rx="14"
-                  fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
-                <text x="210" y="33" textAnchor="middle" className={r("partnerLabel")}>
-                  Vantage
+                <text x="68" y="187.5" textAnchor="middle" className={r("regSealSub")}>
+                  regulated
                 </text>
-                <circle cx="246" cy="30" r="3" fill="rgba(196,166,80,0.55)" className={r("partnerDotB")} />
 
-                {/* ── Central compliance hub ── */}
-                {/* Ambient glow */}
-                <circle cx="140" cy="76" r="36" fill="url(#rs_hubGrad)" />
-                {/* Outer ring */}
-                <circle cx="140" cy="76" r="20"
-                  stroke="rgba(196,166,80,0.18)" strokeWidth="1"
-                  fill="rgba(196,166,80,0.03)" />
-                {/* Mid ring */}
-                <circle cx="140" cy="76" r="13"
-                  stroke="rgba(255,255,255,0.07)" strokeWidth="1"
-                  fill="rgba(255,255,255,0.02)" />
-                {/* Core dot (pulsing) */}
-                <circle cx="140" cy="76" r="5.5"
-                  fill="url(#rs_hubInner)" className={r("netHub")} />
-                {/* Checkmark inside hub */}
-                <path d="M135 76l3.5 3.5 6.5-6.5"
-                  stroke="rgba(255,255,255,0.60)" strokeWidth="1.4"
-                  strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="170" cy="182" r="19.5" className={r("regSeal")} />
+                <text x="170" y="178.5" textAnchor="middle" className={r("regSealLbl")}>
+                  CySEC
+                </text>
+                <text x="170" y="187.5" textAnchor="middle" className={r("regSealSub")}>
+                  regulated
+                </text>
 
-                {/* ── Regulator nodes (bottom) ── */}
-                {/* FCA */}
-                <circle cx="52" cy="132" r="18"
-                  fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
-                <text x="52" y="130" textAnchor="middle" className={r("regLabel")}>FCA</text>
-                <text x="52" y="141" textAnchor="middle" className={r("regSub")}>regulated</text>
-
-                {/* CySEC */}
-                <circle cx="140" cy="138" r="18"
-                  fill="rgba(255,255,255,0.03)" stroke="rgba(196,166,80,0.15)" strokeWidth="1" />
-                <text x="140" y="136" textAnchor="middle" className={r("regLabel")}>CySEC</text>
-                <text x="140" y="147" textAnchor="middle" className={r("regSub")}>regulated</text>
-
-                {/* FSC */}
-                <circle cx="228" cy="132" r="18"
-                  fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
-                <text x="228" y="130" textAnchor="middle" className={r("regLabel")}>FSC</text>
-                <text x="228" y="141" textAnchor="middle" className={r("regSub")}>regulated</text>
+                <circle cx="272" cy="182" r="19.5" className={r("regSeal")} />
+                <text x="272" y="178.5" textAnchor="middle" className={r("regSealLbl")}>
+                  FSC
+                </text>
+                <text x="272" y="187.5" textAnchor="middle" className={r("regSealSub")}>
+                  regulated
+                </text>
               </svg>
             </div>
           </div>
@@ -685,14 +817,27 @@ export default function RiskSuite() {
 
               {/* Central shield — spans both rows */}
               <div className={r("shieldZone")}>
-                <div className={r("orbitRingLg")}>
-                  <div className={r("orbitDot")} style={{ top: "1%",  left: "50%" }} />
-                  <div className={r("orbitDot")} style={{ top: "50%", left: "99%" }} />
-                  <div className={r("orbitDot")} style={{ top: "99%", left: "50%" }} />
-                  <div className={r("orbitDot")} style={{ top: "50%", left: "1%"  }} />
+                <div className={r("shieldHalo")} aria-hidden />
+                <div className={r("orbitSpinXL")} aria-hidden>
+                  <div className={r("orbitRingXL")} />
                 </div>
-                <div className={r("orbitRingSm")} />
-                <div className={r("shieldCore")}><IcShieldLg /></div>
+                <div className={r("orbitSpinLg")}>
+                  <div className={r("orbitRingLg")}>
+                    <div className={r("orbitDot")} style={{ top: "1%", left: "50%" }} />
+                    <div className={r("orbitDot")} style={{ top: "50%", left: "99%" }} />
+                    <div className={r("orbitDot")} style={{ top: "99%", left: "50%" }} />
+                    <div className={r("orbitDot")} style={{ top: "50%", left: "1%" }} />
+                  </div>
+                </div>
+                <div className={r("orbitSpinMd")} aria-hidden>
+                  <div className={r("orbitRingMd")} />
+                </div>
+                <div className={r("orbitSpinSm")} aria-hidden>
+                  <div className={r("orbitRingSm")} />
+                </div>
+                <div className={r("shieldCore")}>
+                  <IcShieldLg />
+                </div>
               </div>
 
               {/* Card 2 — top right */}
