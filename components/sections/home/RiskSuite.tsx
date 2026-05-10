@@ -9,33 +9,55 @@ function r(name: string): string {
   return (raw as Record<string, string>)[name] ?? "";
 }
 
-// ── Backtesting curve (1970–2026, cumulative return %) ─────────────────────────
-// 57 data points: index 0 = 1970, index 56 = 2026.
-const BACKTEST_RAW = [
-  -3.43, -5.60, -0.50, 2.10, 3.81, -6.00, -2.58, -0.03, 1.29, 1.13,
-  11.37, 5.15, 6.28, 5.87, 6.58, 14.48, 9.24, 9.09, 13.04, 15.67,
-  15.06, 11.99, 22.66, 30.93, 38.83, 57.83, 68.32, 89.43, 96.32, 124.12,
-  141.52, 143.01, 182.72, 231.83, 219.59, 235.09, 333.80, 403.30, 340.69, 494.40,
-  664.40, 802.52, 846.66, 1086.06, 1304.66, 1397.36, 1710.31, 2130.85, 2271.17, 3181.22,
-  4026.79, 5156.30, 5597.30, 7057.52, 8929.21, 11488.99, 11564.32,
+// ── Annual returns % (1970–2026), then simple cumulative sum (NOT compounded) ───
+const BT_ANNUAL = [
+  -3.43, -2.25, 5.41, 2.61, 1.67, -9.45, 3.64, 2.62, 1.32, -0.16,
+  10.13, -5.59, 1.08, -0.39, 0.67, 7.42, -4.58, -0.14, 3.62, 2.33,
+  -0.53, -2.67, 9.53, 6.74, 6.04, 13.68, 6.65, 12.54, 3.64, 14.16,
+  7.76, 0.62, 16.34, 17.37, -3.69, 4.85, 29.46, 16.02, -12.44, 34.88,
+  28.6, 18.07, 4.89, 25.29, 18.43, 6.6, 20.9, 23.23, 6.29, 38.38,
+  25.77, 27.37, 8.39, 25.63, 26.15, 28.35, 0.65,
 ];
-const BT_N = BACKTEST_RAW.length; // 57
+const BT_N = BT_ANNUAL.length;
+
+/** Cumulative % = sum of annual returns (additive, not compounded). */
+const BACKTEST_CUMULATIVE = (() => {
+  let s = 0;
+  return BT_ANNUAL.map((r) => {
+    s += r;
+    return s;
+  });
+})();
+
+const BT_CMIN = Math.min(...BACKTEST_CUMULATIVE);
+const BT_CMAX = Math.max(...BACKTEST_CUMULATIVE);
+const BT_PAD = Math.max((BT_CMAX - BT_CMIN) * 0.07, 100);
+const BT_SCALE_MIN = BT_CMIN - BT_PAD;
+const BT_SCALE_MAX = BT_CMAX + BT_PAD;
+
+const BT_TICK_N = 5;
+const BT_Y_TICKS = Array.from({ length: BT_TICK_N }, (_, i) => {
+  const t = i / (BT_TICK_N - 1);
+  return Math.round(BT_SCALE_MIN + t * (BT_SCALE_MAX - BT_SCALE_MIN));
+});
+
+const BT_Y_MINOR: number[] = [];
+for (let i = 0; i < BT_Y_TICKS.length - 1; i++) {
+  BT_Y_MINOR.push(Math.round((BT_Y_TICKS[i]! + BT_Y_TICKS[i + 1]!) / 2));
+}
 
 // ── Chart geometry ─────────────────────────────────────────────────────────────
 const CW = 560, CH = 148;
 const BT_PL = 52, BT_PR = 18, BT_PT = 8, BT_PB = 22;
 const BT_uW  = CW - BT_PL - BT_PR;
 const BT_uH  = CH - BT_PT - BT_PB;
-const BT_MAX = 12000;
-
-const BT_Y_TICKS = [0, 2500, 5000, 7500, 10000];
-/** Subtle intermediate gridlines between major Y ticks */
-const BT_Y_MINOR = [1250, 3750, 6250, 8750];
 const BT_X_IDXS  = [0, 10, 20, 30, 40, 50, 56];
 const BT_X_LBLS  = ["1970", "1980", "1990", "2000", "2010", "2020", "2026"];
 
 function btYPos(v: number): number {
-  return BT_PT + BT_uH - (Math.max(0, v) / BT_MAX) * BT_uH;
+  const span = BT_SCALE_MAX - BT_SCALE_MIN || 1;
+  const t = (v - BT_SCALE_MIN) / span;
+  return BT_PT + BT_uH - t * BT_uH;
 }
 
 function btXFromIdx(idx: number): number {
@@ -43,14 +65,18 @@ function btXFromIdx(idx: number): number {
 }
 
 function btFmtY(v: number, lang: Lang): string {
-  if (v === 0) return "0%";
   const sep = lang === "de" ? "." : ",";
-  return `${v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep)}%`;
+  const rounded = Math.round(v);
+  const body = Math.abs(rounded)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+  if (rounded === 0) return "0%";
+  return `${rounded < 0 ? "−" : ""}${body}%`;
 }
 
-/** Straight-line segments between annual points — clean cumulative read, not a smooth compounding-style curve. */
+/** Segment-wise linear path through additive cumulative series. */
 function buildBtChart() {
-  const pts = BACKTEST_RAW.map((v, i) => ({
+  const pts = BACKTEST_CUMULATIVE.map((v, i) => ({
     x: BT_PL + (i / (BT_N - 1)) * BT_uW,
     y: btYPos(v),
   }));
@@ -70,9 +96,9 @@ const { line: BT_LINE, area: BT_AREA, lastX: BT_LX, lastY: BT_LY } = buildBtChar
 
 // ── Risk engine radar (Box 2) — layered radar / signal visual ─────────────────
 // Normalized radii (0–1) derived from published metrics for a coherent footprint.
-const RK_CX = 130;
-const RK_CY = 130;
-const RK_R  = 92;
+const RK_CX = 150;
+const RK_CY = 150;
+const RK_R  = 102;
 const RK_ANGLES = [-Math.PI / 2, 0, Math.PI / 2, Math.PI] as const;
 /** Sharpe, Calmar, profit factor, win rate — visual mapping, not a second data table */
 const RK_NORM = [0.80, 0.54, 0.66, 0.58] as const;
@@ -166,7 +192,7 @@ function IcInstitution(): ReactNode {
 /** Investor Protection — per-card icons */
 function IcSgBroker(): ReactNode {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M4 10h16v10H4V10z" stroke="currentColor" strokeWidth="1.35" />
       <path d="M8 14h4M12 10V6l4-2 4 2v4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -175,7 +201,7 @@ function IcSgBroker(): ReactNode {
 
 function IcSgFees(): ReactNode {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.35" />
       <path d="M8 15l8-8M9 9h4v4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
     </svg>
@@ -184,7 +210,7 @@ function IcSgFees(): ReactNode {
 
 function IcSgVisibility(): ReactNode {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M12 7a7 7 0 0 1 7 5 7 7 0 0 1-14 0 7 7 0 0 1 7-5z"
         stroke="currentColor"
@@ -197,7 +223,7 @@ function IcSgVisibility(): ReactNode {
 
 function IcSgReport(): ReactNode {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M8 4h11v16H8V4z" stroke="currentColor" strokeWidth="1.35" />
       <path d="M8 8h11M8 12h7M8 16h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
@@ -215,8 +241,8 @@ const SG_ICONS: ReactNode[] = [
 function IcShieldLg(): ReactNode {
   return (
     <svg
-      width="112"
-      height="129"
+      width="132"
+      height="152"
       viewBox="0 0 52 60"
       fill="none"
       aria-hidden
@@ -290,6 +316,7 @@ type Copy = {
   b2title: string;
   b2center1: string;
   b2center2: string;
+  b2sub: string;
   b2stats: StatItem[];
   // Box 3
   b3title: string;
@@ -314,12 +341,14 @@ const COPY: Record<Lang, Copy> = {
       { value: "+8.80%", label: "Annual return" },
       { value: "1970", label: "Backtested since" },
       { value: "2024", label: "Live + shadow since" },
+      { value: "−20.91%", label: "Max drawdown" },
     ],
     b1disclaimer: "Historical strategy data is shown for informational purposes only.",
     // Box 2
     b2title:   "Strategy Risk Overview",
     b2center1: "Controlled",
     b2center2: "risk profile",
+    b2sub: "Structured control across multiple market phases",
     b2stats: [
       { lbl: "Sharpe", val: "1.63" },
       { lbl: "Calmar", val: "0.43" },
@@ -364,12 +393,14 @@ const COPY: Record<Lang, Copy> = {
       { value: "+8,80%", label: "Jährliche Rendite" },
       { value: "1970", label: "Backtesting seit" },
       { value: "2024", label: "Live + Shadow seit" },
+      { value: "−20,91%", label: "Max. Drawdown" },
     ],
     b1disclaimer: "Historische Strategiedaten dienen ausschließlich Informationszwecken.",
     // Box 2
     b2title:   "Strategie Risikoübersicht",
     b2center1: "Kontrolliertes",
     b2center2: "Risikoprofil",
+    b2sub: "Strukturierte Steuerung über mehrere Marktphasen",
     b2stats: [
       { lbl: "Sharpe", val: "1,63" },
       { lbl: "Calmar", val: "0,43" },
@@ -443,17 +474,17 @@ export default function RiskSuite() {
               <svg className={r("chartSvg")} viewBox={`0 0 ${CW} ${CH}`} preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="rs_lg" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="rgba(248,245,236,0.55)" />
-                    <stop offset="42%" stopColor="rgba(232,223,198,0.92)" />
-                    <stop offset="100%" stopColor="rgba(210,198,165,0.78)" />
+                    <stop offset="0%"   stopColor="rgba(255,253,248,0.92)" />
+                    <stop offset="38%" stopColor="rgba(248,242,228,0.98)" />
+                    <stop offset="100%" stopColor="rgba(228,218,192,0.88)" />
                   </linearGradient>
                   <linearGradient id="rs_ag" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%"   stopColor="rgba(245,240,228,0.14)" />
                     <stop offset="55%" stopColor="rgba(232,224,200,0.05)" />
                     <stop offset="100%" stopColor="rgba(220,210,185,0)" />
                   </linearGradient>
-                  <filter id="rs_lineGlow" x="-18%" y="-18%" width="136%" height="136%">
-                    <feGaussianBlur stdDeviation="0.85" result="b" />
+                  <filter id="rs_lineGlow" x="-22%" y="-22%" width="144%" height="144%">
+                    <feGaussianBlur stdDeviation="1.15" result="b" />
                     <feMerge>
                       <feMergeNode in="b" />
                       <feMergeNode in="SourceGraphic" />
@@ -551,23 +582,23 @@ export default function RiskSuite() {
             </div>
 
             <div className={r("riskEngineWrap")}>
-              <svg viewBox="0 0 260 260" fill="none" className={r("riskEngineSvg")} aria-hidden>
+              <svg viewBox="0 0 300 300" fill="none" className={r("riskEngineSvg")} aria-hidden>
                 <defs>
-                  <radialGradient id="rs_rk_bg" cx="50%" cy="42%" r="68%">
-                    <stop offset="0%" stopColor="rgba(252,248,238,0.07)" />
-                    <stop offset="55%" stopColor="rgba(28,26,22,0.12)" />
-                    <stop offset="100%" stopColor="rgba(8,8,8,0.35)" />
+                  <radialGradient id="rs_rk_bg" cx="50%" cy="44%" r="72%">
+                    <stop offset="0%" stopColor="rgba(252,246,232,0.14)" />
+                    <stop offset="48%" stopColor="rgba(232,220,196,0.05)" />
+                    <stop offset="100%" stopColor="rgba(22,20,17,0.02)" />
                   </radialGradient>
                   <linearGradient id="rs_rk_polyStroke" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,248,0.55)" />
-                    <stop offset="100%" stopColor="rgba(218,208,180,0.45)" />
+                    <stop offset="0%" stopColor="rgba(255,253,248,0.72)" />
+                    <stop offset="100%" stopColor="rgba(218,202,168,0.55)" />
                   </linearGradient>
                   <filter id="rs_rk_sigBlur" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="1.8" />
                   </filter>
                 </defs>
 
-                <rect x="0" y="0" width="260" height="260" fill="url(#rs_rk_bg)" rx="16" />
+                <circle cx={RK_CX} cy={RK_CY} r={RK_R + 46} fill="url(#rs_rk_bg)" />
 
                 {/* Concentric risk rings */}
                 {RK_RING_LEVELS.map((lv) => (
@@ -635,16 +666,18 @@ export default function RiskSuite() {
                 ))}
 
                 {/* Center readout */}
-                <circle cx={RK_CX} cy={RK_CY} r="31" className={r("rkCoreRing")} />
-                <circle cx={RK_CX} cy={RK_CY} r="24" className={r("rkCoreInner")} />
-                <text x={RK_CX} y={RK_CY - 8} textAnchor="middle" className={r("ringCenter1")}>
+                <circle cx={RK_CX} cy={RK_CY} r="36" className={r("rkCoreRing")} />
+                <circle cx={RK_CX} cy={RK_CY} r="27" className={r("rkCoreInner")} />
+                <text x={RK_CX} y={RK_CY - 16} textAnchor="middle" className={r("ringCenter1")}>
                   {copy.b2center1}
                 </text>
-                <text x={RK_CX} y={RK_CY + 12} textAnchor="middle" className={r("ringCenter2")}>
+                <text x={RK_CX} y={RK_CY + 4} textAnchor="middle" className={r("ringCenter2")}>
                   {copy.b2center2}
                 </text>
               </svg>
             </div>
+
+            <p className={r("b2SubLine")}>{copy.b2sub}</p>
 
             {/* 4 stats */}
             <div className={r("statsRow")}>
@@ -669,7 +702,7 @@ export default function RiskSuite() {
 
             <div className={r("regCanvas")}>
               <svg
-                viewBox="0 0 340 188"
+                viewBox="0 0 340 214"
                 fill="none"
                 className={r("regSvg")}
                 role="img"
@@ -681,116 +714,119 @@ export default function RiskSuite() {
               >
                 <defs>
                   <linearGradient id="rs_reg_ln" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,246,0.22)" />
-                    <stop offset="100%" stopColor="rgba(228,218,196,0.08)" />
+                    <stop offset="0%" stopColor="rgba(255,253,246,0.32)" />
+                    <stop offset="100%" stopColor="rgba(228,212,180,0.14)" />
                   </linearGradient>
                   <filter id="rs_reg_nodeBlur">
                     <feGaussianBlur stdDeviation="1.4" />
                   </filter>
                 </defs>
 
-                {/* Partner tier */}
-                <rect x="28" y="14" width="108" height="42" rx="11" className={r("regLogoPlate")} />
-                <rect x="204" y="14" width="108" height="42" rx="11" className={r("regLogoPlate")} />
+                {/* Partner tier — logos clear of pulse indicators */}
+                <rect x="28" y="12" width="108" height="44" rx="11" className={r("regLogoPlate")} />
+                <rect x="204" y="12" width="108" height="44" rx="11" className={r("regLogoPlate")} />
                 <image
                   href="/Roboforex.png"
-                  x="38"
-                  y="21"
-                  width="88"
-                  height="28"
+                  x="36"
+                  y="19"
+                  width="92"
+                  height="30"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
                 <image
                   href="/Vantage.png"
-                  x="214"
-                  y="21"
-                  width="88"
-                  height="28"
+                  x="212"
+                  y="19"
+                  width="92"
+                  height="30"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
 
+                {/* Active rings below logo plates (not on artwork) */}
                 <g>
-                  <circle cx="82" cy="42" r="15" className={r("regPartnerRingOuter")} />
-                  <circle cx="82" cy="42" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
-                  <circle cx="82" cy="42" r="3.2" className={r("regPartnerDot")} />
+                  <circle cx="82" cy="72" r="16" className={r("regPartnerRingOuter")} />
+                  <circle cx="82" cy="72" r="10" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
+                  <circle cx="82" cy="72" r="3.4" className={r("regPartnerDot")} />
                 </g>
                 <g className={r("regPartnerLate")}>
-                  <circle cx="258" cy="42" r="15" className={r("regPartnerRingOuter")} />
-                  <circle cx="258" cy="42" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
-                  <circle cx="258" cy="42" r="3.2" className={r("regPartnerDot")} />
+                  <circle cx="258" cy="72" r="16" className={r("regPartnerRingOuter")} />
+                  <circle cx="258" cy="72" r="10" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
+                  <circle cx="258" cy="72" r="3.4" className={r("regPartnerDot")} />
                 </g>
 
-                {/* Lines: partners → junction → supervisors */}
+                {/* Lines: partner nodes → junction → regulators (symmetric) */}
                 <line
                   x1="82"
-                  y1="58"
+                  y1="72"
                   x2="170"
-                  y2="92"
+                  y2="108"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
+                  strokeWidth="1.05"
+                  strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowA")}
                 />
                 <line
                   x1="258"
-                  y1="58"
+                  y1="72"
                   x2="170"
-                  y2="92"
+                  y2="108"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
+                  strokeWidth="1.05"
+                  strokeLinecap="round"
                   strokeDasharray="3 5"
                   className={r("regFlowB")}
                 />
-                <circle cx="170" cy="92" r="3.5" className={r("regJunction")} />
+                <circle cx="170" cy="108" r="4" className={r("regJunction")} />
 
                 <line
                   x1="170"
-                  y1="92"
+                  y1="108"
                   x2="72"
-                  y2="146"
+                  y2="164"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="0.95"
+                  strokeWidth="1"
+                  strokeLinecap="round"
                   strokeDasharray="3 5"
-                  opacity={0.9}
                   className={r("regFlowC")}
                 />
                 <line
                   x1="170"
-                  y1="92"
+                  y1="108"
                   x2="170"
-                  y2="152"
+                  y2="172"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="0.95"
+                  strokeWidth="1"
+                  strokeLinecap="round"
                   strokeDasharray="3 5"
-                  opacity={0.9}
                   className={r("regFlowD")}
                 />
                 <line
                   x1="170"
-                  y1="92"
+                  y1="108"
                   x2="268"
-                  y2="146"
+                  y2="164"
                   stroke="url(#rs_reg_ln)"
-                  strokeWidth="0.95"
+                  strokeWidth="1"
+                  strokeLinecap="round"
                   strokeDasharray="3 5"
-                  opacity={0.9}
                   className={r("regFlowE")}
                 />
 
-                <circle cx="72" cy="156" r="22" className={r("regSeal")} />
-                <text x="72" y="160" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="72" cy="176" r="23" className={r("regSeal")} />
+                <text x="72" y="180.5" textAnchor="middle" className={r("regSealLbl")}>
                   FCA
                 </text>
 
-                <circle cx="170" cy="158" r="22" className={r("regSeal")} />
-                <text x="170" y="162" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="170" cy="176" r="23" className={r("regSeal")} />
+                <text x="170" y="181" textAnchor="middle" className={r("regSealLbl")}>
                   CySEC
                 </text>
 
-                <circle cx="268" cy="156" r="22" className={r("regSeal")} />
-                <text x="268" y="160" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="268" cy="176" r="23" className={r("regSeal")} />
+                <text x="268" y="180.5" textAnchor="middle" className={r("regSealLbl")}>
                   FSC
                 </text>
               </svg>
@@ -814,10 +850,8 @@ export default function RiskSuite() {
             <div className={r("sgLayout")}>
               {/* Card 1 — top left */}
               <div className={`${r("sgCard")} ${r("sgCard1")}`}>
-                <div className={r("sgCardTop")}>
-                  <span className={r("sgCardIco")}>{SG_ICONS[0]}</span>
-                  <span className={r("sgTitle")}>{copy.safeguards[0]!.title}</span>
-                </div>
+                <span className={r("sgCardIco")}>{SG_ICONS[0]}</span>
+                <span className={r("sgTitle")}>{copy.safeguards[0]!.title}</span>
                 <span className={r("sgBody")}>{copy.safeguards[0]!.body}</span>
               </div>
 
@@ -848,28 +882,22 @@ export default function RiskSuite() {
 
               {/* Card 2 — top right */}
               <div className={`${r("sgCard")} ${r("sgCard2")}`}>
-                <div className={r("sgCardTop")}>
-                  <span className={r("sgCardIco")}>{SG_ICONS[1]}</span>
-                  <span className={r("sgTitle")}>{copy.safeguards[1]!.title}</span>
-                </div>
+                <span className={r("sgCardIco")}>{SG_ICONS[1]}</span>
+                <span className={r("sgTitle")}>{copy.safeguards[1]!.title}</span>
                 <span className={r("sgBody")}>{copy.safeguards[1]!.body}</span>
               </div>
 
               {/* Card 3 — bottom left */}
               <div className={`${r("sgCard")} ${r("sgCard3")}`}>
-                <div className={r("sgCardTop")}>
-                  <span className={r("sgCardIco")}>{SG_ICONS[2]}</span>
-                  <span className={r("sgTitle")}>{copy.safeguards[2]!.title}</span>
-                </div>
+                <span className={r("sgCardIco")}>{SG_ICONS[2]}</span>
+                <span className={r("sgTitle")}>{copy.safeguards[2]!.title}</span>
                 <span className={r("sgBody")}>{copy.safeguards[2]!.body}</span>
               </div>
 
               {/* Card 4 — bottom right */}
               <div className={`${r("sgCard")} ${r("sgCard4")}`}>
-                <div className={r("sgCardTop")}>
-                  <span className={r("sgCardIco")}>{SG_ICONS[3]}</span>
-                  <span className={r("sgTitle")}>{copy.safeguards[3]!.title}</span>
-                </div>
+                <span className={r("sgCardIco")}>{SG_ICONS[3]}</span>
+                <span className={r("sgTitle")}>{copy.safeguards[3]!.title}</span>
                 <span className={r("sgBody")}>{copy.safeguards[3]!.body}</span>
               </div>
             </div>
