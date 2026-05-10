@@ -48,6 +48,7 @@ function btFmtY(v: number, lang: Lang): string {
   return `${v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep)}%`;
 }
 
+/** Straight-line segments between annual points — clean cumulative read, not a smooth compounding-style curve. */
 function buildBtChart() {
   const pts = BACKTEST_RAW.map((v, i) => ({
     x: BT_PL + (i / (BT_N - 1)) * BT_uW,
@@ -56,10 +57,8 @@ function buildBtChart() {
   const p0 = pts[0]!;
   let line = `M${p0.x.toFixed(1)},${p0.y.toFixed(1)}`;
   for (let i = 1; i < pts.length; i++) {
-    const a  = pts[i - 1]!;
-    const b  = pts[i]!;
-    const cx = (a.x + b.x) / 2;
-    line += ` C${cx.toFixed(1)},${a.y.toFixed(1)} ${cx.toFixed(1)},${b.y.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+    const p = pts[i]!;
+    line += ` L${p.x.toFixed(1)},${p.y.toFixed(1)}`;
   }
   const last  = pts[pts.length - 1]!;
   const baseY = (BT_PT + BT_uH).toFixed(1);
@@ -71,9 +70,9 @@ const { line: BT_LINE, area: BT_AREA, lastX: BT_LX, lastY: BT_LY } = buildBtChar
 
 // ── Risk engine radar (Box 2) — layered radar / signal visual ─────────────────
 // Normalized radii (0–1) derived from published metrics for a coherent footprint.
-const RK_CX = 110;
-const RK_CY = 110;
-const RK_R  = 74;
+const RK_CX = 130;
+const RK_CY = 130;
+const RK_R  = 92;
 const RK_ANGLES = [-Math.PI / 2, 0, Math.PI / 2, Math.PI] as const;
 /** Sharpe, Calmar, profit factor, win rate — visual mapping, not a second data table */
 const RK_NORM = [0.80, 0.54, 0.66, 0.58] as const;
@@ -110,17 +109,6 @@ const RK_SPOKES: { x2: number; y2: number; faint: boolean }[] = Array.from(
     };
   },
 );
-
-const RK_SWEEP_R = RK_R + 5;
-const RK_SWEEP_A0 = -Math.PI / 2;
-const RK_SWEEP_A1 = RK_SWEEP_A0 + (26 * Math.PI) / 180;
-const RK_SWEEP_D = (() => {
-  const x0 = RK_CX + RK_SWEEP_R * Math.cos(RK_SWEEP_A0);
-  const y0 = RK_CY + RK_SWEEP_R * Math.sin(RK_SWEEP_A0);
-  const x1 = RK_CX + RK_SWEEP_R * Math.cos(RK_SWEEP_A1);
-  const y1 = RK_CY + RK_SWEEP_R * Math.sin(RK_SWEEP_A1);
-  return `M${RK_CX},${RK_CY} L${x0.toFixed(2)},${y0.toFixed(2)} A${RK_SWEEP_R},${RK_SWEEP_R} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z`;
-})();
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 function IcChart(): ReactNode {
@@ -175,12 +163,60 @@ function IcInstitution(): ReactNode {
   );
 }
 
+/** Investor Protection — per-card icons */
+function IcSgBroker(): ReactNode {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M4 10h16v10H4V10z" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M8 14h4M12 10V6l4-2 4 2v4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IcSgFees(): ReactNode {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M8 15l8-8M9 9h4v4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IcSgVisibility(): ReactNode {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 7a7 7 0 0 1 7 5 7 7 0 0 1-14 0 7 7 0 0 1 7-5z"
+        stroke="currentColor"
+        strokeWidth="1.35"
+      />
+      <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function IcSgReport(): ReactNode {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M8 4h11v16H8V4z" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M8 8h11M8 12h7M8 16h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const SG_ICONS: ReactNode[] = [
+  <IcSgBroker key="i0" />,
+  <IcSgFees key="i1" />,
+  <IcSgVisibility key="i2" />,
+  <IcSgReport key="i3" />,
+];
+
 /** Hero-scale shield glyph — Investor Protection centerpiece */
 function IcShieldLg(): ReactNode {
   return (
     <svg
-      width="96"
-      height="111"
+      width="112"
+      height="129"
       viewBox="0 0 52 60"
       fill="none"
       aria-hidden
@@ -242,8 +278,8 @@ type Safeguard = { title: string; body: string };
 
 type Copy = {
   badge: string;
-  h1: string;
-  h2: string;
+  headlineLead: string;
+  headlineAccent: string;
   sub: string;
   // Box 1
   b1title: string;
@@ -254,11 +290,11 @@ type Copy = {
   b2title: string;
   b2center1: string;
   b2center2: string;
-  b2subLine: string;
   b2stats: StatItem[];
   // Box 3
   b3title: string;
   b3desc: string;
+  b3authNote: string;
   // Box 4
   b4title: string;
   safeguards: Safeguard[];
@@ -267,78 +303,102 @@ type Copy = {
 const COPY: Record<Lang, Copy> = {
   en: {
     badge: "For Investors",
-    h1:    "Transparency that",
-    h2:    "builds trust.",
-    sub:   "Clear visibility into strategy, structure and safeguards helps investors understand how everything is designed to communicate clarity, confidence and control.",
+    headlineLead: "Transparency that ",
+    headlineAccent: "builds trust.",
+    sub:
+      "Clear visibility into strategy, structure and safeguards\nhelps investors understand the setup more easily and build confidence.",
     // Box 1
-    b1title:     "Historical Strategy & Performance",
-    b1backtest:  "Backtesting since 1970",
+    b1title:    "Historical Strategy & Performance",
+    b1backtest: "Backtesting since 1970",
     b1kpis: [
-      { value: "+8.80%",  label: "Annual return"        },
-      { value: "1970",    label: "Backtested since"     },
-      { value: "2024",    label: "Live + shadow since"  },
-      { value: "−20.91%", label: "Max drawdown"         },
+      { value: "+8.80%", label: "Annual return" },
+      { value: "1970", label: "Backtested since" },
+      { value: "2024", label: "Live + shadow since" },
     ],
-    b1disclaimer: "Historical strategy data shown for informational purposes.",
+    b1disclaimer: "Historical strategy data is shown for informational purposes only.",
     // Box 2
     b2title:   "Strategy Risk Overview",
     b2center1: "Controlled",
     b2center2: "risk profile",
-    b2subLine: "Structured control across multiple market phases",
     b2stats: [
-      { lbl: "Sharpe",        val: "1.63"  },
-      { lbl: "Calmar",        val: "0.43"  },
-      { lbl: "Profit factor", val: "1.24"  },
-      { lbl: "Win rate",      val: "42.9%" },
+      { lbl: "Sharpe", val: "1.63" },
+      { lbl: "Calmar", val: "0.43" },
+      { lbl: "Profit Factor", val: "1.24" },
+      { lbl: "Win Rate", val: "42.9%" },
     ],
     // Box 3
     b3title: "Regulated Partners",
-    b3desc:  "Collaboration with established and regulated partners.",
+    b3desc: "Collaboration with established and regulated partners.",
+    b3authNote: "Regulated and supervised by recognized authorities.",
     // Box 4
     b4title: "Investor Protection",
     safeguards: [
-      { title: "Existing broker accounts", body: "Capital remains within the investor's existing account structure."      },
-      { title: "No hidden fees",           body: "Structures and processes remain transparent and easy to understand."     },
-      { title: "Ongoing visibility",       body: "Developments and reporting can be reviewed on a regular basis."          },
-      { title: "Clear reporting",          body: "Relevant information is presented in a clear and structured way."        },
+      {
+        title: "Existing broker accounts",
+        body: "Capital remains within the investor’s existing account structure.",
+      },
+      {
+        title: "No hidden fees",
+        body: "Structures and processes remain transparent and easy to understand.",
+      },
+      {
+        title: "Ongoing visibility",
+        body: "Developments and reporting can be reviewed on a regular basis.",
+      },
+      {
+        title: "Clear reporting",
+        body: "Relevant information is presented in a clear and structured way.",
+      },
     ],
   },
   de: {
     badge: "Für Investoren",
-    h1:    "Transparenz, die",
-    h2:    "Vertrauen schafft.",
-    sub:   "Klare Einblicke in Strategie, Struktur und Schutzmechanismen geben Investoren Orientierung. Alles ist darauf ausgelegt, Vertrauen aufzubauen und Kontrolle einfach nachvollziehbar zu machen.",
+    headlineLead: "Transparenz, die ",
+    headlineAccent: "Vertrauen schafft.",
+    sub:
+      "Klare Einblicke in Strategie, Struktur und Schutzmechanismen\nhelfen Investoren, den Ablauf einfach zu verstehen und Vertrauen aufzubauen.",
     // Box 1
-    b1title:     "Historische Strategie & Performance",
-    b1backtest:  "Backtesting seit 1970",
+    b1title:    "Historische Strategie & Performance",
+    b1backtest: "Backtesting seit 1970",
     b1kpis: [
-      { value: "+8,80%",  label: "Jährliche Rendite"   },
-      { value: "1970",    label: "Backtesting seit"     },
-      { value: "2024",    label: "Live + Shadow seit"   },
-      { value: "−20,91%", label: "Max. Drawdown"        },
+      { value: "+8,80%", label: "Jährliche Rendite" },
+      { value: "1970", label: "Backtesting seit" },
+      { value: "2024", label: "Live + Shadow seit" },
     ],
-    b1disclaimer: "Historische Strategiedaten zu Informationszwecken dargestellt.",
+    b1disclaimer: "Historische Strategiedaten dienen ausschließlich Informationszwecken.",
     // Box 2
     b2title:   "Strategie Risikoübersicht",
     b2center1: "Kontrolliertes",
     b2center2: "Risikoprofil",
-    b2subLine: "Strukturierte Steuerung über mehrere Marktphasen",
     b2stats: [
-      { lbl: "Sharpe",        val: "1,63"  },
-      { lbl: "Calmar",        val: "0,43"  },
-      { lbl: "Profit Factor", val: "1,24"  },
-      { lbl: "Trefferquote",  val: "42,9%" },
+      { lbl: "Sharpe", val: "1,63" },
+      { lbl: "Calmar", val: "0,43" },
+      { lbl: "Profit Factor", val: "1,24" },
+      { lbl: "Win Rate", val: "42,9%" },
     ],
     // Box 3
     b3title: "Regulierte Partner",
-    b3desc:  "Zusammenarbeit mit etablierten und regulierten Partnern.",
+    b3desc: "Zusammenarbeit mit etablierten und regulierten Partnern.",
+    b3authNote: "Reguliert und überwacht durch anerkannte Behörden.",
     // Box 4
-    b4title: "Investorenschutz",
+    b4title: "Investorschutz",
     safeguards: [
-      { title: "Eigene Broker-Konten",      body: "Kapital bleibt in der bestehenden Kontostruktur der Investoren."                    },
-      { title: "Keine versteckten Gebühren", body: "Strukturen und Abläufe bleiben transparent und nachvollziehbar."                   },
-      { title: "Laufende Einsicht",          body: "Entwicklungen und Berichte können regelmäßig nachvollzogen werden."               },
-      { title: "Klare Berichte",             body: "Wesentliche Informationen werden verständlich und strukturiert aufbereitet."       },
+      {
+        title: "Eigene Broker-Konten",
+        body: "Kapital verbleibt in den bestehenden Broker-Konten der Kunden.",
+      },
+      {
+        title: "Keine versteckten Gebühren",
+        body: "Strukturen und Abläufe bleiben transparent und nachvollziehbar.",
+      },
+      {
+        title: "Laufende Einsicht",
+        body: "Entwicklungen und Berichte können regelmäßig eingesehen werden.",
+      },
+      {
+        title: "Klare Berichte",
+        body: "Relevante Informationen werden übersichtlich und verständlich aufbereitet.",
+      },
     ],
   },
 };
@@ -362,8 +422,8 @@ export default function RiskSuite() {
             <span className={r("pillText")}>{copy.badge}</span>
           </div>
           <h2 className={r("headline")}>
-            <span>{copy.h1}</span>{" "}
-            <span className={r("headlineAccent")}>{copy.h2}</span>
+            <span className={r("headlinePart")}>{copy.headlineLead}</span>
+            <span className={r("headlineAccent")}>{copy.headlineAccent}</span>
           </h2>
           <p className={r("sub")}>{copy.sub}</p>
         </div>
@@ -392,8 +452,8 @@ export default function RiskSuite() {
                     <stop offset="55%" stopColor="rgba(232,224,200,0.05)" />
                     <stop offset="100%" stopColor="rgba(220,210,185,0)" />
                   </linearGradient>
-                  <filter id="rs_lineGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="1.15" result="b" />
+                  <filter id="rs_lineGlow" x="-18%" y="-18%" width="136%" height="136%">
+                    <feGaussianBlur stdDeviation="0.85" result="b" />
                     <feMerge>
                       <feMergeNode in="b" />
                       <feMergeNode in="SourceGraphic" />
@@ -491,17 +551,13 @@ export default function RiskSuite() {
             </div>
 
             <div className={r("riskEngineWrap")}>
-              <svg viewBox="0 0 220 220" fill="none" className={r("riskEngineSvg")} aria-hidden>
+              <svg viewBox="0 0 260 260" fill="none" className={r("riskEngineSvg")} aria-hidden>
                 <defs>
                   <radialGradient id="rs_rk_bg" cx="50%" cy="42%" r="68%">
                     <stop offset="0%" stopColor="rgba(252,248,238,0.07)" />
                     <stop offset="55%" stopColor="rgba(28,26,22,0.12)" />
                     <stop offset="100%" stopColor="rgba(8,8,8,0.35)" />
                   </radialGradient>
-                  <linearGradient id="rs_rk_sweep" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="rgba(252,246,232,0.55)" />
-                    <stop offset="100%" stopColor="rgba(252,246,232,0)" />
-                  </linearGradient>
                   <linearGradient id="rs_rk_polyStroke" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0%" stopColor="rgba(255,253,248,0.55)" />
                     <stop offset="100%" stopColor="rgba(218,208,180,0.45)" />
@@ -511,7 +567,7 @@ export default function RiskSuite() {
                   </filter>
                 </defs>
 
-                <rect x="0" y="0" width="220" height="220" fill="url(#rs_rk_bg)" rx="14" />
+                <rect x="0" y="0" width="260" height="260" fill="url(#rs_rk_bg)" rx="16" />
 
                 {/* Concentric risk rings */}
                 {RK_RING_LEVELS.map((lv) => (
@@ -558,18 +614,6 @@ export default function RiskSuite() {
                   />
                 </g>
 
-                {/* Radar sweep */}
-                <g className={r("rkSweep")}>
-                  <path d={RK_SWEEP_D} fill="url(#rs_rk_sweep)" opacity={0.2} />
-                  <line
-                    x1={RK_CX}
-                    y1={RK_CY}
-                    x2={RK_CX + RK_SWEEP_R * Math.cos(RK_SWEEP_A0)}
-                    y2={RK_CY + RK_SWEEP_R * Math.sin(RK_SWEEP_A0)}
-                    className={r("rkSweepLine")}
-                  />
-                </g>
-
                 {/* Metric footprint — derived shape mirrors headline KPIs below */}
                 <path d={RK_POLY_D} className={r("rkPolyFill")} />
                 <path d={RK_POLY_D} className={r("rkPolyLine")} stroke="url(#rs_rk_polyStroke)" />
@@ -593,17 +637,14 @@ export default function RiskSuite() {
                 {/* Center readout */}
                 <circle cx={RK_CX} cy={RK_CY} r="31" className={r("rkCoreRing")} />
                 <circle cx={RK_CX} cy={RK_CY} r="24" className={r("rkCoreInner")} />
-                <text x={RK_CX} y={RK_CY - 6} textAnchor="middle" className={r("ringCenter1")}>
+                <text x={RK_CX} y={RK_CY - 8} textAnchor="middle" className={r("ringCenter1")}>
                   {copy.b2center1}
                 </text>
-                <text x={RK_CX} y={RK_CY + 10} textAnchor="middle" className={r("ringCenter2")}>
+                <text x={RK_CX} y={RK_CY + 12} textAnchor="middle" className={r("ringCenter2")}>
                   {copy.b2center2}
                 </text>
               </svg>
             </div>
-
-            {/* Subtitle below ring */}
-            <p className={r("b2SubLine")}>{copy.b2subLine}</p>
 
             {/* 4 stats */}
             <div className={r("statsRow")}>
@@ -628,106 +669,33 @@ export default function RiskSuite() {
 
             <div className={r("regCanvas")}>
               <svg
-                viewBox="0 0 340 224"
+                viewBox="0 0 340 188"
                 fill="none"
                 className={r("regSvg")}
                 role="img"
                 aria-label={
                   lang === "de"
-                    ? "Regulierte Broker-Logos und Verbindung zu FCA, CySEC und FSC"
-                    : "Broker logos and links to FCA, CySEC, and FSC"
+                    ? "Partnerlogos mit Verbindung zu Aufsichtsbehörden"
+                    : "Partner logos linked to supervisory authorities"
                 }
               >
                 <defs>
-                  <radialGradient id="rs_reg_hubGlow" cx="50%" cy="42%" r="58%">
-                    <stop offset="0%" stopColor="rgba(252,246,232,0.16)" />
-                    <stop offset="100%" stopColor="rgba(252,246,232,0)" />
-                  </radialGradient>
-                  <radialGradient id="rs_reg_hubCore" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="rgba(250,244,230,0.95)" />
-                    <stop offset="100%" stopColor="rgba(215,204,176,0.42)" />
-                  </radialGradient>
                   <linearGradient id="rs_reg_ln" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="rgba(255,253,246,0.2)" />
-                    <stop offset="100%" stopColor="rgba(228,218,196,0.07)" />
+                    <stop offset="0%" stopColor="rgba(255,253,246,0.22)" />
+                    <stop offset="100%" stopColor="rgba(228,218,196,0.08)" />
                   </linearGradient>
                   <filter id="rs_reg_nodeBlur">
                     <feGaussianBlur stdDeviation="1.4" />
                   </filter>
                 </defs>
 
-                {/* Depth panel */}
-                <rect
-                  x="16"
-                  y="54"
-                  width="308"
-                  height="116"
-                  rx="16"
-                  className={r("regDepthPanel")}
-                />
-
-                {/* Links: hub (170, 114) ↔ partners & regulators */}
-                <line
-                  x1="170"
-                  y1="114"
-                  x2="82"
-                  y2="46"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
-                  strokeDasharray="3 5"
-                  className={r("regFlowA")}
-                />
-                <line
-                  x1="170"
-                  y1="114"
-                  x2="258"
-                  y2="46"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="1"
-                  strokeDasharray="3 5"
-                  className={r("regFlowB")}
-                />
-                <line
-                  x1="170"
-                  y1="114"
-                  x2="68"
-                  y2="174"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="0.9"
-                  strokeDasharray="3 5"
-                  opacity={0.88}
-                  className={r("regFlowC")}
-                />
-                <line
-                  x1="170"
-                  y1="114"
-                  x2="170"
-                  y2="178"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="0.9"
-                  strokeDasharray="3 5"
-                  opacity={0.88}
-                  className={r("regFlowD")}
-                />
-                <line
-                  x1="170"
-                  y1="114"
-                  x2="272"
-                  y2="174"
-                  stroke="url(#rs_reg_ln)"
-                  strokeWidth="0.9"
-                  strokeDasharray="3 5"
-                  opacity={0.88}
-                  className={r("regFlowE")}
-                />
-
-                {/* Logo plates + PNG marks (same assets as Hero) */}
-                <rect x="28" y="16" width="108" height="42" rx="11" className={r("regLogoPlate")} />
-                <rect x="204" y="16" width="108" height="42" rx="11" className={r("regLogoPlate")} />
+                {/* Partner tier */}
+                <rect x="28" y="14" width="108" height="42" rx="11" className={r("regLogoPlate")} />
+                <rect x="204" y="14" width="108" height="42" rx="11" className={r("regLogoPlate")} />
                 <image
                   href="/Roboforex.png"
                   x="38"
-                  y="23"
+                  y="21"
                   width="88"
                   height="28"
                   preserveAspectRatio="xMidYMid meet"
@@ -736,64 +704,99 @@ export default function RiskSuite() {
                 <image
                   href="/Vantage.png"
                   x="214"
-                  y="23"
+                  y="21"
                   width="88"
                   height="28"
                   preserveAspectRatio="xMidYMid meet"
                   className={r("regLogoImg")}
                 />
 
-                {/* Partner nodes: dot + pulsing rings */}
                 <g>
-                  <circle cx="82" cy="44" r="15" className={r("regPartnerRingOuter")} />
-                  <circle cx="82" cy="44" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
-                  <circle cx="82" cy="44" r="3.2" className={r("regPartnerDot")} />
+                  <circle cx="82" cy="42" r="15" className={r("regPartnerRingOuter")} />
+                  <circle cx="82" cy="42" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
+                  <circle cx="82" cy="42" r="3.2" className={r("regPartnerDot")} />
                 </g>
                 <g className={r("regPartnerLate")}>
-                  <circle cx="258" cy="44" r="15" className={r("regPartnerRingOuter")} />
-                  <circle cx="258" cy="44" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
-                  <circle cx="258" cy="44" r="3.2" className={r("regPartnerDot")} />
+                  <circle cx="258" cy="42" r="15" className={r("regPartnerRingOuter")} />
+                  <circle cx="258" cy="42" r="9" className={r("regPartnerRingGlow")} filter="url(#rs_reg_nodeBlur)" />
+                  <circle cx="258" cy="42" r="3.2" className={r("regPartnerDot")} />
                 </g>
 
-                {/* Compliance hub */}
-                <circle cx="170" cy="114" r="46" fill="url(#rs_reg_hubGlow)" />
-                <circle cx="170" cy="114" r="22" className={r("regHubDisk")} />
-                <circle cx="170" cy="114" r="14.5" className={r("regHubDiskInner")} />
-                <circle cx="170" cy="114" r="6.5" fill="url(#rs_reg_hubCore)" className={r("regHubCore")} />
-                <path
-                  d="M164.5 114l3 3 8.5-8.5"
-                  stroke="rgba(42,40,36,0.42)"
-                  strokeWidth="1.35"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                {/* Lines: partners → junction → supervisors */}
+                <line
+                  x1="82"
+                  y1="58"
+                  x2="170"
+                  y2="92"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="1"
+                  strokeDasharray="3 5"
+                  className={r("regFlowA")}
+                />
+                <line
+                  x1="258"
+                  y1="58"
+                  x2="170"
+                  y2="92"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="1"
+                  strokeDasharray="3 5"
+                  className={r("regFlowB")}
+                />
+                <circle cx="170" cy="92" r="3.5" className={r("regJunction")} />
+
+                <line
+                  x1="170"
+                  y1="92"
+                  x2="72"
+                  y2="146"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="0.95"
+                  strokeDasharray="3 5"
+                  opacity={0.9}
+                  className={r("regFlowC")}
+                />
+                <line
+                  x1="170"
+                  y1="92"
+                  x2="170"
+                  y2="152"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="0.95"
+                  strokeDasharray="3 5"
+                  opacity={0.9}
+                  className={r("regFlowD")}
+                />
+                <line
+                  x1="170"
+                  y1="92"
+                  x2="268"
+                  y2="146"
+                  stroke="url(#rs_reg_ln)"
+                  strokeWidth="0.95"
+                  strokeDasharray="3 5"
+                  opacity={0.9}
+                  className={r("regFlowE")}
                 />
 
-                {/* Regulators — inset from edges, compact labels */}
-                <circle cx="68" cy="182" r="19.5" className={r("regSeal")} />
-                <text x="68" y="178.5" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="72" cy="156" r="22" className={r("regSeal")} />
+                <text x="72" y="160" textAnchor="middle" className={r("regSealLbl")}>
                   FCA
                 </text>
-                <text x="68" y="187.5" textAnchor="middle" className={r("regSealSub")}>
-                  regulated
-                </text>
 
-                <circle cx="170" cy="182" r="19.5" className={r("regSeal")} />
-                <text x="170" y="178.5" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="170" cy="158" r="22" className={r("regSeal")} />
+                <text x="170" y="162" textAnchor="middle" className={r("regSealLbl")}>
                   CySEC
                 </text>
-                <text x="170" y="187.5" textAnchor="middle" className={r("regSealSub")}>
-                  regulated
-                </text>
 
-                <circle cx="272" cy="182" r="19.5" className={r("regSeal")} />
-                <text x="272" y="178.5" textAnchor="middle" className={r("regSealLbl")}>
+                <circle cx="268" cy="156" r="22" className={r("regSeal")} />
+                <text x="268" y="160" textAnchor="middle" className={r("regSealLbl")}>
                   FSC
-                </text>
-                <text x="272" y="187.5" textAnchor="middle" className={r("regSealSub")}>
-                  regulated
                 </text>
               </svg>
             </div>
+
+            <p className={r("regAuthNote")}>{copy.b3authNote}</p>
           </div>
 
           {/* ── Box 4: Investor protection — shield center, cards around ── */}
@@ -811,7 +814,10 @@ export default function RiskSuite() {
             <div className={r("sgLayout")}>
               {/* Card 1 — top left */}
               <div className={`${r("sgCard")} ${r("sgCard1")}`}>
-                <span className={r("sgTitle")}>{copy.safeguards[0]!.title}</span>
+                <div className={r("sgCardTop")}>
+                  <span className={r("sgCardIco")}>{SG_ICONS[0]}</span>
+                  <span className={r("sgTitle")}>{copy.safeguards[0]!.title}</span>
+                </div>
                 <span className={r("sgBody")}>{copy.safeguards[0]!.body}</span>
               </div>
 
@@ -842,19 +848,28 @@ export default function RiskSuite() {
 
               {/* Card 2 — top right */}
               <div className={`${r("sgCard")} ${r("sgCard2")}`}>
-                <span className={r("sgTitle")}>{copy.safeguards[1]!.title}</span>
+                <div className={r("sgCardTop")}>
+                  <span className={r("sgCardIco")}>{SG_ICONS[1]}</span>
+                  <span className={r("sgTitle")}>{copy.safeguards[1]!.title}</span>
+                </div>
                 <span className={r("sgBody")}>{copy.safeguards[1]!.body}</span>
               </div>
 
               {/* Card 3 — bottom left */}
               <div className={`${r("sgCard")} ${r("sgCard3")}`}>
-                <span className={r("sgTitle")}>{copy.safeguards[2]!.title}</span>
+                <div className={r("sgCardTop")}>
+                  <span className={r("sgCardIco")}>{SG_ICONS[2]}</span>
+                  <span className={r("sgTitle")}>{copy.safeguards[2]!.title}</span>
+                </div>
                 <span className={r("sgBody")}>{copy.safeguards[2]!.body}</span>
               </div>
 
               {/* Card 4 — bottom right */}
               <div className={`${r("sgCard")} ${r("sgCard4")}`}>
-                <span className={r("sgTitle")}>{copy.safeguards[3]!.title}</span>
+                <div className={r("sgCardTop")}>
+                  <span className={r("sgCardIco")}>{SG_ICONS[3]}</span>
+                  <span className={r("sgTitle")}>{copy.safeguards[3]!.title}</span>
+                </div>
                 <span className={r("sgBody")}>{copy.safeguards[3]!.body}</span>
               </div>
             </div>

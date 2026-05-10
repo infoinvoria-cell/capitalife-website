@@ -48,10 +48,6 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(-360deg); }
 }
-@keyframes rs_riskSweep {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
 @keyframes rs_rkNodeGlow {
   0%, 100% { opacity: 0.28; }
   50%       { opacity: 0.62; }
@@ -62,8 +58,8 @@
   50%       { opacity: 0.92; stroke-width: 1.15; }
 }
 
-@keyframes rs_regHubGlow {
-  0%, 100% { opacity: 0.82; }
+@keyframes rs_regJunction {
+  0%, 100% { opacity: 0.55; }
   50%       { opacity: 1; }
 }
 /* Flowing dashes along connecting lines */
@@ -91,15 +87,16 @@
   isolation: isolate;
 }
 
-/* Dark overlay + faint radial warmth */
+/* Dark overlay + soft champagne light (no harsh gold) */
 .bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle 50% at 60% 18%, rgba(180, 148, 36, 0.055), transparent 55%),
-    rgba(0, 0, 0, 0.83);
+    radial-gradient(circle 52% at 58% 20%, rgba(228, 218, 196, 0.045), transparent 58%),
+    radial-gradient(circle 40% at 22% 78%, rgba(255, 253, 246, 0.03), transparent 55%),
+    rgba(0, 0, 0, 0.82);
 }
 
 /* Soft blend into section above */
@@ -176,21 +173,27 @@
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.022em;
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(255, 253, 248, 0.96);
 }
 
-/* Second half — soft champagne */
+.headlinePart {
+  font-weight: 700;
+  color: rgba(255, 253, 248, 0.96);
+}
+
+/* Accent — soft gold / champagne */
 .headlineAccent {
-  color: #c4a660;
+  color: rgba(232, 218, 188, 0.95);
 }
 
 .sub {
   margin: 0;
-  max-width: 560px;
+  max-width: 520px;
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 13.5px;
-  line-height: 1.70;
-  color: rgba(255, 255, 255, 0.40);
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: pre-line;
 }
 
 /* ══════════════════════════════════
@@ -221,18 +224,18 @@
 .box {
   position: relative;
   border-radius: 17px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 253, 246, 0.1);
   background:
-    linear-gradient(148deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.015) 50%, transparent 100%),
-    rgba(4, 4, 3, 0.56);
-  backdrop-filter: blur(36px) saturate(1.22);
-  -webkit-backdrop-filter: blur(36px) saturate(1.22);
+    linear-gradient(148deg, rgba(255, 255, 255, 0.072) 0%, rgba(255, 250, 242, 0.022) 52%, transparent 100%),
+    rgba(6, 6, 5, 0.42);
+  backdrop-filter: blur(38px) saturate(1.14);
+  -webkit-backdrop-filter: blur(38px) saturate(1.14);
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.07),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
-    0 12px 44px rgba(0, 0, 0, 0.34),
-    0 0 0 0.5px rgba(255, 255, 255, 0.04);
-  padding: 18px 20px;
+    inset 0 1.5px 0 rgba(255, 253, 246, 0.065),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.09),
+    0 12px 44px rgba(0, 0, 0, 0.32),
+    0 0 0 0.5px rgba(255, 253, 246, 0.035);
+  padding: 17px 19px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -266,9 +269,9 @@
   width: 27px;
   height: 27px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018));
-  color: rgba(196, 170, 100, 0.86);
+  border: 1px solid rgba(255, 253, 246, 0.09);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 250, 242, 0.02));
+  color: rgba(228, 218, 196, 0.82);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -293,12 +296,12 @@
   height: 20px;
   padding: 0 9px;
   border-radius: 100px;
-  border: 1px solid rgba(196, 170, 100, 0.18);
-  background: rgba(196, 170, 100, 0.045);
+  border: 1px solid rgba(232, 222, 198, 0.16);
+  background: rgba(255, 253, 246, 0.04);
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 9.5px;
   font-weight: 600;
-  color: rgba(196, 170, 100, 0.76);
+  color: rgba(238, 228, 208, 0.78);
   white-space: nowrap;
 }
 
@@ -375,9 +378,9 @@
 /* KPI strip */
 .kpiRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   padding: 10px 0 4px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   margin-top: 10px;
 }
 
@@ -429,7 +432,7 @@
 
 .riskEngineSvg {
   display: block;
-  width: min(100%, 198px);
+  width: min(100%, 252px);
   height: auto;
   overflow: visible;
 }
@@ -457,13 +460,13 @@
 }
 
 .rkRotateSlow {
-  transform-origin: 110px 110px;
+  transform-origin: 130px 130px;
   transform-box: fill-box;
   animation: rs_riskOrbit 52s linear infinite;
 }
 
 .rkRotateRev {
-  transform-origin: 110px 110px;
+  transform-origin: 130px 130px;
   transform-box: fill-box;
   animation: rs_riskOrbitRev 34s linear infinite;
 }
@@ -478,19 +481,6 @@
   fill: none;
   stroke-width: 0.75;
   opacity: 0.9;
-}
-
-.rkSweep {
-  transform-origin: 110px 110px;
-  transform-box: fill-box;
-  animation: rs_riskSweep 14s linear infinite;
-  opacity: 0.95;
-}
-
-.rkSweepLine {
-  stroke: rgba(252, 248, 238, 0.42);
-  stroke-width: 0.85;
-  stroke-linecap: round;
 }
 
 .rkPolyFill {
@@ -531,28 +521,17 @@
 /* Center readout */
 .ringCenter1 {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 700;
-  fill: rgba(255, 253, 248, 0.92);
+  fill: rgba(255, 253, 248, 0.94);
   letter-spacing: 0.14px;
 }
 
 .ringCenter2 {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
-  fill: rgba(255, 255, 255, 0.48);
-}
-
-/* Subtitle below ring */
-.b2SubLine {
-  margin: 8px 0 0;
-  font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10.5px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.32);
-  text-align: center;
-  flex-shrink: 0;
+  fill: rgba(255, 255, 255, 0.5);
 }
 
 /* Stats row — 4 items */
@@ -650,12 +629,6 @@
   overflow: visible;
 }
 
-.regDepthPanel {
-  fill: rgba(255, 255, 255, 0.022);
-  stroke: rgba(255, 253, 246, 0.065);
-  stroke-width: 0.85;
-}
-
 .regLogoPlate {
   fill: rgba(255, 255, 255, 0.038);
   stroke: rgba(255, 253, 246, 0.09);
@@ -694,20 +667,11 @@
   stroke-width: 0.55;
 }
 
-.regHubDisk {
-  fill: rgba(255, 255, 255, 0.035);
-  stroke: rgba(255, 253, 246, 0.11);
-  stroke-width: 1;
-}
-
-.regHubDiskInner {
-  fill: none;
-  stroke: rgba(255, 253, 246, 0.055);
-  stroke-width: 0.75;
-}
-
-.regHubCore {
-  animation: rs_regHubGlow 4.2s ease-in-out infinite;
+.regJunction {
+  fill: rgba(252, 246, 232, 0.92);
+  stroke: rgba(255, 253, 246, 0.45);
+  stroke-width: 0.65;
+  animation: rs_regJunction 3.8s ease-in-out infinite;
 }
 
 .regSeal {
@@ -718,18 +682,20 @@
 
 .regSealLbl {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 7.25px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  fill: rgba(252, 248, 240, 0.9);
+  letter-spacing: 0.06em;
+  fill: rgba(252, 248, 240, 0.94);
 }
 
-.regSealSub {
+.regAuthNote {
+  margin: 10px 0 0;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 5.5px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  fill: rgba(255, 255, 255, 0.34);
+  font-size: 10px;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.34);
+  text-align: center;
 }
 
 /* ══════════════════════════════════
@@ -765,9 +731,9 @@
 .sgLayout {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(168px, 200px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(196px, 236px) minmax(0, 1fr);
   grid-template-rows: 1fr 1fr;
-  gap: 7px 9px;
+  gap: 8px 10px;
   min-height: 0;
   align-items: stretch;
 }
@@ -787,7 +753,7 @@
   align-items: center;
   justify-content: center;
   overflow: visible;
-  min-height: 148px;
+  min-height: 172px;
 }
 
 /* Ambient halo behind shield */
@@ -795,10 +761,10 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 198px;
-  height: 198px;
-  margin-left: -99px;
-  margin-top: -99px;
+  width: 224px;
+  height: 224px;
+  margin-left: -112px;
+  margin-top: -112px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -823,37 +789,37 @@
 }
 
 .orbitSpinXL {
-  width: 164px;
-  height: 164px;
-  margin-left: -82px;
-  margin-top: -82px;
+  width: 182px;
+  height: 182px;
+  margin-left: -91px;
+  margin-top: -91px;
   animation: rs_orbit 52s linear infinite;
   z-index: 1;
 }
 
 .orbitSpinLg {
-  width: 142px;
-  height: 142px;
-  margin-left: -71px;
-  margin-top: -71px;
+  width: 156px;
+  height: 156px;
+  margin-left: -78px;
+  margin-top: -78px;
   animation: rs_orbit 38s linear infinite;
   z-index: 2;
 }
 
 .orbitSpinMd {
-  width: 120px;
-  height: 120px;
-  margin-left: -60px;
-  margin-top: -60px;
+  width: 132px;
+  height: 132px;
+  margin-left: -66px;
+  margin-top: -66px;
   animation: rs_orbitRev 30s linear infinite;
   z-index: 1;
 }
 
 .orbitSpinSm {
-  width: 100px;
-  height: 100px;
-  margin-left: -50px;
-  margin-top: -50px;
+  width: 110px;
+  height: 110px;
+  margin-left: -55px;
+  margin-top: -55px;
   animation: rs_orbitRev 22s linear infinite;
   z-index: 2;
 }
@@ -922,12 +888,12 @@
 .sgCard {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 8px 10px 9px;
-  border-radius: 9px;
-  border: 1px solid rgba(255, 253, 246, 0.075);
+  gap: 6px;
+  padding: 9px 11px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 253, 246, 0.078);
   background:
-    linear-gradient(152deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 250, 242, 0.018) 100%);
+    linear-gradient(152deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 250, 242, 0.02) 100%);
   backdrop-filter: blur(14px) saturate(1.08);
   -webkit-backdrop-filter: blur(14px) saturate(1.08);
   box-shadow:
@@ -938,6 +904,25 @@
   transition: border-color 0.22s ease, background 0.22s ease;
   min-height: 0;
   justify-content: flex-start;
+}
+
+.sgCardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.sgCardIco {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 253, 246, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(228, 218, 196, 0.82);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Champagne accent — replaces gold bar */
@@ -967,14 +952,17 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   color: rgba(252, 248, 242, 0.92);
-  line-height: 1.28;
+  line-height: 1.3;
+  flex: 1;
+  min-width: 0;
 }
 
 .sgBody {
   font-family: var(--font-inter), Inter, sans-serif;
   font-size: 9.5px;
-  line-height: 1.42;
+  line-height: 1.48;
   color: rgba(255, 255, 255, 0.4);
+  padding-left: 36px;
 }
 
 /* ══════════════════════════════════
@@ -1031,7 +1019,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rkSweep,
   .rkRotateSlow,
   .rkRotateRev,
   .rkNodePulse,
@@ -1041,7 +1028,7 @@
   .regFlowD,
   .regFlowE,
   .regPartnerRingOuter,
-  .regHubCore,
+  .regJunction,
   .shieldHalo,
   .orbitSpinXL,
   .orbitSpinLg,
