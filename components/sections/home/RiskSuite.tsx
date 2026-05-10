@@ -90,7 +90,7 @@ const RK_CX = 190;
 const RK_CY = 190;
 const RK_R = 132;
 const RK_RING_LEVELS = [0.22, 0.36, 0.5, 0.64, 0.78, 0.92, 1] as const;
-const RK_CARDINAL = [-Math.PI / 2, 0, Math.PI / 2, Math.PI] as const;
+const RK_CARDINAL = [-Math.PI / 2, -Math.PI / 6, 0, Math.PI / 2, Math.PI] as const;
 const RK_NODE_RING = 0.86;
 const RK_NODE_PTS = RK_CARDINAL.map((a) => ({
   x: RK_CX + RK_R * RK_NODE_RING * Math.cos(a),
@@ -351,7 +351,7 @@ const COPY: Record<Lang, Copy> = {
     headlineLead: "Transparenz, die ",
     headlineAccent: "Vertrauen schafft.",
     sub:
-      "Klare Einblicke in Strategie, Struktur und Schutzmechanismen helfen Investoren, den Ablauf zu verstehen und Vertrauen aufzubauen.",
+      "Klare Einblicke in Strategie, Struktur und Schutzmechanismen helfen Investoren, den Aufbau besser zu verstehen und langfristiges Vertrauen aufzubauen.",
     b1title: "Historische Strategie & Performance",
     b1backtest: "Backtesting seit 2010",
     b1kpis: [
@@ -361,11 +361,11 @@ const COPY: Record<Lang, Copy> = {
       { value: "1,45", label: "Calmar Ratio" },
     ],
     b1disclaimer:
-      "Backtesting- und Modellhistorie zu Informationszwecken. Keine Garantie für zukünftige Ergebnisse.",
-    b2title: "Strategie-Risikoübersicht",
+      "Backtesting- und Modellhistorie dienen ausschließlich Informationszwecken. Keine Garantie für zukünftige Ergebnisse.",
+    b2title: "Strategie-Risikoüberblick",
     b2center1: "Kontrolliertes",
     b2center2: "Risikoprofil",
-    b2sub: "Strukturierte Risikosteuerung über mehrere Marktphasen",
+    b2sub: "Strukturierte Risikosteuerung über verschiedene Marktphasen",
     b2stats: [
       { lbl: "Sharpe", val: "2,16" },
       { lbl: "Calmar", val: "1,45" },
@@ -375,7 +375,7 @@ const COPY: Record<Lang, Copy> = {
     b3title: "Regulierte Partner",
     b3desc: "Zusammenarbeit mit etablierten und regulierten Partnern.",
     b3authNote: "Reguliert und überwacht durch anerkannte Behörden.",
-    b4title: "Investorenschutz",
+    b4title: "Investorschutz",
     safeguards: [
       {
         title: "Bestehende Broker-Konten",
@@ -422,7 +422,7 @@ export default function RiskSuite() {
           <p className={r("sub")}>{copy.sub}</p>
         </div>
 
-        {/* ── 5-col asymmetric grid ── */}
+        {/* ── 2x2 premium grid ── */}
         <div className={r("grid")}>
 
           {/* ── Box 1: Backtesting chart ── */}
@@ -717,15 +717,15 @@ export default function RiskSuite() {
                   className={r("regLogoImg")}
                 />
 
-                {/* Status: bottom-right of each plate — tiny pulse only around dot */}
-                <circle cx="154" cy="64" r="7" className={r("regDotPulse")} />
-                <circle cx="338" cy="64" r="7" className={r("regDotPulse")} />
-                <circle cx="154" cy="64" r="3.4" className={r("regStatusDot")} />
-                <circle cx="338" cy="64" r="3.4" className={r("regStatusDot")} />
+                {/* Status: near each plate (outside logo area) — tiny pulse only around dot */}
+                <circle cx="166" cy="66" r="7" className={r("regDotPulse")} />
+                <circle cx="350" cy="66" r="7" className={r("regDotPulse")} />
+                <circle cx="166" cy="66" r="3.4" className={r("regStatusDot")} />
+                <circle cx="350" cy="66" r="3.4" className={r("regStatusDot")} />
 
                 <line
-                  x1="154"
-                  y1="64"
+                  x1="166"
+                  y1="66"
                   x2="180"
                   y2="112"
                   stroke="url(#rs_reg_ln)"
@@ -735,8 +735,8 @@ export default function RiskSuite() {
                   className={r("regFlowA")}
                 />
                 <line
-                  x1="338"
-                  y1="64"
+                  x1="350"
+                  y1="66"
                   x2="180"
                   y2="112"
                   stroke="url(#rs_reg_ln)"

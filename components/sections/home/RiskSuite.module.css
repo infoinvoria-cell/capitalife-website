@@ -78,11 +78,11 @@
 .section {
   position: relative;
   width: 100%;
-  background-image: url('/Risk_Background.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #000;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -10%, rgba(236, 224, 196, 0.08), transparent 58%),
+    radial-gradient(circle 42% at 18% 26%, rgba(212, 175, 95, 0.08), transparent 55%),
+    radial-gradient(circle 46% at 86% 68%, rgba(232, 218, 188, 0.06), transparent 58%),
+    #040405;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,11 +99,10 @@
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle 58% at 52% 16%, rgba(212, 175, 55, 0.11), transparent 58%),
-    radial-gradient(circle 52% at 78% 38%, rgba(232, 218, 188, 0.07), transparent 55%),
-    radial-gradient(circle 42% at 14% 68%, rgba(255, 248, 236, 0.045), transparent 56%),
-    radial-gradient(ellipse 72% 48% at 82% 30%, rgba(210, 185, 145, 0.042), transparent 54%),
-    rgba(0, 0, 0, 0.82);
+    radial-gradient(circle 60% at 52% 14%, rgba(212, 175, 95, 0.14), transparent 60%),
+    radial-gradient(circle 52% at 82% 42%, rgba(232, 218, 188, 0.09), transparent 58%),
+    radial-gradient(circle 48% at 14% 72%, rgba(255, 248, 236, 0.06), transparent 62%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.82) 55%, rgba(0, 0, 0, 0.76) 100%);
 }
 
 /* Soft blend into section above */
@@ -130,7 +129,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1320px;
 }
 
 /* ══════════════════════════════════
@@ -142,7 +141,7 @@
   align-items: center;
   gap: 14px;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 34px;
 }
 
 /* Pill badge — matches Strategy section exactly */
@@ -178,9 +177,9 @@
 .headline {
   margin: 0;
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: clamp(26px, 3.1vw, 46px);
-  font-weight: 700;
-  line-height: 1.12;
+  font-size: clamp(28px, 3.15vw, 48px);
+  font-weight: 750;
+  line-height: 1.1;
   letter-spacing: -0.022em;
   color: rgba(255, 253, 248, 0.96);
 }
@@ -198,12 +197,12 @@
 
 .sub {
   margin: 0;
-  max-width: min(52rem, 92vw);
+  max-width: min(62ch, 92vw);
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: clamp(14px, 1.05vw, 15.5px);
-  line-height: 1.48;
+  font-size: clamp(14.5px, 1.08vw, 16px);
+  line-height: 1.5;
   letter-spacing: 0.01em;
-  color: rgba(255, 253, 248, 0.72);
+  color: rgba(255, 253, 248, 0.76);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -218,45 +217,46 @@
 }
 
 /* ══════════════════════════════════
-   GRID
-   Row 1: [boxPerf 3/5] [boxRisk 2/5]
-   Row 2: [boxReg  2/5] [boxSafe 3/5]
+   GRID — 2×2 premium layout
+   TL: Performance | TR: Risk
+   BL: Regulated   | BR: Protection
    ══════════════════════════════════ */
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 11px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(12px, 1.2vw, 16px);
   align-items: stretch;
 }
 
-.boxPerf { grid-column: 1 / 4; }
-.boxRisk { grid-column: 4 / 6; }
+.boxPerf { grid-column: 1; grid-row: 1; }
+.boxRisk { grid-column: 2; grid-row: 1; }
 
 /* Softer chrome on risk card icon — aligns with champagne / off-white palette */
 .boxRisk .boxIco {
   color: rgba(228, 218, 196, 0.78);
 }
-.boxReg  { grid-column: 1 / 3; }
-.boxSafe { grid-column: 3 / 6; }
+.boxReg  { grid-column: 1; grid-row: 2; }
+.boxSafe { grid-column: 2; grid-row: 2; }
 
 /* ══════════════════════════════════
    BOX — liquid glass card
    ══════════════════════════════════ */
 .box {
   position: relative;
-  border-radius: 17px;
-  border: 1px solid rgba(255, 253, 246, 0.12);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 253, 246, 0.13);
   background:
-    linear-gradient(148deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 248, 236, 0.04) 48%, rgba(232, 218, 190, 0.018) 100%),
-    rgba(6, 6, 5, 0.38);
-  backdrop-filter: blur(42px) saturate(1.22);
-  -webkit-backdrop-filter: blur(42px) saturate(1.22);
+    radial-gradient(circle 120% at 20% 0%, rgba(236, 224, 196, 0.08), transparent 52%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 248, 236, 0.04) 42%, rgba(232, 218, 190, 0.016) 100%),
+    rgba(6, 6, 7, 0.42);
+  backdrop-filter: blur(46px) saturate(1.26);
+  -webkit-backdrop-filter: blur(46px) saturate(1.26);
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 253, 246, 0.09),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.09),
-    0 14px 48px rgba(0, 0, 0, 0.34),
-    0 0 0 0.5px rgba(232, 218, 196, 0.045);
-  padding: 17px 19px;
+    inset 0 1.5px 0 rgba(255, 253, 246, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 18px 60px rgba(0, 0, 0, 0.42),
+    0 0 0 0.5px rgba(236, 224, 196, 0.06);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -275,6 +275,20 @@
     rgba(255, 255, 255, 0.05) 70%,
     transparent
   );
+}
+
+/* Subtle inner mesh for premium “technical glass” */
+.box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(255, 253, 246, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 253, 246, 0.04) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 10%, transparent 72%);
 }
 
 /* Box header row */
@@ -302,9 +316,9 @@
 
 .boxTitle {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 650;
+  color: rgba(255, 253, 248, 0.78);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -334,6 +348,12 @@
 .chartWrap {
   flex: 1;
   min-height: 118px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 253, 246, 0.08);
+  background:
+    radial-gradient(circle 120% at 20% 10%, rgba(236, 224, 196, 0.06), transparent 56%),
+    rgba(0, 0, 0, 0.18);
+  padding: 10px 10px 6px;
 }
 
 .chartSvg {
@@ -344,8 +364,8 @@
 }
 
 .cGrid {
-  stroke: rgba(255, 253, 246, 0.045);
-  stroke-width: 0.72;
+  stroke: rgba(255, 253, 246, 0.05);
+  stroke-width: 0.65;
 }
 
 .cGridMinor {
@@ -355,24 +375,24 @@
 }
 
 .cGridVert {
-  stroke: rgba(255, 253, 246, 0.032);
-  stroke-width: 0.55;
+  stroke: rgba(255, 253, 246, 0.035);
+  stroke-width: 0.5;
 }
 
 .cYLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 8.75px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.03em;
-  fill: rgba(232, 228, 220, 0.52);
+  fill: rgba(236, 232, 224, 0.56);
 }
 
 .cXLbl {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 8.75px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.04em;
-  fill: rgba(236, 232, 224, 0.56);
+  fill: rgba(236, 232, 224, 0.6);
 }
 
 /* Hairline underlay for depth */
@@ -388,7 +408,7 @@
 .cLine {
   fill: none;
   stroke: url(#rs_lg);
-  stroke-width: 1.42;
+  stroke-width: 1.55;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -514,10 +534,10 @@
   margin: 8px 2px 0;
   text-align: center;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10px;
-  line-height: 1.45;
+  font-size: 11px;
+  line-height: 1.5;
   letter-spacing: 0.02em;
-  color: rgba(238, 230, 212, 0.58);
+  color: rgba(238, 230, 212, 0.62);
   max-width: 42ch;
   align-self: center;
 }
@@ -557,14 +577,14 @@
 }
 
 .rkQuadCross {
-  stroke: rgba(255, 253, 246, 0.055);
-  stroke-width: 0.78;
+  stroke: rgba(255, 253, 246, 0.06);
+  stroke-width: 0.85;
   stroke-linecap: round;
 }
 
 .rkMicroTick {
-  stroke: rgba(228, 210, 175, 0.14);
-  stroke-width: 0.62;
+  stroke: rgba(228, 210, 175, 0.16);
+  stroke-width: 0.68;
   stroke-linecap: round;
 }
 
@@ -595,13 +615,13 @@
 }
 
 .rkNodePulse {
-  fill: rgba(252, 246, 232, 0.12);
+  fill: rgba(252, 246, 232, 0.14);
   animation: rs_rkNodeGlow 4s ease-in-out infinite;
 }
 
 .rkNode {
-  fill: rgba(228, 218, 192, 0.38);
-  stroke: rgba(255, 253, 246, 0.35);
+  fill: rgba(236, 224, 196, 0.44);
+  stroke: rgba(255, 253, 246, 0.38);
   stroke-width: 0.85;
 }
 
@@ -715,9 +735,9 @@
   margin: 0 8px 12px;
   max-width: 46ch;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 10.5px;
+  font-size: 11px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 253, 248, 0.52);
   flex-shrink: 0;
 }
 
@@ -875,10 +895,10 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 248px;
-  height: 248px;
-  margin-left: -124px;
-  margin-top: -124px;
+  width: 270px;
+  height: 270px;
+  margin-left: -135px;
+  margin-top: -135px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -1086,9 +1106,7 @@
   .grid {
     grid-template-columns: 1fr 1fr;
   }
-  .boxPerf, .boxRisk, .boxReg, .boxSafe {
-    grid-column: auto;
-  }
+  .boxPerf, .boxRisk, .boxReg, .boxSafe { grid-column: auto; grid-row: auto; }
   .kpiRow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px 12px;
@@ -1109,9 +1127,7 @@
   .grid {
     grid-template-columns: 1fr;
   }
-  .boxPerf, .boxRisk, .boxReg, .boxSafe {
-    grid-column: auto;
-  }
+  .boxPerf, .boxRisk, .boxReg, .boxSafe { grid-column: auto; grid-row: auto; }
   .sgLayout {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto;

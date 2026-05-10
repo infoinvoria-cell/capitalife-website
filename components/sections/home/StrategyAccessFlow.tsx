@@ -99,22 +99,6 @@ function IcShieldBadge(): ReactNode {
   );
 }
 
-function PairLine({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}): ReactNode {
-  return (
-    <p className={c("saBoxPair")}>
-      <span className={c("saBoxLbl")}>{label}</span>
-      <span className={c("saBoxEm")}> — </span>
-      <span className={c("saBoxVal")}>{value}</span>
-    </p>
-  );
-}
-
 export function StrategyAccessFlow({ diagram, visible }: Props) {
   const wrapClass = `${c("saFlow")}${visible ? ` ${c("saFlowVisible")}` : ""}`;
 
@@ -145,13 +129,15 @@ export function StrategyAccessFlow({ diagram, visible }: Props) {
             <span className={c("saBoxIcoWrap")}>
               <IcWallet />
             </span>
-            <PairLine label={diagram.investment} value={diagram.investmentEx} />
+            <p className={c("saBoxTitle")}>{diagram.investment}</p>
+            <p className={c("saBoxValue")}>{diagram.investmentEx}</p>
           </div>
           <div className={c("saBox")} data-step="3">
             <span className={c("saBoxIcoWrap")}>
               <IcGauge />
             </span>
-            <PairLine label={diagram.risk} value={diagram.riskEx} />
+            <p className={c("saBoxTitle")}>{diagram.risk}</p>
+            <p className={c("saBoxValue")}>{diagram.riskEx}</p>
           </div>
         </div>
 
@@ -167,7 +153,8 @@ export function StrategyAccessFlow({ diagram, visible }: Props) {
           <span className={c("saBoxIcoWrap")}>
             <IcLayers />
           </span>
-          <PairLine label={diagram.cfs} value={diagram.cfsEx} />
+          <p className={c("saBoxTitle")}>{diagram.cfs}</p>
+          <p className={c("saBoxValueSm")}>{diagram.cfsEx}</p>
         </div>
 
         <div className={`${c("saConn")} ${c("saConnC")}`} aria-hidden>
@@ -184,13 +171,15 @@ export function StrategyAccessFlow({ diagram, visible }: Props) {
             <span className={c("saBoxIcoWrap")}>
               <IcPercent />
             </span>
-            <PairLine label={diagram.investorShare} value={diagram.investorShareEx} />
+            <p className={c("saBoxTitle")}>{diagram.investorShare}</p>
+            <p className={c("saBoxValue")}>{diagram.investorShareEx}</p>
           </div>
           <div className={c("saBox")} data-step="6">
             <span className={c("saBoxIcoWrap")}>
               <IcShieldBadge />
             </span>
-            <PairLine label={diagram.capitalifeShare} value={diagram.capitalifeShareEx} />
+            <p className={c("saBoxTitle")}>{diagram.capitalifeShare}</p>
+            <p className={c("saBoxValue")}>{diagram.capitalifeShareEx}</p>
           </div>
         </div>
       </div>

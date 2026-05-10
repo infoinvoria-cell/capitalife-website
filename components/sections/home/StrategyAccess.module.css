@@ -163,8 +163,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 10px;
-  padding: 14px 12px 15px;
+  gap: 7px;
+  padding: 14px 12px 16px;
   border-radius: 14px;
   border: 1px solid rgba(255, 253, 246, 0.11);
   background:
@@ -236,8 +236,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border-radius: 13px;
   border: 1px solid rgba(212, 175, 95, 0.18);
   background: linear-gradient(145deg, rgba(236, 224, 196, 0.12), rgba(255, 255, 255, 0.04));
@@ -272,8 +272,8 @@
 }
 
 .saIco {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
 }
 
 .saBoxInvestorLbl {
@@ -287,32 +287,36 @@
   line-height: 1.25;
 }
 
-.saBoxPair {
+.saBoxTitle {
   margin: 0;
-  font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: 0.02em;
-  color: rgba(255, 253, 248, 0.82);
-}
-
-.saBoxLbl {
   font-family: var(--font-montserrat), Montserrat, sans-serif;
   font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.02em;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
   color: rgba(252, 248, 242, 0.96);
+  line-height: 1.25;
 }
 
-.saBoxEm {
-  color: rgba(236, 224, 196, 0.55);
+.saBoxValue {
+  margin: 0;
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(236, 224, 196, 0.96);
+  line-height: 1.18;
+  text-shadow: 0 0 18px rgba(212, 175, 95, 0.16);
+}
+
+.saBoxValueSm {
+  margin: 0;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 12px;
   font-weight: 500;
-}
-
-.saBoxVal {
-  color: rgba(236, 224, 196, 0.92);
-  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(255, 253, 248, 0.74);
+  line-height: 1.35;
+  max-width: 20ch;
 }
 
 .saConn {
@@ -611,15 +615,15 @@
 
 .benefitStrip {
   margin: 8px 0 0;
-  padding: 10px 14px;
+  padding: 9px 12px;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 18px;
+  gap: 8px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(212, 175, 95, 0.14);
-  background: linear-gradient(110deg, rgba(255, 253, 246, 0.06), rgba(212, 175, 95, 0.04));
+  border: 1px solid rgba(212, 175, 95, 0.16);
+  background: linear-gradient(110deg, rgba(255, 253, 246, 0.055), rgba(212, 175, 95, 0.045));
   box-shadow:
     inset 0 1px 0 rgba(255, 253, 246, 0.06),
     0 8px 28px rgba(0, 0, 0, 0.22);
