@@ -190,18 +190,20 @@
 /* Handy und Tablet hochkant: oben der ganze Text, darunter beide Personen nebeneinander */
 @media (max-width: 860px) {
   .box {
+    background: #0b0b0b; /* minimal heller als die Seite: Box hebt sich leicht ab */
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "text text"
       "left right";
     gap: 2rem 0.75rem;
     height: auto;
-    padding: 2.5rem 1.25rem 0;
+    padding: 2.5rem 0 0; /* Fotos bis an den Rand, damit Name und Rolle ganz aussen in den Ecken stehen */
   }
 
   .center {
     grid-column: 1 / -1;
     grid-row: 1;
+    padding-inline: 1.25rem;
   }
 
   .person {

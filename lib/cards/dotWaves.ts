@@ -6,6 +6,8 @@ const COLS = 70;
 const ROWS = 26;
 
 export const dotWaves: Draw = (ctx, w, h, t) => {
+  // Handy (schmal, hohe Box): hintere Punkte oben deutlicher, damit der obere Bereich nicht leer wirkt
+  const floor = w < 600 ? 0.13 : 0.05;
   const near = 1 / 0.6;
   const far = 1 / 2.2;
   for (let j = 0; j < ROWS; j++) {
@@ -19,7 +21,7 @@ export const dotWaves: Draw = (ctx, w, h, t) => {
       const x = w / 2 + xN * w * 0.85 * s;
       const y = h * 0.06 + h * 1.0 * k - wave * h * 0.07 * s; // Fläche reicht bis nach oben, auch hinter die Köpfe
       if (x < -4 || x > w + 4 || y < -4 || y > h + 4) continue;
-      const a = 0.05 + 0.2 * k * (0.75 + 0.25 * wave);
+      const a = floor + 0.2 * k * (0.75 + 0.25 * wave);
       ctx.fillStyle = `rgba(236, 228, 210, ${a.toFixed(3)})`;
       ctx.beginPath();
       ctx.arc(x, y, 0.6 + 0.9 * k, 0, Math.PI * 2);
