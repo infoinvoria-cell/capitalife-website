@@ -168,7 +168,7 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     badge: "Coming soon",
     primary: { label: "Join the waitlist", href: "#waitlist" },
     secondary: { label: "Who we are", href: "#strategy" },
-    navCta: { label: "Join waitlist", href: "#waitlist" },
+    navCta: { label: "Join waitlist", href: "/#waitlist" },
     // Gewählt von Jeroen: Handel über Futures (Index- und Rohstoff-Futures, Begriffe wie bei IBKR), keine CFDs mehr. Sitz in Deutschland muss stimmen.
     kpis: [
       { label: "Global markets", value: "Futures" },
@@ -177,8 +177,8 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     ],
     // Nur echte Ziele. Partnerseite bewusst nicht verlinkt (alte Seite mit Gewinn-/Performance-Aussagen, erst prüfen).
     nav: [
-      { label: "Approach", href: "#strategy" },
-      { label: "Early access", href: "#waitlist" },
+      { label: "Approach", href: "/#strategy" },
+      { label: "Early access", href: "/#waitlist" },
     ],
     langSwitch: "Switch to German",
     menu: { open: "Open menu", close: "Close menu" },
@@ -188,15 +188,15 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     badge: "Bald verfügbar",
     primary: { label: "Auf die Warteliste", href: "#waitlist" },
     secondary: { label: "Wer wir sind", href: "#strategy" },
-    navCta: { label: "Zur Warteliste", href: "#waitlist" },
+    navCta: { label: "Zur Warteliste", href: "/#waitlist" },
     kpis: [
       { label: "Globale Märkte", value: "Futures" },
       { label: "Sitz", value: "Deutschland", icon: "germany" },
       { label: "Denkweise", value: "Langfristig" },
     ],
     nav: [
-      { label: "Ansatz", href: "#strategy" },
-      { label: "Zugang", href: "#waitlist" },
+      { label: "Ansatz", href: "/#strategy" },
+      { label: "Zugang", href: "/#waitlist" },
     ],
     langSwitch: "Auf Englisch wechseln",
     menu: { open: "Menü öffnen", close: "Menü schliessen" },

@@ -18,21 +18,26 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     line2: "to get access.",
     placeholder: "Your email address",
     button: "Join the waitlist",
-    consent: "I agree that Capitalife may email me about the launch and early access. I can withdraw my consent at any time. See our",
+    consent:
+      "I agree that Capitalife may email me about the launch and early access. I can withdraw my consent at any time. See our",
     privacy: "privacy policy.",
-    note: "Free and without obligation. You will receive a confirmation email. This is not an investment offer and not investment advice.",
+    note: "Free and without obligation. This is not an investment offer and not investment advice.",
     invalid: "Please enter a valid email address and confirm the consent.",
-    pending: "Sign-up opens together with our privacy policy. Nothing has been sent.",
+    pending:
+      "Sign-up opens together with our privacy policy. Nothing has been sent.",
   },
   de: {
     line1: "Sei von Anfang an",
     line2: "dabei.",
     placeholder: "Deine E-Mail-Adresse",
     button: "Auf die Warteliste",
-    consent: "Ich willige ein, dass Capitalife mich per E-Mail über den Start und den frühen Zugang informiert. Ich kann meine Einwilligung jederzeit widerrufen. Mehr in der",
+    consent:
+      "Ich willige ein, dass Capitalife mich per E-Mail über den Start und den frühen Zugang informiert. Ich kann meine Einwilligung jederzeit widerrufen. Mehr in der",
     privacy: "Datenschutzerklärung.",
-    note: "Kostenlos und unverbindlich. Du erhältst eine Bestätigungs-E-Mail. Kein Anlageangebot und keine Anlageberatung.",
-    invalid: "Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Einwilligung.",
-    pending: "Die Anmeldung wird zusammen mit unserer Datenschutzerklärung freigeschaltet. Es wurde nichts gesendet.",
+    note: "Kostenlos und unverbindlich. Kein Anlageangebot und keine Anlageberatung.",
+    invalid:
+      "Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Einwilligung.",
+    pending:
+      "Die Anmeldung wird zusammen mit unserer Datenschutzerklärung freigeschaltet. Es wurde nichts gesendet.",
   },
 };

@@ -30,7 +30,8 @@ Referenz, nur lesen: Capitalife Terminal (C:\Users\joris\Documents\Capitalife Te
 ## Recht / Finanz
 - Keine Performance-Zahlen ohne Freigabe. Live-Track-Record (White Swan, seit April 2024) und Backtest immer getrennt und beschriftet.
 - Kein Renditeversprechen, keine CFD-Werbung.
-- Pflicht vor Go-Live: Impressum, Datenschutz, Risikohinweis. Heute nicht vorhanden.
+- Impressum (/imprint), Datenschutz (/privacy), Risikohinweis (/risk) gebaut (content/legal/, components/sections/legal/). OFFEN vor Domain-Livegang: Anschrift, Telefon, E-Mail-Anbieter (capitalife.co hat KEINEN MX-Eintrag, info@ empfaengt nichts), Vercel-DPA/Tarif (Hobby = nicht kommerziell), Log-Speicherdauer. Keine Rechtsberatung, Anwalt pruefen lassen.
+- /partner-program (+ /partner, /tippgeber) ist oeffentlich und enthaelt Gewinn-/Investor-Aussagen (KWG-Risiko). Entfernen braucht Go.
 - Rechtsrisiken im Blick: Partnerprogramm, Broker-Logos, Haftungsdach. Keine Rechtsberatung.
 - public/trades_clean_compounded.csv wird oeffentlich ausgeliefert: pruefen, ob sie dort bleiben darf.
 
@@ -43,4 +44,4 @@ Die Seite ist vorerst nur WARTELISTE / EARLY ACCESS / Coming soon. Keine echten 
 - Einblenden beim Scrollen: data-reveal + components/ui/ScrollReveal.tsx, Stil in app/globals.css. Buttons: components/ui/Button.module.css.
 - Geprueft (Playwright, echte Animationen): 1920, MBP 16/14, MBA 13, 1280x800, iPad quer/hoch, iPad Pro, iPhone Max/normal/SE, Android, Handy quer. Prod-Build gruen.
 - Hero-Erde: Erde, Lichtkegel und Schriftzug zeichnet EIN WebGL-Canvas in Bildschirmgroesse (lib/globe/shader.ts, renderer.ts). Bilder in HeroGlobe.tsx sind nur Ersatz ohne WebGL. Qualitaet passt sich automatisch an langsame Geraete an.
-- Ungeprueft: metadataBase, Open Graph, Impressum/Datenschutz.
+- Ungeprueft: metadataBase, Open Graph.
