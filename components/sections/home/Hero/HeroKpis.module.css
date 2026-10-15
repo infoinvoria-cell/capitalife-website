@@ -15,14 +15,20 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
-/* Symbol neben dem Wert (Deutschland-Umriss), so hoch wie die Grossbuchstaben */
+/* Symbol rechts neben dem Wert (Deutschland-Umriss) */
+.value {
+  position: relative;
+}
+
 .icon {
-  display: inline-block;
-  width: 0.74em;
-  height: 0.95em;
-  margin-right: 0.45em;
-  vertical-align: -0.1em;
-  opacity: 0.75;
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 0.92em;
+  height: 1.2em;
+  margin-left: 0.4em;
+  transform: translateY(-50%);
+  opacity: 0.85;
 }
 
 .kpi dd {

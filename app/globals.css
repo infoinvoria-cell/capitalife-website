@@ -2,7 +2,7 @@
 @import "../styles/tokens.css";
 
 @theme {
-  --color-brand-bg: #000000;
+  --color-brand-bg: #050505; /* minimal heller als reines Schwarz */
   --color-brand-bg-soft: #0a0a0a;
   --color-brand-gold-400: #d5af36;
   --color-brand-gold-350: #d9b84c;
@@ -92,11 +92,11 @@ html::-webkit-scrollbar {
 }
 
 html::-webkit-scrollbar-track {
-  background: #000;
+  background: var(--color-brand-bg);
 }
 
 html::-webkit-scrollbar-thumb {
-  border: 3px solid #000;
+  border: 3px solid var(--color-brand-bg);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.18);
 }
@@ -106,12 +106,12 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 html::-webkit-scrollbar-corner {
-  background: #000;
+  background: var(--color-brand-bg);
 }
 
 @supports not selector(::-webkit-scrollbar) {
   html {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.22) #000;
+    scrollbar-color: rgba(255, 255, 255, 0.22) var(--color-brand-bg);
   }
 }

@@ -37,6 +37,7 @@
 
 /* Live-Erde: deckt nur den sichtbaren Bereich ab (spart Rechenleistung), die Kugel richtet sich am Standbild aus */
 .live {
+  background: var(--bg); /* liefert der Live-Erde die Grundfarbe */
   position: absolute;
   inset: 0;
   width: 100%;

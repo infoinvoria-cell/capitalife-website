@@ -191,7 +191,7 @@
 
 /* Handy: keine Leiste, nur Logo links und Menü-Symbol rechts, ohne Glas */
 /* Handy: keine Glas-Leiste. Logo links, Menü-Symbol rechts, fest an Ort und Stelle.
-   Beim Scrollen erscheint sofort ein durchgehender Balken dahinter (ohne Umwandlung, ohne Animation). */
+   Beim Scrollen blendet dahinter weich ein durchgehender Balken ein (ohne Umwandlung der Form). */
 @media (max-width: 640px) {
   .nav,
   .compact {
@@ -218,11 +218,13 @@
   .brand {
     --logo-h: 1.75rem;
   }
+  /* Balken blendet mit dem Scrollen weich ein: --nav-p läuft von 0 (oben) bis 1 (nach ca. 60 px) */
+  .nav,
   .nav.compact {
-    background: rgba(0, 0, 0, 0.32); /* etwas durchsichtiger: Hintergrund scheint leicht durch */
-    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.06);
-    -webkit-backdrop-filter: blur(14px) saturate(0.9);
-    backdrop-filter: blur(14px) saturate(0.9);
+    background: rgba(0, 0, 0, calc(0.32 * var(--nav-p, 0)));
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, calc(0.06 * var(--nav-p, 0)));
+    -webkit-backdrop-filter: blur(calc(14px * var(--nav-p, 0))) saturate(calc(1 - 0.1 * var(--nav-p, 0)));
+    backdrop-filter: blur(calc(14px * var(--nav-p, 0))) saturate(calc(1 - 0.1 * var(--nav-p, 0)));
   }
 }
 

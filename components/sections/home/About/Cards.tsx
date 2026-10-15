@@ -1,6 +1,5 @@
 "use client";
 
-
 import type { AboutCopy } from "@/content/home/about";
 import { toolsArc, toolsDrag } from "@/lib/cards/arc";
 import { earthCard, earthDrag } from "@/lib/cards/globe";

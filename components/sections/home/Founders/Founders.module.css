@@ -1,0 +1,122 @@
+/* Gründer-Box: eine breite Fläche im Stil der Karten, Porträts links und rechts, Text mittig */
+.founders {
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--container-padding-inline); /* Abstände nach oben/unten geben About und Warteliste (gleich gross) */
+  background: var(--color-brand-bg);
+  color: #fff;
+  font-family: var(--font-inter), -apple-system, "SF Pro Text", system-ui, sans-serif;
+}
+
+.box {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 26rem) 1fr;
+  align-items: center;
+  width: min(100%, 68rem);
+  height: clamp(20rem, 32vw, 26rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: #020202; /* sehr dunkel, die Punkt-Wellen geben die Tiefe */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Punkt-Wellen als Hintergrund der ganzen Box */
+.waves {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Porträt: unten angeschnitten, läuft nach unten und zur Mitte weich ins Dunkle aus */
+.person {
+  position: absolute;
+  bottom: 0;
+  width: 34%;
+  height: 100%;
+  margin: 0;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.photo {
+  position: absolute;
+  bottom: -18%;
+  left: 50%;
+  width: auto;
+  height: 112%;
+  max-width: none;
+  transform: translateX(-50%);
+  filter: grayscale(0.25) contrast(1.05) brightness(0.92);
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
+}
+
+/* Name und Rolle unten in der Ecke, dezent */
+.caption {
+  position: absolute;
+  bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.8125rem;
+}
+
+.left .caption {
+  left: 1.5rem;
+}
+
+.right .caption {
+  right: 1.5rem;
+  text-align: right;
+}
+
+.name {
+  color: #fff;
+}
+
+.role {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.center {
+  position: relative;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.58);
+  text-wrap: balance;
+}
+
+/* Handy und Tablet hochkant: vorerst ausgeblendet (Gestaltung folgt) */
+@media (max-width: 860px) {
+  .founders {
+    display: none;
+  }
+}

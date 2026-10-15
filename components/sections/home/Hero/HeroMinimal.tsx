@@ -51,10 +51,13 @@ export function HeroMinimal({ titleStyle = "3" }: { titleStyle?: TitleStyle }) {
             <div key={k.label} className={kpiStyles["kpi"]}>
               <dt>{k.label}</dt>
               <dd>
-                {k.icon === "germany" && (
-                  <GermanyIcon className={kpiStyles["icon"]} />
-                )}
-                {k.value}
+                {/* Wort bleibt mittig, das Symbol hängt rechts daneben (zählt nicht zur Breite) */}
+                <span className={kpiStyles["value"]}>
+                  {k.value}
+                  {k.icon === "germany" && (
+                    <GermanyIcon className={kpiStyles["icon"]} />
+                  )}
+                </span>
               </dd>
             </div>
           ))}

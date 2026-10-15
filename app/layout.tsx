@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       className={`${inter.variable} ${montserrat.variable} ${cinzel.variable} ${playfair.variable} ${dmSerif.variable}`}
     >
-      <body className="min-h-screen bg-black font-sans text-white antialiased">
+      <body className="min-h-screen bg-brand-bg font-sans text-white antialiased">
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>

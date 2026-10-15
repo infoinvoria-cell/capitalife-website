@@ -114,6 +114,11 @@ export function createGlobeRenderer(
   const uMarkBox = u("uMarkBox");
   const uH = u("uH");
   const uMarkGain = u("uMarkGain");
+  // Grundfarbe aus dem CSS (Hintergrund des Canvas = Seitenhintergrund)
+  const bg = (
+    getComputedStyle(canvas).backgroundColor.match(/\d+/g) ?? ["0", "0", "0"]
+  ).map((v) => Number(v) / 255);
+  gl.uniform3f(u("uBg"), bg[0] ?? 0, bg[1] ?? 0, bg[2] ?? 0);
 
   return {
     draw(lonDeg, angleRad, box, mark, quality = 1) {

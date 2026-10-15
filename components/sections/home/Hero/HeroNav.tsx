@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { heroCopy } from "@/content/home/hero";
 import { useLanguage } from "@/lib/i18n/language";
@@ -18,9 +18,17 @@ export function HeroNav() {
   const [compact, setCompact] = useState(false);
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
+  const header = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setCompact(window.scrollY > 8);
+    const onScroll = () => {
+      setCompact(window.scrollY > 8);
+      // Handy: Balken blendet über die ersten 60 px weich ein
+      header.current?.style.setProperty(
+        "--nav-p",
+        String(Math.min(window.scrollY / 60, 1)),
+      );
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -29,6 +37,7 @@ export function HeroNav() {
   return (
     <>
       <header
+        ref={header}
         className={`${styles["nav"]} ${compact ? styles["compact"] : ""}`}
       >
         {/* Logo: zeigt nur das Symbol, klappt beim Hover zum vollen Schriftzug aus.
@@ -74,7 +83,10 @@ export function HeroNav() {
           aria-label={open ? menu.close : menu.open}
           onClick={() => setOpen((v) => !v)}
         >
-          <span className={menuStyles["menuIcon"]} data-open={open || undefined} />
+          <span
+            className={menuStyles["menuIcon"]}
+            data-open={open || undefined}
+          />
         </button>
       </header>
       <HeroMobileMenu id="mobile-menu" open={open} onClose={close} />
