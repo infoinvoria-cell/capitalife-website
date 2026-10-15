@@ -61,6 +61,11 @@
   mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
 }
 
+/* Linke Person minimal tiefer, damit beide Köpfe auf einer Höhe stehen */
+.left .photo {
+  bottom: calc(-18% - 1rem);
+}
+
 /* Name und Rolle unten in der Ecke, dezent */
 .caption {
   position: absolute;
