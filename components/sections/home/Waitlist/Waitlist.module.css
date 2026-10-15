@@ -149,15 +149,44 @@
   white-space: nowrap;
 }
 
-@media (max-width: 520px) {
-  .field {
-    flex-direction: column;
-    padding: 0.5rem;
-    border-radius: 1.5rem;
+/* Handy: kein gemeinsamer Rahmen. Eigenes Glas-Eingabefeld, darunter ein breiter weisser Button */
+@media (max-width: 640px) {
+  .form {
+    gap: 1.5rem;
   }
 
-  .input,
+  .field,
+  .field:hover,
+  .field:focus-within {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .input {
+    flex: none; /* sonst schrumpft das Feld in der Spalte auf Texthöhe */
+    width: 100%;
+    height: 3.25rem;
+    padding: 0 1.25rem;
+    border-radius: 980px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    font-size: 1rem; /* mindestens 16 px, sonst zoomt iOS beim Antippen */
+    transition: box-shadow 0.2s;
+  }
+
+  .input:focus {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 0 4px rgba(255, 255, 255, 0.06);
+  }
+
   .button {
     width: 100%;
+    height: 3.25rem;
+    font-size: 1.0625rem;
   }
 }

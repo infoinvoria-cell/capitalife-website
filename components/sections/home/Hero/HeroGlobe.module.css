@@ -109,9 +109,10 @@
   .scene::after { content: ""; position: absolute; inset: 100% 0 auto; height: 100vh; background: var(--bg); }
 }
 
-/* Handy: Kugel weiter oben, Schriftzug grösser */
+/* Handy: Kugel weiter oben, Schriftzug grösser. Unterhalb der Kuppe alles schwarz (dort stehen Text und Kennzahlen) */
 @media (max-width: 640px) {
   .scene { --disc-top: 17svh; --logo-w: 74vw; }
+  .fade { background: linear-gradient(180deg, transparent 36%, var(--bg) 58%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

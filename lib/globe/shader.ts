@@ -35,7 +35,9 @@ vec3 light(vec2 p) {
   float c = cos(uAngle), si = sin(uAngle);
   vec2 uv = vec2(c * s.x + si * s.y, -si * s.x + c * s.y) + 0.5;
   if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return vec3(0.0);
-  return texture2D(uLight, uv).rgb;
+  // Kanten der Lichtflaeche weich ausblenden: sonst zieht beim Drehen eine harte Linie durchs Bild (Handy)
+  vec2 e = smoothstep(0.0, 0.12, uv) * smoothstep(0.0, 0.12, 1.0 - uv);
+  return texture2D(uLight, uv).rgb * e.x * e.y;
 }
 
 // Schriftzug hinter der Kugel: nur dort sichtbar, wo Licht hinfaellt

@@ -56,20 +56,20 @@ input[type="checkbox"]:focus-visible {
   outline-offset: 3px;
 }
 
-/* Einblenden beim Näherkommen (components/ui/ScrollReveal.tsx): schnell, 3D von unten nach oben */
+/* Einblenden beim Näherkommen (components/ui/ScrollReveal.tsx): 3D aus der Tiefe, von unten nach oben */
 html.reveal [data-reveal] {
   opacity: 0;
-  transform: perspective(900px) translateY(40px) rotateX(18deg);
+  transform: perspective(900px) translate3d(0, 56px, -140px) rotateX(24deg);
   transform-origin: 50% 100%;
   transition:
-    opacity 0.55s ease var(--rd, 0s),
-    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rd, 0s);
+    opacity 0.9s ease var(--rd, 0s),
+    transform 1.15s cubic-bezier(0.16, 0.8, 0.2, 1) var(--rd, 0s);
 }
 
 /* Reihenfolge innerhalb einer Gruppe: data-reveal="2" kommt kurz nach "1" usw. */
-[data-reveal="2"] { --rd: 0.08s; }
-[data-reveal="3"] { --rd: 0.16s; }
-[data-reveal="4"] { --rd: 0.24s; }
+[data-reveal="2"] { --rd: 0.12s; }
+[data-reveal="3"] { --rd: 0.24s; }
+[data-reveal="4"] { --rd: 0.36s; }
 
 html.reveal [data-reveal][data-shown] {
   opacity: 1;

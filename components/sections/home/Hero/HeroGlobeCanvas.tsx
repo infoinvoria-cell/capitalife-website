@@ -11,6 +11,7 @@ const SPAN = 2; // Scroll-Strecke in Bildschirmhöhen
 const AUTO = 0.6; // Dauerdrehung in Grad pro Sekunde (eine Umdrehung in 10 Minuten)
 const BEAM0 = -95; // Lichtkegel: Startwinkel (links) ...
 const BEAM_SPEED = 9; // ... und 9 Grad pro Sekunde (eine Runde in 40 s)
+const BEAM_SPEED_PHONE = 18; // Handy: Licht kommt doppelt so oft wieder (eine Runde in 20 s)
 const SLOW_MS = 22; // Bildzeit, ab der ein Gerät als zu langsam gilt (unter ca. 45 Bilder pro Sekunde)
 
 function load(src: string): Promise<HTMLImageElement> {
@@ -70,7 +71,10 @@ export function HeroGlobeCanvas({
     const draw = (now: number) => {
       const beam = still
         ? BEAM0
-        : BEAM0 + ((((now - t0) / 1000) * BEAM_SPEED) % 360);
+        : BEAM0 +
+          ((((now - t0) / 1000) *
+            (canvas.clientWidth <= 640 ? BEAM_SPEED_PHONE : BEAM_SPEED)) %
+            360);
       renderer?.draw(
         LON0 - auto - current,
         (beam * Math.PI) / 180,

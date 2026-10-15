@@ -7,7 +7,7 @@ import styles from "./Cards.module.css";
 // Ziffern-Zähler im Loop: jede Ziffer ist eine Walze, neue Zahlen rollen von oben herein.
 // Ablauf: "0+" → einstellig bis 9 → ab 10 kommt die Zehnerstelle weich dazu (das "+" rückt nach) → bis 25,
 // ca. 3 s stehen lassen, kurz ausblenden, von vorn. Läuft nur, wenn sichtbar.
-const COUNT = 6.5; // Sekunden für 0 bis 25
+const COUNT = 4; // Sekunden für 0 bis 25
 const HOLD_END = COUNT + 3;
 const FADE_END = HOLD_END + 0.5;
 const CYCLE = FADE_END + 0.4;
