@@ -156,6 +156,8 @@ export type HeroCopy = {
   kpis: readonly { label: string; value: string }[];
   nav: readonly Link[];
   langSwitch: string;
+  /** Handy-Menü: Beschriftung für Vorlesehilfen */
+  menu: { open: string; close: string };
 };
 
 // Aktive Texte je Sprache. Englisch aus den Varianten oben, Deutsch als Übersetzung.
@@ -178,6 +180,7 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
       { label: "Early access", href: "#waitlist" },
     ],
     langSwitch: "Switch to German",
+    menu: { open: "Open menu", close: "Close menu" },
   },
   de: {
     headline: { line1: "Sichere dir deinen Platz", line2: "auf der Warteliste." },
@@ -195,5 +198,6 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
       { label: "Zugang", href: "#waitlist" },
     ],
     langSwitch: "Auf Englisch wechseln",
+    menu: { open: "Menü öffnen", close: "Menü schliessen" },
   },
 };

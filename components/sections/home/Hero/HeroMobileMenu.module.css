@@ -1,0 +1,180 @@
+/* Handy-Menü. Nur auf schmalen Bildschirmen vorhanden (Knopf dafür in HeroNav). */
+.root {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .root {
+    position: fixed;
+    inset: 0;
+    z-index: 45; /* unter der Kopfzeile (50): Logo und Schliessen-Symbol bleiben oben sichtbar */
+    display: block;
+    visibility: hidden;
+    transition: visibility 0s 0.45s;
+    font-family:
+      var(--font-inter),
+      -apple-system,
+      "SF Pro Text",
+      system-ui,
+      sans-serif;
+  }
+
+  .root[data-open] {
+    visibility: visible;
+    transition: none;
+  }
+}
+
+/* Seite dahinter: weichgezeichnet, abgedunkelt */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* Fenster: halber Bildschirm, dunkles Liquid Glass, gleitet von oben herein */
+.panel {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1.75rem;
+  min-height: 50svh;
+  padding: 6rem 1.5rem 1.5rem;
+  border-radius: 0 0 1.75rem 1.75rem;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.015)
+    ),
+    rgba(10, 10, 10, 0.6);
+  box-shadow:
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    0 24px 60px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(24px) saturate(0.8);
+  backdrop-filter: blur(24px) saturate(0.8);
+  transform: translateY(-100%);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.root[data-open] .backdrop {
+  opacity: 1;
+}
+
+.root[data-open] .panel {
+  transform: none;
+}
+
+.pages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.page {
+  padding: 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.page:active,
+.page:focus-visible {
+  color: var(--color-brand-gold-200);
+}
+
+/* Sprache: EN DE, die aktive hell */
+.langs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.langOption {
+  min-width: 2.75rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: 980px;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+}
+
+.langOption[aria-pressed="true"] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.cta {
+  composes: solid from "../../../ui/Button.module.css";
+  width: 100%;
+  height: 3rem;
+  font-size: 1.0625rem;
+}
+
+/* Menü-Symbol in der Kopfzeile (nur Handy): zwei Striche, offen ein X */
+.menuButton {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .menuButton {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+}
+
+.menuIcon,
+.menuIcon::before {
+  display: block;
+  width: 1.375rem;
+  height: 1.5px;
+  border-radius: 1px;
+  background: #fff;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.menuIcon {
+  position: relative;
+  transform: translateY(-3.5px);
+}
+
+.menuIcon::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+}
+
+.menuIcon[data-open] {
+  transform: rotate(45deg);
+}
+
+.menuIcon[data-open]::before {
+  transform: translateY(-7px) rotate(-90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .panel {
+    transition: none;
+  }
+}

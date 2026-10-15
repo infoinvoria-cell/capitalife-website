@@ -157,6 +157,17 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding-top: max(7rem, 31svh);
+  }
+  /* Beide Buttons nebeneinander, auch auf kleinen Handys */
+  .primary,
+  .secondary {
+    min-width: 0;
+    height: 2.875rem;
+    padding-inline: 1.125rem;
+    font-size: 1rem;
+  }
   .title {
     font-size: clamp(2.25rem, 10.5vw, 2.75rem);
   }

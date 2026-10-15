@@ -113,6 +113,7 @@ export function createGlobeRenderer(
   const uAngle = u("uAngle");
   const uMarkBox = u("uMarkBox");
   const uH = u("uH");
+  const uMarkGain = u("uMarkGain");
 
   return {
     draw(lonDeg, angleRad, box, mark, quality = 1) {
@@ -138,6 +139,8 @@ export function createGlobeRenderer(
         mark.h * dpr,
       );
       gl.uniform1f(uH, h);
+      // Handy: Schriftzug im Hintergrund kräftiger, damit er auf dem kleinen Bildschirm sichtbar bleibt
+      gl.uniform1f(uMarkGain, canvas.clientWidth <= 640 ? 2 : 1);
       gl.uniform1f(uLon, (lonDeg * Math.PI) / 180);
       gl.uniform1f(uAngle, angleRad);
       gl.uniform1f(uPx, 1 / size);

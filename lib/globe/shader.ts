@@ -22,6 +22,7 @@ uniform sampler2D uMark;   // Schriftzug-Maske
 uniform float uAngle;      // Drehung des Lichtkegels (rad, im Uhrzeigersinn wie CSS rotate)
 uniform vec4 uMarkBox;     // Schriftzug: links, oben (von oben gemessen), Breite, Hoehe in Geraetepixeln
 uniform float uH;          // Canvas-Hoehe in Geraetepixeln
+uniform float uMarkGain;   // Helligkeit des Schriftzugs (Handy: kraeftiger)
 
 const float R = 0.375;
 const float PI = 3.14159265;
@@ -50,7 +51,7 @@ void main() {
   // feines Rauschen gegen Stufen im weichen Lichtverlauf
   float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
   L = clamp(L + n / 255.0, 0.0, 1.0);
-  vec3 back = L * mark();
+  vec3 back = min(L * mark() * uMarkGain, 1.0);
   float d = length(p);
   float cover = clamp((R - d) / uPx + 0.5, 0.0, 1.0);
   if (cover <= 0.0) { gl_FragColor = vec4(1.0 - (1.0 - back) * (1.0 - L), 1.0); return; }

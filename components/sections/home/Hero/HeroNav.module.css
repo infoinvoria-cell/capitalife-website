@@ -13,10 +13,21 @@
   transform: translateX(-50%);
   /* Liquid Glass: leichter heller Schimmer von oben, stark weichgezeichnet */
   /* dunkler Grund, damit das Hero-Licht die Leiste nicht golden einfärbt */
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)), rgba(8, 8, 8, 0.45);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.015)
+    ),
+    rgba(8, 8, 8, 0.45);
   border-radius: 999px;
   /* eigene Schrift: die Navigation liegt ausserhalb der Hero und erbt deren Inter nicht */
-  font-family: var(--font-inter), -apple-system, "SF Pro Text", system-ui, sans-serif;
+  font-family:
+    var(--font-inter),
+    -apple-system,
+    "SF Pro Text",
+    system-ui,
+    sans-serif;
   box-shadow:
     inset 0 1px 6px rgba(255, 255, 255, 0.05),
     0 10px 30px rgba(0, 0, 0, 0.3);
@@ -46,8 +57,16 @@
   inset: 0;
   border-radius: inherit;
   background:
-    radial-gradient(180px 80px at 0% 0%, rgba(255, 255, 255, 0.32), transparent 70%),
-    radial-gradient(180px 80px at 100% 100%, rgba(255, 255, 255, 0.22), transparent 70%),
+    radial-gradient(
+      180px 80px at 0% 0%,
+      rgba(255, 255, 255, 0.32),
+      transparent 70%
+    ),
+    radial-gradient(
+      180px 80px at 100% 100%,
+      rgba(255, 255, 255, 0.22),
+      transparent 70%
+    ),
     linear-gradient(rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.035));
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -74,7 +93,13 @@
 /* Nach dem Scrollen: schmaler, tritt in den Hintergrund. Nie breiter als oben. */
 .compact {
   width: min(calc(100% - 2 * var(--container-padding-inline)), 720px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)), rgba(8, 8, 8, 0.55);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.015)
+    ),
+    rgba(8, 8, 8, 0.55);
 }
 
 /* Logo: Ausschnitt zeigt nur das Symbol (0,86 × Höhe), beim Hover klappt der volle Schriftzug aus */
@@ -164,19 +189,30 @@
   font-size: 0.9375rem;
 }
 
-/* Handy: nur Logo, Sprache und Button; schmaler und niedriger */
+/* Handy: keine Leiste, nur Logo links und Menü-Symbol rechts, ohne Glas */
 @media (max-width: 640px) {
   .nav,
   .compact {
     top: 0.75rem;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
     width: calc(100% - 1.5rem);
-    height: 3.5rem;
-    padding: 0 0.5rem 0 1.125rem;
+    height: 3rem;
+    padding: 0 0 0 0.75rem;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
-  .links { display: none; }
-  .brand { --logo-h: 1.5rem; }
-  .cta { height: 2.375rem; padding-inline: 1rem; font-size: 0.875rem; white-space: nowrap; }
+  .nav::before,
+  .nav::after,
+  .links,
+  .actions {
+    display: none;
+  }
+  .brand {
+    --logo-h: 1.75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

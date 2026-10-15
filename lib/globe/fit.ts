@@ -5,6 +5,8 @@ const SPHERE = 0.375;
 
 /** Liefert die Bildbreite (--art-w) in px für eine Hero mit Breite w und Höhe h. */
 export function globeArtWidth(w: number, h: number): number {
+  // Handy: Kugel etwas kleiner (Durchmesser 1,44 × Breite), damit mehr von ihr zu sehen ist; Lage per CSS (--disc-top)
+  if (w <= 640) return (0.72 * w) / SPHERE;
   const a = (1 - DISC_TOP) * h; // Scheitel bis Unterkante
   const radius = (a * a + (w * w) / 4) / (2 * a); // Kreis durch Scheitel und beide unteren Ecken
   return radius / SPHERE;

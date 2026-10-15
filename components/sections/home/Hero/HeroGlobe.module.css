@@ -109,6 +109,11 @@
   .scene::after { content: ""; position: absolute; inset: 100% 0 auto; height: 100vh; background: var(--bg); }
 }
 
+/* Handy: Kugel weiter oben, Schriftzug grösser */
+@media (max-width: 640px) {
+  .scene { --disc-top: 17svh; --logo-w: 74vw; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .beam {
     animation: none;
