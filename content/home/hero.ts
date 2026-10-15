@@ -153,7 +153,8 @@ export type HeroCopy = {
   primary: Link;
   secondary: Link;
   navCta: Link;
-  kpis: readonly { label: string; value: string }[];
+  /** icon: kleines Symbol neben dem Wert (z. B. Deutschland-Umriss) */
+  kpis: readonly { label: string; value: string; icon?: "germany" }[];
   nav: readonly Link[];
   langSwitch: string;
   /** Handy-Menü: Beschriftung für Vorlesehilfen */
@@ -171,7 +172,7 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     // Gewählt von Jeroen: Handel über Futures (Index- und Rohstoff-Futures, Begriffe wie bei IBKR), keine CFDs mehr. Sitz in Deutschland muss stimmen.
     kpis: [
       { label: "Global markets", value: "Index & commodity futures" },
-      { label: "Based in", value: "Germany" },
+      { label: "Based in", value: "Germany", icon: "germany" },
       { label: "Built for", value: "Long-term thinkers" },
     ],
     // Nur echte Ziele. Partnerseite bewusst nicht verlinkt (alte Seite mit Gewinn-/Performance-Aussagen, erst prüfen).
@@ -190,7 +191,7 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     navCta: { label: "Zur Warteliste", href: "#waitlist" },
     kpis: [
       { label: "Globale Märkte", value: "Index- & Rohstoff-Futures" },
-      { label: "Sitz", value: "Deutschland" },
+      { label: "Sitz", value: "Deutschland", icon: "germany" },
       { label: "Denkweise", value: "Langfristig" },
     ],
     nav: [

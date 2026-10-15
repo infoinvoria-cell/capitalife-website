@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { heroCopy } from "@/content/home/hero";
 import type { TitleStyle } from "@/content/home/heroTitles";
+import { GermanyIcon } from "@/components/ui/GermanyIcon";
 import { useLanguage } from "@/lib/i18n/language";
 import { HeroGlobe } from "./HeroGlobe";
 import { HeroNav } from "./HeroNav";
@@ -49,7 +50,12 @@ export function HeroMinimal({ titleStyle = "3" }: { titleStyle?: TitleStyle }) {
           {kpis.map((k) => (
             <div key={k.label} className={kpiStyles["kpi"]}>
               <dt>{k.label}</dt>
-              <dd>{k.value}</dd>
+              <dd>
+                {k.icon === "germany" && (
+                  <GermanyIcon className={kpiStyles["icon"]} />
+                )}
+                {k.value}
+              </dd>
             </div>
           ))}
         </dl>

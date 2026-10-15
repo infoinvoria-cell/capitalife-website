@@ -82,7 +82,8 @@ export const toolsArc: Draw = (ctx, w, h, t) => {
   // Logos: springen nacheinander nach oben, die Mitte ist hell und etwas grösser
   const n = tools.length;
   const phase = s.clock / STEP;
-  const offset = Math.floor(phase) + spring(phase - Math.floor(phase)) + s.manual;
+  const offset =
+    Math.floor(phase) + spring(phase - Math.floor(phase)) + s.manual;
   const gap = h / 4.2;
   s.gap = gap;
   tools.forEach((name, i) => {
