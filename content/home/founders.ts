@@ -9,18 +9,34 @@ export type FoundersCopy = {
 export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
   en: {
     title: "The people behind Capitalife",
-    text: "Founded in Germany by two traders. We build with data, clear rules and discipline.",
+    text: "Two people, one conviction: clarity and patience beat noise. We build Capitalife with exactly that, personally and every day.",
     people: [
-      { name: "Jeroen Göhlert", role: "CEO & Founder", image: "/team/portrait-2.png" },
-      { name: "Jan Luca Manfré", role: "COO & Founder", image: "/team/portrait-1.png" },
+      {
+        name: "Jeroen Göhlert",
+        role: "CEO & Founder",
+        image: "/team/portrait-2.png",
+      },
+      {
+        name: "Jan Luca Manfré",
+        role: "COO & Founder",
+        image: "/team/portrait-1.png",
+      },
     ],
   },
   de: {
     title: "Die Menschen hinter Capitalife",
-    text: "Gegründet in Deutschland von zwei Tradern. Wir bauen mit Daten, klaren Regeln und Disziplin.",
+    text: "Zwei Menschen, eine Überzeugung: Klarheit und Geduld schlagen Hektik. Genau so bauen wir Capitalife, persönlich und jeden Tag.",
     people: [
-      { name: "Jeroen Göhlert", role: "CEO & Gründer", image: "/team/portrait-2.png" },
-      { name: "Jan Luca Manfré", role: "COO & Gründer", image: "/team/portrait-1.png" },
+      {
+        name: "Jeroen Göhlert",
+        role: "CEO & Gründer",
+        image: "/team/portrait-2.png",
+      },
+      {
+        name: "Jan Luca Manfré",
+        role: "COO & Gründer",
+        image: "/team/portrait-1.png",
+      },
     ],
   },
 };

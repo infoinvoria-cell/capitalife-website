@@ -28,7 +28,7 @@ export function Founders() {
               alt={p.name}
               width={1000}
               height={1500}
-              sizes="(min-width: 861px) 360px, 0px"
+              sizes="(min-width: 861px) 360px, 50vw"
               className={styles["photo"]}
             />
             <figcaption className={styles["caption"]}>

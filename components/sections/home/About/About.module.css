@@ -56,17 +56,19 @@
   .about {
     height: auto;
     min-height: 100svh;
-    padding-block: 7rem 5rem;
+    padding-block: 7rem clamp(6rem, 14vw, 10rem); /* unten gleich wie Abstand Gründer-Box → Warteliste */
   }
 }
 
-/* Ab Tablet quer: Gründer-Box folgt. Abstand Karten → Box genau so gross wie Box → Warteliste
+/* Ab Tablet quer: Höhe nach Inhalt. Abstand Karten → Gründer-Box genau so gross wie Box → Warteliste
    (Warteliste oben: clamp(6rem, 14vw, 10rem)), Inhalt dafür unten bündig */
 @media (min-width: 861px) {
   .about {
-    justify-content: flex-end;
+    justify-content: flex-start;
     height: auto;
-    min-height: 100svh;
+    min-height: 0;
+    /* oben fester, etwas kleinerer Abstand zur Hero (auf grossen Bildschirmen sonst sehr weit) */
+    padding-top: clamp(3rem, 5vw, 5rem);
     padding-bottom: clamp(6rem, 14vw, 10rem);
   }
 }

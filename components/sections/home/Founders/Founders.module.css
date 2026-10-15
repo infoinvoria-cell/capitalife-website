@@ -5,7 +5,12 @@
   padding: 0 var(--container-padding-inline); /* Abstände nach oben/unten geben About und Warteliste (gleich gross) */
   background: var(--color-brand-bg);
   color: #fff;
-  font-family: var(--font-inter), -apple-system, "SF Pro Text", system-ui, sans-serif;
+  font-family:
+    var(--font-inter),
+    -apple-system,
+    "SF Pro Text",
+    system-ui,
+    sans-serif;
 }
 
 .box {
@@ -25,12 +30,12 @@
 .waves {
   position: absolute;
   z-index: 0; /* ganz hinten, Personen und Text liegen darüber */
-  inset: 0;
+  inset: -18% 0; /* höher als die Box: Platz für den Parallax-Weg */
   width: 100%;
-  height: 100%;
+  height: 136%;
 }
 
-/* Porträt: unten angeschnitten, läuft nach unten und zur Mitte weich ins Dunkle aus */
+/* Porträt: unten von der Box angeschnitten, vollflächig vor den Punkten */
 .person {
   position: absolute;
   z-index: 1;
@@ -57,8 +62,7 @@
   max-width: none;
   transform: translateX(-50%);
   filter: grayscale(0.25) contrast(1.05) brightness(0.92);
-  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
-  mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
+  /* keine Ausblendung: die Person deckt die Punkte dahinter vollständig ab, unten schneidet die Box */
 }
 
 /* Linke Person minimal tiefer, damit beide Köpfe auf einer Höhe stehen */
@@ -66,7 +70,7 @@
   bottom: calc(-18% - 1rem);
 }
 
-/* Name und Rolle unten in der Ecke, dezent */
+/* Name und Rolle unten, dezent */
 .caption {
   position: absolute;
   bottom: 1.25rem;
@@ -74,6 +78,12 @@
   flex-direction: column;
   gap: 0.15rem;
   font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* unten in den Ecken der Box, darunter ein dunkler Verlauf aus der Ecke (lesbar über dem Foto) */
+.caption {
+  z-index: 2;
 }
 
 .left .caption {
@@ -83,6 +93,23 @@
 .right .caption {
   right: 1.5rem;
   text-align: right;
+}
+
+.person::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 65%; /* kräftiger Eck-Schatten, damit Name und Rolle klar lesbar sind */
+  pointer-events: none;
+}
+
+.left::after {
+  background: radial-gradient(130% 110% at 0% 100%, rgba(2, 2, 2, 1) 0%, rgba(2, 2, 2, 0.88) 35%, rgba(2, 2, 2, 0.5) 60%, transparent 85%);
+}
+
+.right::after {
+  background: radial-gradient(130% 110% at 100% 100%, rgba(2, 2, 2, 1) 0%, rgba(2, 2, 2, 0.88) 35%, rgba(2, 2, 2, 0.5) 60%, transparent 85%);
 }
 
 .name {
@@ -122,9 +149,99 @@
   text-wrap: balance;
 }
 
-/* Handy und Tablet hochkant: vorerst ausgeblendet (Gestaltung folgt) */
+/* Parallax beim Scrollen: Hintergrund wandert deutlich, Porträts nur minimal */
+@supports (animation-timeline: view()) {
+  .waves {
+    animation: wavesDrift linear both;
+    animation-timeline: view();
+  }
+
+  .photo {
+    animation: photoDrift linear both;
+    animation-timeline: view();
+  }
+
+  @keyframes wavesDrift {
+    from {
+      transform: translateY(-12%);
+    }
+    to {
+      transform: translateY(12%);
+    }
+  }
+
+  @keyframes photoDrift {
+    from {
+      transform: translate(-50%, 4%);
+    }
+    to {
+      transform: translate(-50%, -4%);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waves,
+  .photo {
+    animation: none;
+  }
+}
+
+/* Handy und Tablet hochkant: oben der ganze Text, darunter beide Personen nebeneinander */
 @media (max-width: 860px) {
-  .founders {
-    display: none;
+  .box {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "text text"
+      "left right";
+    gap: 2rem 0.75rem;
+    height: auto;
+    padding: 2.5rem 1.25rem 0;
+  }
+
+  .center {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .person {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+  }
+
+  .left {
+    grid-area: left;
+  }
+
+  .right {
+    grid-area: right;
+  }
+
+  .photo,
+  .left .photo {
+    position: static;
+    order: 2;
+    width: 100%;
+    height: clamp(11rem, 52vw, 18rem);
+    object-fit: cover;
+    object-position: 50% 8%;
+    transform: none;
+    animation: none;
+  }
+
+  .caption {
+    bottom: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .left .caption {
+    left: 0.75rem;
+  }
+
+  .right .caption {
+    right: 0.75rem;
   }
 }
