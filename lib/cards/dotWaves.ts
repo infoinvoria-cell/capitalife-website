@@ -17,7 +17,7 @@ export const dotWaves: Draw = (ctx, w, h, t) => {
       const wave =
         Math.sin(xN * 3.2 + t * 0.6 + d * 2.4) * 0.6 + Math.cos(d * 5.5 - t * 0.45 + xN * 1.3) * 0.4;
       const x = w / 2 + xN * w * 0.85 * s;
-      const y = h * 0.28 + h * 0.78 * k - wave * h * 0.07 * s;
+      const y = h * 0.06 + h * 1.0 * k - wave * h * 0.07 * s; // Fläche reicht bis nach oben, auch hinter die Köpfe
       if (x < -4 || x > w + 4 || y < -4 || y > h + 4) continue;
       const a = 0.05 + 0.2 * k * (0.75 + 0.25 * wave);
       ctx.fillStyle = `rgba(236, 228, 210, ${a.toFixed(3)})`;
