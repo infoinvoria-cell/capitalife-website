@@ -9,7 +9,7 @@ export type FoundersCopy = {
 export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
   en: {
     title: "The people behind Capitalife",
-    text: "Two people, one conviction: clarity and patience beat noise. We build Capitalife with exactly that, personally and every day.",
+    text: "We believe in long-term thinking, and that professional tools shouldn't be reserved for institutions. That's how we build Capitalife, day by day.",
     people: [
       {
         name: "Jeroen Göhlert",
@@ -25,7 +25,7 @@ export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
   },
   de: {
     title: "Die Menschen hinter Capitalife",
-    text: "Zwei Menschen, eine Überzeugung: Klarheit und Geduld schlagen Hektik. Genau so bauen wir Capitalife, persönlich und jeden Tag.",
+    text: "Wir glauben an langfristiges Denken und daran, dass professionelle Werkzeuge nicht nur Institutionen vorbehalten sein sollten. Mit dieser Haltung bauen wir Capitalife, Tag für Tag.",
     people: [
       {
         name: "Jeroen Göhlert",
