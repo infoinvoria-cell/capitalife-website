@@ -31,6 +31,16 @@
   opacity: 0.85;
 }
 
+/* Desktop: Wort und Symbol zählen zusammen und stehen gemeinsam mittig */
+@media (min-width: 641px) {
+  .icon {
+    position: static;
+    display: inline-block;
+    vertical-align: -0.22em;
+    transform: none;
+  }
+}
+
 .kpi dd {
   margin: 0.4rem 0 0;
   font-size: clamp(1.05rem, 1.4vw, 1.375rem);
