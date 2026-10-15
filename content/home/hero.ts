@@ -171,7 +171,7 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     navCta: { label: "Join waitlist", href: "#waitlist" },
     // Gewählt von Jeroen: Handel über Futures (Index- und Rohstoff-Futures, Begriffe wie bei IBKR), keine CFDs mehr. Sitz in Deutschland muss stimmen.
     kpis: [
-      { label: "Global markets", value: "Index & commodity futures" },
+      { label: "Global markets", value: "Futures" },
       { label: "Based in", value: "Germany", icon: "germany" },
       { label: "Built for", value: "Long-term thinkers" },
     ],
@@ -190,7 +190,7 @@ export const heroCopy: Record<"en" | "de", HeroCopy> = {
     secondary: { label: "Wer wir sind", href: "#strategy" },
     navCta: { label: "Zur Warteliste", href: "#waitlist" },
     kpis: [
-      { label: "Globale Märkte", value: "Index- & Rohstoff-Futures" },
+      { label: "Globale Märkte", value: "Futures" },
       { label: "Sitz", value: "Deutschland", icon: "germany" },
       { label: "Denkweise", value: "Langfristig" },
     ],
