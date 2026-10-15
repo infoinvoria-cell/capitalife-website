@@ -1,0 +1,117 @@
+/* Globus wie ein Planet am Horizont: Scheibe beginnt bei 30 % der Höhe,
+   Bild ist breiter als der Bildschirm, Ränder laufen ins Dunkle aus. */
+.scene {
+  --bg: var(--color-brand-bg);
+  --art-w: max(133.3vw, 140svh);
+  --disc-top: 30svh;
+  /* Kugel sitzt im Bild mittig, Radius 1500 von 4000: Scheitel 12,5 % unter der Bildkante,
+     Kugel so breit wie der Bildschirm */
+  --art-top: calc(var(--disc-top) - 0.125 * var(--art-w));
+  --beam-w: calc(1.5 * var(--art-w));
+  /* Schriftzug am Scheitel, etwa so breit wie die Überschrift (Seitenverhältnis 2531 × 221).
+     Unteres Drittel verschwindet hinter der Kugel. */
+  --logo-w: min(44vw, 640px);
+  --logo-top: calc(var(--disc-top) - var(--logo-w) * 0.0873 * 0.65);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  /* Grundzustand komplett dunkel, Licht kommt nur von der kreisenden Lichtfläche */
+  background: var(--bg);
+}
+
+.art,
+.beam {
+  position: absolute;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+
+.art {
+  top: var(--art-top);
+  left: calc(50% - var(--art-w) / 2);
+  width: var(--art-w);
+  aspect-ratio: 1;
+}
+
+/* Live-Erde: deckt nur den sichtbaren Bereich ab (spart Rechenleistung), die Kugel richtet sich am Standbild aus */
+.live {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Ersatz-Ebenen nur, solange die Live-Erde (WebGL) noch nicht gezeichnet ist */
+.scene:has(canvas[data-ready]) .still {
+  visibility: hidden;
+}
+
+.scene:has(canvas[data-ready]) .beam,
+.scene:has(canvas[data-ready]) .wordmarkLit {
+  display: none;
+}
+
+/* Lage des Schriftzugs (Seitenverhältnis 2531 × 221), unsichtbar; die Live-Erde zeichnet ihn dort */
+.markBox {
+  position: absolute;
+  top: var(--logo-top);
+  left: calc(50% - var(--logo-w) / 2);
+  width: var(--logo-w);
+  height: calc(var(--logo-w) * 221 / 2531);
+  pointer-events: none;
+}
+
+/* Eine Lichtfläche auf schwarzem Grund, per "screen" addiert, läuft auf einer Ellipse um die Kugel. */
+.beam {
+  top: calc(var(--art-top) + var(--art-w) / 2 - var(--beam-w) / 2);
+  left: calc(50% - var(--beam-w) / 2);
+  width: var(--beam-w);
+  mix-blend-mode: screen;
+  animation: orbit 40s linear infinite;
+  will-change: transform;
+}
+
+/* Lichtablauf: gleichmaessige Runde um die Kugel, konstante Geschwindigkeit, Start links */
+@keyframes orbit {
+  from { transform: rotate(-95deg); }
+  to { transform: rotate(265deg); }
+}
+
+/* Schriftzug: dieselbe Lichtebene (gleiche Animation, gleiche Lage), nur in der Schriftform sichtbar.
+   Ohne Licht schwarz. Liegt hinter der Kugel. */
+.wordmarkLit {
+  position: absolute;
+  inset: 0;
+  -webkit-mask: url("/hero/wordmark-mask.png") no-repeat;
+  mask: url("/hero/wordmark-mask.png") no-repeat;
+  pointer-events: none;
+  -webkit-mask-size: var(--logo-w) auto;
+  mask-size: var(--logo-w) auto;
+  -webkit-mask-position: 50% var(--logo-top);
+  mask-position: 50% var(--logo-top);
+  mix-blend-mode: screen;
+}
+
+/* Nur unten ins Dunkle; seitlich nichts, damit das Licht die volle Breite nutzen kann */
+.fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 72%, var(--bg) 100%);
+  pointer-events: none;
+}
+
+/* Handy: die Hero wird höher als der Bildschirm, die Kugel bleibt auf genau einen Bildschirm berechnet */
+@media (max-width: 640px), (max-height: 600px) {
+  .scene { bottom: auto; height: 100svh; overflow: visible; }
+  .scene::after { content: ""; position: absolute; inset: 100% 0 auto; height: 100vh; background: var(--bg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beam {
+    animation: none;
+    transform: rotate(-95deg);
+  }
+}

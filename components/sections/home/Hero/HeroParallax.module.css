@@ -1,0 +1,35 @@
+/* Parallax beim Scrollen: Überschrift und Kennzahlen wandern langsamer nach oben und blenden aus */
+@supports (animation-timeline: scroll()) {
+  .text {
+    animation: drift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 90vh;
+  }
+
+  .kpis {
+    animation: driftSlow linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 90vh;
+  }
+
+  @keyframes drift {
+    to {
+      transform: translateY(-14vh);
+      opacity: 0;
+    }
+  }
+
+  @keyframes driftSlow {
+    to {
+      transform: translateY(-6vh);
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text,
+  .kpis {
+    animation: none;
+  }
+}

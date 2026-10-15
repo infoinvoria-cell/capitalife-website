@@ -1,0 +1,187 @@
+/* Liquid Glass: durchscheinend, nur leicht unscharf, damit das Licht dahinter sichtbar bleibt */
+.nav {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: min(calc(100% - 2 * var(--container-padding-inline)), 1000px);
+  height: 4.25rem;
+  padding: 0 0.875rem 0 1.5rem;
+  transform: translateX(-50%);
+  /* Liquid Glass: leichter heller Schimmer von oben, stark weichgezeichnet */
+  /* dunkler Grund, damit das Hero-Licht die Leiste nicht golden einfärbt */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)), rgba(8, 8, 8, 0.45);
+  border-radius: 999px;
+  /* eigene Schrift: die Navigation liegt ausserhalb der Hero und erbt deren Inter nicht */
+  font-family: var(--font-inter), -apple-system, "SF Pro Text", system-ui, sans-serif;
+  box-shadow:
+    inset 0 1px 6px rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.3);
+  /* Licht dahinter nur gedämpft und fast ohne Farbe durchscheinen lassen */
+  -webkit-backdrop-filter: blur(18px) saturate(0.6) brightness(0.6);
+  backdrop-filter: blur(18px) saturate(0.6) brightness(0.6);
+  transition:
+    width 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background 0.4s ease;
+  animation: navIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Beim Öffnen von oben herein */
+@keyframes navIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+}
+
+/* Liquid-Glass-Rand: Licht nur in der Ecke oben links und unten rechts,
+   unten links und oben rechts nur eine kaum sichtbare Grundlinie (wie Referenz) */
+.nav::before,
+.nav::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(180px 80px at 0% 0%, rgba(255, 255, 255, 0.32), transparent 70%),
+    radial-gradient(180px 80px at 100% 100%, rgba(255, 255, 255, 0.22), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.035));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* Feine Kante, 1 px */
+.nav::before {
+  padding: 1px;
+}
+
+/* Weicher Lichtschein über der Kante */
+.nav::after {
+  padding: 3px;
+  filter: blur(4px);
+  opacity: 0.35;
+}
+
+/* Nach dem Scrollen: schmaler, tritt in den Hintergrund. Nie breiter als oben. */
+.compact {
+  width: min(calc(100% - 2 * var(--container-padding-inline)), 720px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)), rgba(8, 8, 8, 0.55);
+}
+
+/* Logo: Ausschnitt zeigt nur das Symbol (0,86 × Höhe), beim Hover klappt der volle Schriftzug aus */
+.brand {
+  --logo-h: 1.75rem;
+  justify-self: start;
+  display: block;
+  border-radius: 6px;
+}
+
+.brandClip {
+  display: block;
+  overflow: hidden;
+  width: calc(var(--logo-h) * 0.86);
+  transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.brand:hover .brandClip,
+.brand:focus-visible .brandClip {
+  width: calc(var(--logo-h) * 11.46);
+}
+
+.brandImg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: var(--logo-h);
+}
+
+.links {
+  display: flex;
+  gap: 2.25rem;
+}
+
+.link {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: #fff;
+}
+
+.actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Sprachumschalter: zeigt die aktuelle Sprache, Klick wechselt EN/DE */
+/* EN/DE als Kreis, beim Hover hell hinterlegt */
+.lang {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.lang:hover,
+.lang:focus-visible {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.lang:active {
+  transform: scale(0.95);
+}
+
+.cta {
+  composes: solid from "../../../ui/Button.module.css";
+  justify-self: end;
+  height: 2.5rem;
+  padding-inline: 1.25rem;
+  font-size: 0.9375rem;
+}
+
+/* Handy: nur Logo, Sprache und Button; schmaler und niedriger */
+@media (max-width: 640px) {
+  .nav,
+  .compact {
+    top: 0.75rem;
+    grid-template-columns: auto 1fr;
+    width: calc(100% - 1.5rem);
+    height: 3.5rem;
+    padding: 0 0.5rem 0 1.125rem;
+  }
+  .links { display: none; }
+  .brand { --logo-h: 1.5rem; }
+  .cta { height: 2.375rem; padding-inline: 1rem; font-size: 0.875rem; white-space: nowrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    animation: none;
+    transition: none;
+  }
+}

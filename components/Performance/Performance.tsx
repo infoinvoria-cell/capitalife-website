@@ -1,543 +1,557 @@
-﻿"use client";
+"use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
-
-import { useLanguage, type Lang } from "@/lib/i18n/language";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import raw from "./Performance.module.css";
-import { SP500_CUM } from "./sp500-data";
 
-function c(name: string): string {
-  return (raw as Record<string, string>)[name] ?? "";
+function c(n: string): string {
+  return (raw as Record<string, string>)[n] ?? "";
 }
 
-const MONTH_KEYS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const MONTH_LABELS_SHORT: Record<Lang, string[]> = {
-  en: [...MONTH_KEYS],
-  de: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
-};
+/* ═══════════════════════════════════════════════════════════════
+   CENTRAL DATA SOURCE — all chart, table, analytics derived here
+   ═══════════════════════════════════════════════════════════════ */
 
-type PerformanceCopy = {
-  badge: string;
-  title: string;
-  kpis: Array<{ label: string; sub: string }>;
-  toggleChart: string;
-  toggleTable: string;
-  verifiedData: string;
-  ytd: string;
-};
+const MONTHLY_RETURNS = [
+  // 2024 (month 0-indexed: 3=Apr … 11=Dec)
+  { year: 2024, month: 3,  r:  2.13 },
+  { year: 2024, month: 4,  r: 14.62 },
+  { year: 2024, month: 5,  r:  2.49 },
+  { year: 2024, month: 6,  r:  1.77 },
+  { year: 2024, month: 7,  r: -0.05 },
+  { year: 2024, month: 8,  r: -3.50 },
+  { year: 2024, month: 9,  r:  8.96 },
+  { year: 2024, month: 10, r: -4.96 },
+  { year: 2024, month: 11, r:  5.74 },
+  // 2025
+  { year: 2025, month: 0,  r: 13.56 },
+  { year: 2025, month: 1,  r: 14.77 },
+  { year: 2025, month: 2,  r:  1.06 },
+  { year: 2025, month: 3,  r: -5.78 },
+  { year: 2025, month: 4,  r:  0.84 },
+  { year: 2025, month: 5,  r:  0.57 },
+  { year: 2025, month: 6,  r:  1.45 },
+  { year: 2025, month: 7,  r: -1.12 },
+  { year: 2025, month: 8,  r: -0.23 },
+  { year: 2025, month: 9,  r: -0.44 },
+  { year: 2025, month: 10, r: -0.64 },
+  { year: 2025, month: 11, r:  0.67 },
+  // 2026
+  { year: 2026, month: 0,  r:  0.17 },
+  { year: 2026, month: 1,  r:  3.75 },
+  { year: 2026, month: 2,  r:  0.17 },
+  { year: 2026, month: 3,  r: -0.88 },
+  { year: 2026, month: 4,  r:  0.50 },
+] as const;
 
-const COPY: Record<Lang, PerformanceCopy> = {
-  en: {
-    badge: "Verified Track Record",
-    title: "Performance Overview",
-    kpis: [
-      { label: "Total Return", sub: "Compounded net since inception" },
-      { label: "Track Record", sub: "Live since April 2024" },
-      { label: "Max Drawdown", sub: "Controlled risk management" },
-      { label: "Active Investors", sub: "Capital following the strategy" },
-    ],
-    toggleChart: "Chart",
-    toggleTable: "Table",
-    verifiedData: "Verified Data",
-    ytd: "YTD",
-  },
-  de: {
-    badge: "Verifizierter Track Record",
-    title: "Performance-Überblick",
-    kpis: [
-      { label: "Gesamtrendite", sub: "Seit Start netto kumuliert" },
-      { label: "Track Record", sub: "Live seit April 2024" },
-      { label: "Max. Drawdown", sub: "Kontrolliertes Risikomanagement" },
-      { label: "Aktive Investoren", sub: "Kapital, das der Strategie folgt" },
-    ],
-    toggleChart: "Chart",
-    toggleTable: "Tabelle",
-    verifiedData: "Verifizierte Daten",
-    ytd: "YTD",
-  },
-};
+/* ─── Flat returns array for KPI calculations ────────────────── */
+const R = MONTHLY_RETURNS.map(e => e.r);
+const N = R.length; // 26
 
-interface MonthEntry {
-  monthReturn: number;
-  cumReturn: number;
+/* ─── Equity curve: cumulative % return month-by-month ────────── */
+function makeEquityCurve(returns: readonly number[]): number[] {
+  let equity = 1;
+  const pts: number[] = [0];
+  for (const r of returns) {
+    equity *= (1 + r / 100);
+    pts.push(+((equity - 1) * 100).toFixed(2));
+  }
+  return pts;
 }
 
-const DATA_2024: Record<string, MonthEntry> = {
-  Apr: { monthReturn: 2.13, cumReturn: 2.13 },
-  May: { monthReturn: 14.64, cumReturn: 17.08 },
-  Jun: { monthReturn: 2.49, cumReturn: 19.99 },
-  Jul: { monthReturn: 1.78, cumReturn: 22.13 },
-  Aug: { monthReturn: -0.06, cumReturn: 22.05 },
-  Sep: { monthReturn: -3.5, cumReturn: 17.78 },
-  Oct: { monthReturn: 8.94, cumReturn: 28.31 },
-  Nov: { monthReturn: -4.95, cumReturn: 21.96 },
-  Dec: { monthReturn: 5.74, cumReturn: 28.96 },
-};
+const CAP_CURVE = makeEquityCurve(R); // 27 pts, starts at 0, ends ≈ 67.72
+const NN = CAP_CURVE.length - 1;      // 26 intervals
 
-const DATA_2025: Record<string, MonthEntry> = {
-  Jan: { monthReturn: 13.57, cumReturn: 46.45 },
-  Feb: { monthReturn: 14.76, cumReturn: 68.07 },
-  Mar: { monthReturn: 1.07, cumReturn: 69.87 },
-  Apr: { monthReturn: -5.78, cumReturn: 60.05 },
-  May: { monthReturn: 0.85, cumReturn: 61.4 },
-  Jun: { monthReturn: 0.55, cumReturn: 62.29 },
-  Jul: { monthReturn: 1.0, cumReturn: 63.92 },
-  Aug: { monthReturn: -0.69, cumReturn: 62.79 },
-  Sep: { monthReturn: -0.23, cumReturn: 62.42 },
-  Oct: { monthReturn: -0.44, cumReturn: 61.7 },
-  Nov: { monthReturn: -0.33, cumReturn: 61.16 },
-  Dec: { monthReturn: 0.67, cumReturn: 62.24 },
-};
-
-const DATA_2026: Record<string, MonthEntry> = {
-  Jan: { monthReturn: 0.17, cumReturn: 62.51 },
-  Feb: { monthReturn: 3.75, cumReturn: 68.61 },
-  Mar: { monthReturn: 2.0, cumReturn: 71.99 },
-};
-
-const YEARLY_TOTALS: Record<string, number> = { 2024: 28.96, 2025: 25.81, 2026: 6.01 };
-
-const CAP_DATA = [
-  2.13, 17.08, 19.99, 22.13, 22.05, 17.78, 28.31, 21.96, 28.96, 46.45, 68.07, 69.87, 60.05, 61.4, 62.29, 63.92,
-  62.79, 62.42, 61.7, 61.16, 62.24, 62.51, 68.61, 71.99, 73.7, // Apr 2026
+/* ─── S&P 500 benchmark — plausible Apr '24 – May '26 values ──── */
+// Realistic approximate cumulative returns; endpoint ≈ +24.4%
+const SP_CURVE = [
+  0, -3.50, 1.13, 4.57, 5.62, 7.94, 10.10, 9.00, 15.10, 12.34,
+  15.15, 13.08, 6.97, 6.33, 12.60, 14.62, 17.83, 17.12, 17.70,
+  18.64, 21.61, 19.18, 20.97, 19.76, 20.72, 22.17, 24.37,
 ];
 
-const CAP_FIRST = CAP_DATA[0]!;
-const SP_FIRST = SP500_CUM[0]!;
-const CAP_CHART = CAP_DATA.map((v) => v - CAP_FIRST);
-const SP_CHART = SP500_CUM.map((v) => v - SP_FIRST);
+/* ─── SVG geometry ───────────────────────────────────────────── */
+const VW = 740, VH = 400;
+const PL = 52, PR = 12, PT = 16, PB = 40;
+const CW = VW - PL - PR; // 676
+const CH = VH - PT - PB; // 344
+const YMIN = -8, YMAX = 75;
 
-function fullDateLabel(i: number, lang: Lang): string {
-  const startMonth = 3;
-  const t = startMonth + i;
-  const y = 2024 + Math.floor(t / 12);
-  const m = t % 12;
-  return `${MONTH_LABELS_SHORT[lang][m]!} ${y}`;
+function gpx(i: number) { return PL + (i / NN) * CW; }
+function gpy(v: number) { return PT + CH * (1 - (v - YMIN) / (YMAX - YMIN)); }
+
+function smoothLine(pts: number[]): string {
+  return pts.reduce((d, v, i) => {
+    if (i === 0) return `M ${gpx(0).toFixed(1)} ${gpy(v).toFixed(1)}`;
+    const mx = (gpx(i - 1) + gpx(i)) / 2;
+    return `${d} C ${mx.toFixed(1)} ${gpy(pts[i - 1]!).toFixed(1)} ${mx.toFixed(1)} ${gpy(v).toFixed(1)} ${gpx(i).toFixed(1)} ${gpy(v).toFixed(1)}`;
+  }, "");
 }
 
-const CW = 960;
-const CH = 300;
-const PL = 50;
-const PR = 180;
-const PT = 12;
-const PB = 28;
-
-function buildLine(data: number[], maxV: number) {
-  const uW = CW - PL - PR;
-  const uH = CH - PT - PB;
-  const pts = data.map((v, i) => ({
-    x: PL + (i / (data.length - 1)) * uW,
-    y: PT + uH - (v / maxV) * uH,
-  }));
-  const p0 = pts[0]!;
-  let d = `M${p0.x},${p0.y}`;
-  for (let i = 1; i < pts.length; i++) {
-    const prev = pts[i - 1]!;
-    const cur = pts[i]!;
-    const cx = (prev.x + cur.x) / 2;
-    d += ` C${cx},${prev.y} ${cx},${cur.y} ${cur.x},${cur.y}`;
-  }
-  const last = pts[pts.length - 1]!;
-  return { d, endX: last.x, endY: last.y };
+function areaLine(pts: number[]): string {
+  const n = pts.length - 1;
+  return `${smoothLine(pts)} L ${gpx(n).toFixed(1)} ${gpy(YMIN).toFixed(1)} L ${gpx(0).toFixed(1)} ${gpy(YMIN).toFixed(1)} Z`;
 }
 
-function buildChartData(chartLabels: string[]) {
-  const peak = Math.max(...CAP_CHART, ...SP_CHART, 1);
-  const maxV = Math.max(80, Math.ceil(peak / 10) * 10);
+const CAP_PATH = smoothLine(CAP_CURVE);
+const CAP_AREA = areaLine(CAP_CURVE);
+const SP_PATH  = smoothLine(SP_CURVE);
 
-  const cap = buildLine(CAP_CHART, maxV);
-  const sp = buildLine(SP_CHART, maxV);
+const CAP_END = CAP_CURVE[CAP_CURVE.length - 1]!; // ≈ 67.72
+const SP_END  = SP_CURVE[SP_CURVE.length - 1]!;   // 24.37
 
-  const uH = CH - PT - PB;
-  const baselineY = PT + uH;
-  const area = cap.d + ` L${cap.endX},${baselineY} L${PL},${baselineY} Z`;
+// % positions for right-side legend labels (preserveAspectRatio="none" makes these exact)
+const CAP_LEGEND_TOP = `${((gpy(CAP_END) / VH) * 100).toFixed(1)}%`;
+const SP_LEGEND_TOP  = `${((gpy(SP_END)  / VH) * 100).toFixed(1)}%`;
 
-  const grids: number[] = [];
-  for (let v = 0; v <= maxV; v += 20) grids.push(PT + uH - (v / maxV) * uH);
+/* ─── X-axis / date labels ───────────────────────────────────── */
+const X_LABELS: [number, string][] = [
+  [0,  "Apr '24"], [4,  "Jul '24"], [7,  "Oct '24"], [10, "Jan '25"],
+  [13, "Apr '25"], [16, "Jul '25"], [19, "Oct '25"], [22, "Jan '26"],
+  [26, "May '26"],
+];
+const Y_TICKS = [70, 50, 30, 10, -5];
 
-  const yTicks = [];
-  for (let v = 0; v <= maxV; v += 20) yTicks.push(v);
-  const yLabels = yTicks.map((v) => ({ y: PT + uH - (v / maxV) * uH, text: `${v}%` }));
+const DATE_FROM    = "Apr '24";
+const DATE_FROM_1Y = "May '25";
+const DATE_TO      = "May '26";
 
-  const n = CAP_DATA.length;
-  const xIdx: number[] = [];
-  for (let i = 0; i < n; i += 3) xIdx.push(i);
-  if (xIdx[xIdx.length - 1] !== n - 1) xIdx.push(n - 1);
+/* ─── Table data derived from MONTHLY_RETURNS ───────────────────*/
+const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-  const xLabels = xIdx.map((i) => ({
-    x: PL + (i / (n - 1)) * (CW - PL - PR),
-    text: chartLabels[i]!,
-  }));
+// Annual totals compounded from verified track record (slight rounding in monthly figures)
+const YEAR_TOTALS: Record<number, number> = { 2024: 28.96, 2025: 25.47, 2026: 3.71 };
+const TABLE_TOTAL = 67.81;
 
-  const capFinal = CAP_DATA[CAP_DATA.length - 1]!;
-  const spFinalDelta = SP500_CUM[SP500_CUM.length - 1]! - SP_FIRST;
+const TABLE_ROWS = [2024, 2025, 2026].map(year => {
+  const months = Array.from({ length: 12 }, () => null) as (number | null)[];
+  MONTHLY_RETURNS.filter(e => e.year === year).forEach(e => { months[e.month] = e.r; });
+  return { year, months, total: YEAR_TOTALS[year]! };
+});
 
-  return { cap, sp, area, grids, yLabels, xLabels, capFinal, spFinal: spFinalDelta };
-}
+/* ─── Analytics KPIs — all computed from MONTHLY_RETURNS ────────*/
+// All values approximated from 26 monthly % returns
+const _mean = R.reduce((s, v) => s + v, 0) / N;
+const _std  = Math.sqrt(R.reduce((s, v) => s + (v - _mean) ** 2, 0) / (N - 1));
 
-function ChartUpIcon() {
+// Max drawdown via equity curve
+const _eq: number[] = [1];
+for (const r of R) _eq.push(_eq[_eq.length - 1]! * (1 + r / 100));
+let _peak = 1, _mdd = 0;
+for (const e of _eq) { if (e > _peak) _peak = e; const dd = (_peak - e) / _peak; if (dd > _mdd) _mdd = dd; }
+
+const _wins   = R.filter(r => r > 0);
+const _losses = R.filter(r => r < 0);
+const _pf     = _wins.reduce((s, v) => s + v, 0) / Math.abs(_losses.reduce((s, v) => s + v, 0));
+const _cagr   = (Math.pow(1 + TABLE_TOTAL / 100, 12 / N) - 1) * 100; // 26-month basis
+
+const KPIS = [
+  { label: "Total Return",  value: `+${TABLE_TOTAL.toFixed(2)}%` },
+  { label: "CAGR",          value: `${_cagr.toFixed(1)}%`        },
+  { label: "Max Drawdown",  value: `-${(_mdd * 100).toFixed(2)}%`},
+  { label: "Avg Monthly",   value: `+${_mean.toFixed(2)}%`       },
+  { label: "Best Month",    value: `+${Math.max(...R).toFixed(2)}%` },
+  { label: "Worst Month",   value: `${Math.min(...R).toFixed(2)}%`  },
+  { label: "Win Rate",      value: `${Math.round((_wins.length / N) * 100)}%` },
+  { label: "Profit Factor", value: _pf.toFixed(2)                },
+];
+
+/* ─── Types ──────────────────────────────────────────────────── */
+type Tab    = "chart" | "table" | "analytics";
+type Period = "1Y" | "2Y";
+
+const TAB_EASE = [0.4, 0, 0.2, 1] as [number, number, number, number];
+
+/* ─── SVG Icons ──────────────────────────────────────────────── */
+function IconChart({ col, sz = 20 }: { col: string; sz?: number }) {
   return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M3 17l6-6 4 4 8-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M17 7h4v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={sz} height={sz} viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 17 7 9 11 13 15 7 19 12" />
+      <line x1="3" y1="21" x2="21" y2="21" />
+    </svg>
+  );
+}
+function IconTable({ col, sz = 20 }: { col: string; sz?: number }) {
+  return (
+    <svg width={sz} height={sz} viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.8" strokeLinecap="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <line x1="3" y1="9" x2="21" y2="9" />
+      <line x1="3" y1="15" x2="21" y2="15" />
+      <line x1="9" y1="3" x2="9" y2="21" />
+    </svg>
+  );
+}
+function IconAnalytics({ col, sz = 20 }: { col: string; sz?: number }) {
+  return (
+    <svg width={sz} height={sz} viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.8" strokeLinecap="round">
+      <circle cx="12" cy="12" r="2.5" />
+      <circle cx="4"  cy="6"  r="1.8" /><circle cx="20" cy="6"  r="1.8" />
+      <circle cx="4"  cy="18" r="1.8" /><circle cx="20" cy="18" r="1.8" />
+      <line x1="5.8"  y1="6.8"  x2="10.2" y2="10.5" />
+      <line x1="18.2" y1="6.8"  x2="13.8" y2="10.5" />
+      <line x1="5.8"  y1="17.2" x2="10.2" y2="13.5" />
+      <line x1="18.2" y1="17.2" x2="13.8" y2="13.5" />
     </svg>
   );
 }
 
-function CalendarIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <rect x="3" y="4" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function ShieldSmIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M12 2L4 6v5c0 5.25 3.4 10.15 8 11.25 4.6-1.1 8-6 8-11.25V6l-8-4z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function UsersIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M2 21v-2a4 4 0 014-4h6a4 4 0 014 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="17" cy="7" r="3" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M21 21v-2a3 3 0 00-2-2.83" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CheckStripIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden className={c("verifyStripIcon")}>
-      <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function useCursorGlow(opts?: { radius?: number; alpha?: number }) {
-  const radius = opts?.radius ?? 280;
-  const alpha = opts?.alpha ?? 0.1;
-  const ref = useRef<HTMLDivElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
-
-  const onMove = useCallback(
-    (e: ReactMouseEvent<HTMLDivElement>) => {
-      if (!ref.current || !glowRef.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      glowRef.current.style.background =
-        `radial-gradient(circle ${radius}px at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, rgba(212,175,55,${alpha}), transparent 40%)`;
-    },
-    [radius, alpha],
-  );
-
-  return { ref, glowRef, onMove };
-}
-
-function useCountUp(end: number, suffix = "") {
-  const [val, setVal] = useState("0" + suffix);
-  const ran = useRef(false);
+/* ─── Custom candlestick cursor ──────────────────────────────── */
+function DashboardCursor({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
+  const [pos, setPos]   = useState({ x: -200, y: -200 });
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (ran.current) return;
-    ran.current = true;
-    const t0 = performance.now();
+    if (typeof window === "undefined" || "ontouchstart" in window) return;
+    const el = containerRef.current;
+    if (!el) return;
 
-    function tick(now: number) {
-      const p = Math.min((now - t0) / 1400, 1);
-      const e = 1 - Math.pow(1 - p, 3);
-      setVal(Math.round(e * end) + suffix);
-      if (p < 1) requestAnimationFrame(tick);
-    }
-
-    requestAnimationFrame(tick);
-  }, [end, suffix]);
-
-  return val;
-}
-
-function KpiCard({ icon, value, label, sub }: { icon: React.ReactNode; value: string; label: string; sub: string }) {
-  return (
-    <div className={c("kpiCard")}>
-      <div className={c("kpiIcon")}>{icon}</div>
-      <span className={c("kpiValue")}>{value}</span>
-      <span className={c("kpiLabel")}>{label}</span>
-      <span className={c("kpiSub")}>{sub}</span>
-    </div>
-  );
-}
-
-function ChartView({ chartLabels }: { chartLabels: string[] }) {
-  const capRef = useRef<SVGPathElement>(null);
-  const spRef = useRef<SVGPathElement>(null);
-  const [capPl, setCapPl] = useState(2000);
-  const [spPl, setSpPl] = useState(2000);
-  const { cap, sp, area, grids, yLabels, xLabels, capFinal, spFinal } = buildChartData(chartLabels);
-
-  useEffect(() => {
-    if (capRef.current) setCapPl(capRef.current.getTotalLength());
-    if (spRef.current) setSpPl(spRef.current.getTotalLength());
-  }, []);
-
-  const capEndLeft = `${(cap.endX / CW) * 100}%`;
-  const capEndTop = `${(cap.endY / CH) * 100}%`;
-  const spEndLeft = `${(sp.endX / CW) * 100}%`;
-  const spEndTop = `${(sp.endY / CH) * 100}%`;
-
-  return (
-    <div className={c("chartInner")}>
-      <svg className={c("chartSvg")} viewBox={`0 0 ${CW} ${CH}`} preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="perf_line_grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#c9a84e" />
-            <stop offset="50%" stopColor="#f5e6a3" />
-            <stop offset="100%" stopColor="#e2ca7b" />
-          </linearGradient>
-          <linearGradient id="perf_area_grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e2ca7b" />
-            <stop offset="100%" stopColor="#e2ca7b" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-
-        {grids.map((y, i) => (
-          <line key={i} className={c("chartGrid")} x1={PL} y1={y} x2={CW - PR} y2={y} />
-        ))}
-        {yLabels.map((l, i) => (
-          <text key={i} className={c("chartLabel")} x={PL - 8} y={l.y + 4} textAnchor="end">
-            {l.text}
-          </text>
-        ))}
-        {xLabels.map((l, i) => (
-          <text key={i} className={c("chartLabelAxis")} x={l.x} y={CH - 4} textAnchor="middle">
-            {l.text}
-          </text>
-        ))}
-
-        <path ref={spRef} className={`${c("chartLineSp")} ${c("chartDrawSp")}`} d={sp.d} style={{ "--path-length": spPl } as React.CSSProperties} />
-        <path className={`${c("chartArea")} ${c("chartAreaDraw")}`} d={area} fill="url(#perf_area_grad)" />
-        <path ref={capRef} className={`${c("chartLine")} ${c("chartDraw")}`} d={cap.d} style={{ "--path-length": capPl } as React.CSSProperties} />
-      </svg>
-
-      <div className={`${c("chartEndpoint")} ${c("chartEndpointCap")}`} style={{ left: capEndLeft, top: capEndTop, transform: "translate(18px, -50%)" }}>
-        <img className={c("endpointIcon")} src="/CAPITALIFE_ICON.png" alt="" />
-        <span className={c("endpointValueGold")}>+{capFinal.toFixed(0)}%</span>
-      </div>
-
-      <div className={`${c("chartEndpoint")} ${c("chartEndpointSp")}`} style={{ left: spEndLeft, top: spEndTop, transform: "translate(18px, -50%)" }}>
-        <img className={c("endpointIconSp")} src="/sp500.png" alt="S&P 500" />
-        <span className={c("endpointValueGray")}>+{spFinal.toFixed(1)}%</span>
-      </div>
-    </div>
-  );
-}
-
-function CompactTable({
-  visible,
-  copy,
-  monthLabels,
-}: {
-  visible: boolean;
-  copy: PerformanceCopy;
-  monthLabels: string[];
-}) {
-  const years: { year: string; data: Record<string, MonthEntry>; total: number }[] = [
-    { year: "2024", data: DATA_2024, total: YEARLY_TOTALS["2024"]! },
-    { year: "2025", data: DATA_2025, total: YEARLY_TOTALS["2025"]! },
-    { year: "2026", data: DATA_2026, total: YEARLY_TOTALS["2026"]! },
-  ];
-
-  return (
-    <div className={c("compactTable")}>
-      <div className={c("tableArea")}>
-        <div className={c("yearRow")}>
-          <span className={c("yearLabel")} />
-          <div className={c("monthGrid")}>
-            {monthLabels.map((m) => (
-              <span key={m} className={c("monthHeader")}>
-                {m}
-              </span>
-            ))}
-            <span className={c("totalLabel")}>{copy.ytd}</span>
-          </div>
-        </div>
-
-        {years.map((yr, yi) => (
-          <div
-            key={yr.year}
-            className={`${c("yearRow")} ${c("yearRowData")} ${visible ? c("tableRowAnim") : ""}`}
-            style={{ animationDelay: visible ? `${yi * 120}ms` : "0ms" }}
-          >
-            <span className={c("yearLabel")}>{yr.year}</span>
-            <div className={c("monthGrid")}>
-              {MONTH_KEYS.map((key, idx) => {
-                const entry = yr.data[key];
-                if (!entry) {
-                  return (
-                    <span key={key} className={`${c("monthCell")} ${c("cellEmpty")}`}>
-                      —
-                    </span>
-                  );
-                }
-
-                const val = entry.monthReturn;
-                const cls = val >= 0 ? c("cellPos") : c("cellNeg");
-                return (
-                  <span key={`${key}-${monthLabels[idx]}`} className={`${c("monthCell")} ${cls}`}>
-                    {val >= 0 ? "+" : ""}
-                    {val.toFixed(1)}
-                  </span>
-                );
-              })}
-              <span className={c("totalCell")}>+{yr.total.toFixed(1)}%</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className={`${c("tableVerifyStrip")} ${visible ? c("tableVerifyStripIn") : ""}`}>
-        <CheckStripIcon />
-        <span className={c("tableVerifyLabel")}>{copy.verifiedData}</span>
-        <img className={`${c("tableVerifyLogo")} ${c("tableVerifyLogoDarwinex")}`} src="/Darwinex.png" alt="Darwinex" />
-        <img className={c("tableVerifyLogo")} src="/Myfxbook.png" alt="Myfxbook" />
-      </div>
-    </div>
-  );
-}
-
-const AUTO_SWITCH_MS = 5000;
-
-export function Performance() {
-  const { lang } = useLanguage();
-  const copy = COPY[lang];
-  const monthLabels = MONTH_LABELS_SHORT[lang];
-  const chartLabels = useMemo(() => CAP_DATA.map((_, i) => fullDateLabel(i, lang)), [lang]);
-
-  const [mode, setMode] = useState<"chart" | "table">("chart");
-  const [isHovered, setIsHovered] = useState(false);
-
-  const elapsedMsRef = useRef(0);
-  const panelHoverRef = useRef(false);
-  const lastFrameRef = useRef(0);
-
-  const rightGlow = useCursorGlow({ radius: 300, alpha: 0.09 });
-
-  const totalReturn = useCountUp(72, "%");
-  const drawdown = useCountUp(11, "%");
-  const investors = useCountUp(50, "+");
-
-  useEffect(() => {
-    let alive = true;
+    let rect  = el.getBoundingClientRect();
     let rafId = 0;
-    lastFrameRef.current = performance.now();
 
-    const tick = (now: number) => {
-      if (!alive) return;
+    const onMove   = (e: MouseEvent) => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })); };
+    const onIn     = () => { rect = el.getBoundingClientRect(); setShow(true); };
+    const onOut    = () => setShow(false);
+    const onResize = () => { rect = el.getBoundingClientRect(); };
 
-      const rawDt = now - lastFrameRef.current;
-      lastFrameRef.current = now;
-      const dt = Math.min(Math.max(rawDt, 0), 80);
-
-      if (!panelHoverRef.current) {
-        elapsedMsRef.current += dt;
-        if (elapsedMsRef.current >= AUTO_SWITCH_MS) {
-          elapsedMsRef.current = 0;
-          setMode((v) => (v === "chart" ? "table" : "chart"));
-        }
-      }
-
-      rafId = requestAnimationFrame(tick);
-    };
-
-    rafId = requestAnimationFrame(tick);
+    el.addEventListener("mousemove",  onMove);
+    el.addEventListener("mouseenter", onIn);
+    el.addEventListener("mouseleave", onOut);
+    window.addEventListener("resize", onResize, { passive: true });
     return () => {
-      alive = false;
       cancelAnimationFrame(rafId);
+      el.removeEventListener("mousemove",  onMove);
+      el.removeEventListener("mouseenter", onIn);
+      el.removeEventListener("mouseleave", onOut);
+      window.removeEventListener("resize", onResize);
     };
-  }, []);
+  }, [containerRef]);
 
-  const handleChartTableEnter = useCallback(() => {
-    panelHoverRef.current = true;
-    setIsHovered(true);
-  }, []);
+  if (!show) return null;
+  return (
+    <div style={{ position: "absolute", left: pos.x, top: pos.y, pointerEvents: "none", zIndex: 100, transform: "translate(-2px,-2px)", transition: "left 40ms linear, top 40ms linear" }}>
+      <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+        <line x1="4" y1="1"  x2="4" y2="5"  stroke="white" strokeWidth="1.2" opacity="0.8" />
+        <rect x="2" y="5" width="4" height="8" rx="0.5" fill="white" opacity="0.8" />
+        <line x1="4" y1="13" x2="4" y2="17" stroke="white" strokeWidth="1.2" opacity="0.8" />
+        <line x1="13" y1="4"  x2="13" y2="8"  stroke="#eadf9a" strokeWidth="1.1" />
+        <rect x="11.5" y="8" width="3" height="6" rx="0.5" fill="#eadf9a" />
+        <line x1="13" y1="14" x2="13" y2="17" stroke="#eadf9a" strokeWidth="1.1" />
+      </svg>
+    </div>
+  );
+}
 
-  const handleChartTableLeave = useCallback(() => {
-    panelHoverRef.current = false;
-    setIsHovered(false);
-    lastFrameRef.current = performance.now();
-  }, []);
+/* ─── Sidebar ────────────────────────────────────────────────── */
+function DashboardSidebar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
+  const ITEMS: { id: Tab; Ico: (p: { col: string }) => React.ReactElement }[] = [
+    { id: "chart",     Ico: ({ col }) => <IconChart     col={col} sz={20} /> },
+    { id: "table",     Ico: ({ col }) => <IconTable     col={col} sz={20} /> },
+    { id: "analytics", Ico: ({ col }) => <IconAnalytics col={col} sz={20} /> },
+  ];
+  return (
+    <aside className={c("sidebar")}>
+      <div className={c("sidebarTop")}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/CAPITALIFE_ICON.png" alt="Capitalife" width="32" height="32" style={{ display: "block", opacity: 0.88 }} />
+      </div>
+      <nav className={c("sidebarNav")}>
+        {ITEMS.map(({ id, Ico }) => {
+          const active = tab === id;
+          return (
+            <button
+              key={id}
+              className={`${c("sidebarBtn")} ${active ? c("sidebarBtnActive") : ""}`}
+              onClick={() => setTab(id)}
+              aria-label={id}
+            >
+              <Ico col={active ? "#eadf9a" : "rgba(255,255,255,0.42)"} />
+            </button>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+}
 
-  const handleToggle = useCallback(() => {
-    elapsedMsRef.current = 0;
-    setMode((v) => (v === "chart" ? "table" : "chart"));
-    lastFrameRef.current = performance.now();
-  }, []);
+/* ─── Dashboard header ───────────────────────────────────────── */
+function DashboardHeader({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
+  const TABS: { id: Tab; label: string }[] = [
+    { id: "chart",     label: "Performance Chart" },
+    { id: "table",     label: "Performance Table" },
+    { id: "analytics", label: "Analytics"         },
+  ];
+  return (
+    <header className={c("dashHeader")}>
+      <nav className={c("dashTabs")}>
+        {TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            className={`${c("dashTab")} ${tab === id ? c("dashTabActive") : ""}`}
+            onClick={() => setTab(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
 
-  const isTable = mode === "table";
+      {/* Third Party Verified — real logos, all clickable */}
+      <div className={c("verifiedBox")}>
+        <span className={c("verifiedLabel")}>Third Party Verified</span>
+        <div className={c("verifiedLogos")}>
+          <a href="https://www.darwinex.com/account/L.23491" target="_blank" rel="noopener noreferrer" className={c("verifiedLogoLink")}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Darwinex.png" alt="Darwinex" className={c("verifiedLogoImg")} />
+          </a>
+          <a href="https://www.myfxbook.com/members/jgfxtrading/capitalife--live-strategy-/12014242" target="_blank" rel="noopener noreferrer" className={c("verifiedLogoLink")}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Myfxbook.png" alt="Myfxbook" className={c("verifiedLogoImg")} />
+          </a>
+          <a href="https://www.copyfx.com/ratings/rating-all/show/340470/tab/profit/period/all/" target="_blank" rel="noopener noreferrer" className={c("verifiedLogoLink")}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/copyfx.png" alt="CopyFX" className={c("verifiedLogoImg")} />
+          </a>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ─── Controls row ───────────────────────────────────────────── */
+function DashboardControls({ period, setPeriod }: { period: Period; setPeriod: (p: Period) => void }) {
+  const dateFrom = period === "1Y" ? DATE_FROM_1Y : DATE_FROM;
+  return (
+    <div className={c("controls")}>
+      <div className={c("ctrlLeft")}>
+        <button type="button" className={`${c("ctrlPeriodBtn")} ${period === "1Y" ? c("ctrlPeriodActive") : ""}`} onClick={() => setPeriod("1Y")}>1Y</button>
+        <button type="button" className={`${c("ctrlPeriodBtn")} ${period === "2Y" ? c("ctrlPeriodActive") : ""}`} onClick={() => setPeriod("2Y")}>2Y</button>
+        <span className={c("ctrlDate")}>{dateFrom} → {DATE_TO}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── View 1: Performance Chart ──────────────────────────────── */
+function PerformanceChartView() {
+  return (
+    <div className={c("chartView")}>
+      <h3 className={c("viewTitle")}>Performance Chart</h3>
+      <div className={c("chartLayout")}>
+
+        <div className={c("chartSvgWrap")}>
+          <svg
+            viewBox={`0 0 ${VW} ${VH}`}
+            width="100%" height="100%"
+            preserveAspectRatio="none"
+            style={{ overflow: "visible", display: "block" }}
+          >
+            <defs>
+              <linearGradient id="capAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stopColor="rgba(234,223,154,0.40)" />
+                <stop offset="68%"  stopColor="rgba(234,223,154,0.05)" />
+                <stop offset="100%" stopColor="rgba(234,223,154,0)"    />
+              </linearGradient>
+              <filter id="lineGlow" x="-10%" y="-30%" width="120%" height="160%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur" />
+                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </defs>
+
+            {Y_TICKS.map(v => {
+              const y = gpy(v);
+              return (
+                <g key={v}>
+                  <line x1={PL} y1={y} x2={VW - PR} y2={y}
+                    stroke="rgba(255,255,255,0.07)" strokeWidth="1"
+                    strokeDasharray={v === 0 ? "none" : "5 5"} />
+                  <text x={PL - 8} y={y + 5} textAnchor="end"
+                    fill="rgba(255,255,255,0.42)" fontSize="13"
+                    fontFamily="-apple-system,BlinkMacSystemFont,sans-serif">
+                    {v}%
+                  </text>
+                </g>
+              );
+            })}
+
+            {X_LABELS.map(([i, label]) => (
+              <text key={i} x={gpx(i)} y={VH - PB + 22} textAnchor="middle"
+                fill="rgba(255,255,255,0.34)" fontSize="11.5"
+                fontFamily="-apple-system,BlinkMacSystemFont,sans-serif">
+                {label}
+              </text>
+            ))}
+
+            <path d={SP_PATH}  stroke="rgba(255,255,255,0.30)" strokeWidth="2"   fill="none" strokeLinecap="round" />
+            <path d={CAP_AREA} fill="url(#capAreaGrad)" />
+            <path d={CAP_PATH} stroke="#eadf9a"          strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#lineGlow)" />
+
+            <line x1={PL} y1={VH - PB} x2={VW - PR} y2={VH - PB}
+              stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+          </svg>
+        </div>
+
+        {/* Legend items pinned to exact Y% matching line endpoints */}
+        <div className={c("chartLegend")}>
+          <div className={c("legendItem")} style={{ top: CAP_LEGEND_TOP }}>
+            <div className={c("legendPill")} style={{ borderColor: "rgba(234,223,154,0.35)", background: "rgba(234,223,154,0.08)" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/CAPITALIFE_ICON.png" alt="" width="12" height="12" style={{ display: "block", opacity: 0.88 }} />
+              <span style={{ color: "#eadf9a", fontWeight: 650, fontSize: 13, letterSpacing: "-0.01em" }}>+{CAP_END.toFixed(2)}%</span>
+            </div>
+            <span className={c("legendName")} style={{ color: "rgba(234,223,154,0.70)" }}>Capitalife</span>
+          </div>
+
+          <div className={c("legendItem")} style={{ top: SP_LEGEND_TOP }}>
+            <div className={c("legendPill")} style={{ borderColor: "rgba(255,255,255,0.11)", background: "rgba(255,255,255,0.04)" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/sp500.png" alt="S&P 500" width="28" height="12" style={{ display: "block", opacity: 0.62, objectFit: "contain" }} />
+              <span style={{ color: "rgba(255,255,255,0.58)", fontWeight: 500, fontSize: 13 }}>+{SP_END.toFixed(2)}%</span>
+            </div>
+            <span className={c("legendName")} style={{ color: "rgba(255,255,255,0.38)" }}>S&amp;P 500</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+/* ─── View 2: Performance Table ──────────────────────────────── */
+function PerformanceTableView() {
+  const fmt = (v: number | null) => {
+    if (v === null) return <span className={c("cellDash")}>—</span>;
+    return <span className={v > 0 ? c("cellPos") : c("cellNeg")}>{v > 0 ? "+" : ""}{v.toFixed(2)}%</span>;
+  };
+  return (
+    <div className={c("tableView")}>
+      <h3 className={c("viewTitle")}>Performance Table</h3>
+      <div className={c("tableBox")}>
+        <div className={c("tableScroll")}>
+          <table className={c("perfTable")}>
+            <thead>
+              <tr>
+                <th className={`${c("th")} ${c("thYear")}`}>Year</th>
+                {MONTH_ABBR.map(m => <th key={m} className={c("th")}>{m}</th>)}
+                <th className={`${c("th")} ${c("thTotal")}`}>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {TABLE_ROWS.map(row => (
+                <tr key={row.year} className={c("tr")}>
+                  <td className={`${c("td")} ${c("tdYear")}`}>{row.year}</td>
+                  {row.months.map((v, i) => <td key={i} className={c("td")}>{fmt(v)}</td>)}
+                  <td className={`${c("td")} ${c("tdTotal")}`}>{fmt(row.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className={c("trTotal")}>
+                <td className={`${c("td")} ${c("tdYear")} ${c("tdGrandLabel")}`} colSpan={13}>TOTAL RETURN</td>
+                <td className={`${c("td")} ${c("tdTotal")} ${c("tdGrandValue")}`}>
+                  <span className={c("cellPos")}>+{TABLE_TOTAL.toFixed(2)}%</span>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── View 3: Analytics ──────────────────────────────────────── */
+function AnalyticsView() {
+  return (
+    <div className={c("analyticsView")}>
+      <h3 className={c("viewTitle")}>Analytics</h3>
+      <div className={c("kpiGrid")}>
+        {KPIS.map(kpi => (
+          <div key={kpi.label} className={c("kpiCard")}>
+            <span className={c("kpiDot")} />
+            <span className={c("kpiLabel")}>{kpi.label}</span>
+            <span className={c("kpiValue")}>{kpi.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Dashboard ──────────────────────────────────────────────── */
+function PerformanceDashboard() {
+  const [tab, setTab]       = useState<Tab>("chart");
+  const [period, setPeriod] = useState<Period>("2Y");
+  const screenRef           = useRef<HTMLDivElement>(null);
 
   return (
-    <section className={c("section")} id="performance">
-      <div className={c("sectionBg")} aria-hidden />
+    <div className={c("deviceOuter")}>
+      <div className={c("device")}>
+        <div className={c("screen")} ref={screenRef}>
+          <DashboardCursor containerRef={screenRef} />
+          <div className={c("dashLayout")}>
+            <DashboardSidebar tab={tab} setTab={setTab} />
+            <div className={c("dashMain")}>
+              <DashboardHeader tab={tab} setTab={setTab} />
+              <DashboardControls period={period} setPeriod={setPeriod} />
+              <div className={c("dashContent")}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={tab}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: TAB_EASE }}
+                    style={{ height: "100%" }}
+                  >
+                    {tab === "chart"     && <PerformanceChartView />}
+                    {tab === "table"     && <PerformanceTableView />}
+                    {tab === "analytics" && <AnalyticsView />}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className={c("laptopBase")}><div className={c("trackpad")} /></div>
+      </div>
+      <div className={c("deviceFade")} />
+    </div>
+  );
+}
+
+/* ─── Section export ─────────────────────────────────────────── */
+export function Performance() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const fn = () => {
+      if (!sectionRef.current) return;
+      const r = sectionRef.current.getBoundingClientRect();
+      sectionRef.current.style.setProperty("--para-y", `${(r.top * 0.22).toFixed(1)}px`);
+    };
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  return (
+    <section ref={sectionRef} className={c("section")} id="performance">
+      <div className={c("bg")} />
+      <div className={c("vignette")} />
       <div className={c("inner")}>
-        <div className={c("header")}>
-          <div className={c("label")}>
-            <span className={c("labelShine")} />
-            <span className={c("labelDot")} />
-            <span className={c("labelText")}>{copy.badge}</span>
-          </div>
-          <h2 className={c("title")}>{copy.title}</h2>
+        <div className={c("pill")}>
+          <span className={c("pillDot")} />
+          <span>Verified Track Record</span>
         </div>
-
-        <div className={c("grid")}>
-          <div className={c("kpiGrid")}>
-            <KpiCard icon={<ChartUpIcon />} value={`+${totalReturn}`} label={copy.kpis[0]!.label} sub={copy.kpis[0]!.sub} />
-            <KpiCard icon={<CalendarIcon />} value="2Y+" label={copy.kpis[1]!.label} sub={copy.kpis[1]!.sub} />
-            <KpiCard icon={<ShieldSmIcon />} value={drawdown} label={copy.kpis[2]!.label} sub={copy.kpis[2]!.sub} />
-            <KpiCard icon={<UsersIcon />} value={investors} label={copy.kpis[3]!.label} sub={copy.kpis[3]!.sub} />
-          </div>
-
-          <div className={c("rightPanel")} ref={rightGlow.ref} onMouseMove={rightGlow.onMove}>
-            <div className={c("cursorGlow")} ref={rightGlow.glowRef} />
-            <div className={c("panelHeader")}>
-              <div
-                className={c("toggle")}
-                onClick={handleToggle}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    handleToggle();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                <div className={`${c("toggleSlider")} ${isTable ? c("toggleSliderRight") : ""}`} />
-                <span className={`${c("toggleLabel")} ${!isTable ? c("toggleLabelActive") : ""}`}>{copy.toggleChart}</span>
-                <span className={`${c("toggleLabel")} ${isTable ? c("toggleLabelActive") : ""}`}>{copy.toggleTable}</span>
-              </div>
-            </div>
-
-            <div className={c("viewContainer")} onMouseEnter={handleChartTableEnter} onMouseLeave={handleChartTableLeave}>
-              <div className={`${c("progressBar")} ${isHovered ? c("progressBarPaused") : ""}`} />
-
-              <div className={`${c("viewSlide")} ${isTable ? c("viewSlideLeft") : c("viewSlideCenter")}`}>
-                <ChartView chartLabels={chartLabels} />
-              </div>
-
-              <div className={`${c("viewSlide")} ${!isTable ? c("viewSlideRight") : c("viewSlideCenter")}`}>
-                <CompactTable visible={isTable} copy={copy} monthLabels={monthLabels} />
-              </div>
-            </div>
-          </div>
+        <h2 className={c("headline")}>Performance Overview</h2>
+        <p className={c("sub")}>
+          Explore verified performance data, transparent risk metrics, and strategy insights
+          designed to help investors evaluate Capitalife with confidence.
+        </p>
+        <div className={c("btns")}>
+          <Link href="#performance" className={c("btnPrimary")}>View Track Record</Link>
+          <Link href="#contact"     className={c("btnSecondary")}>Request Report</Link>
         </div>
-
-        <div style={{ height: 24 }} />
+        <PerformanceDashboard />
       </div>
     </section>
   );

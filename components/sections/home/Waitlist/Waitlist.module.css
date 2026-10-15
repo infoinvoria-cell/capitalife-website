@@ -1,0 +1,163 @@
+/* Sektion 3: Warteliste. Überschrift wie Hero (weiss nach Gold senkrecht), Glas-Eingabe mit weissem Fokus, Apple-Button */
+.waitlist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.75rem;
+  padding: clamp(6rem, 14vw, 10rem) var(--container-padding-inline) clamp(7rem, 16vw, 12rem);
+  background: var(--color-brand-bg);
+  color: #fff;
+  font-family: var(--font-inter), -apple-system, "SF Pro Text", system-ui, sans-serif;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.25rem, 4.6vw, 4rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 42%, #e2ca7a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Platz für Unterlängen (g, p, y), sonst schneidet die Ausstanzung sie ab */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.title span {
+  display: block;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: min(100%, 34rem);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  /* rechts so viel wie oben/unten: 0,5rem + (Feldhöhe 2,75rem − Button 2,375rem) / 2 */
+  padding: 0.5rem 0.6875rem 0.5rem 0.5rem;
+  border-radius: 980px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Fokus: dezent weiss hervorgehoben, kein Gold */
+.field:focus-within {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+    0 0 0 4px rgba(255, 255, 255, 0.06);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 1rem;
+  color: #fff;
+  outline: none;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.button {
+  composes: solid from "../../../ui/Button.module.css";
+  flex: none;
+  height: 2.375rem;
+  padding: 0 1.15rem;
+  font-size: 0.9375rem;
+}
+
+.field:hover {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  max-width: 30rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.consent input {
+  flex: none;
+  margin-top: 0.2rem;
+  accent-color: #fff;
+}
+
+.consent {
+  transition: color 0.2s;
+}
+
+.consent:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.consent input {
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+/* Häkchen: beim Hover nur heller, nicht grösser (bleibt scharf) */
+.consent:hover input {
+  filter: brightness(1.25);
+}
+
+.consent a {
+  color: rgba(255, 255, 255, 0.8);
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.consent a:hover,
+.consent a:focus-visible {
+  color: #fff;
+}
+
+.note {
+  min-height: 1.25rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .field {
+    flex-direction: column;
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+  }
+
+  .input,
+  .button {
+    width: 100%;
+  }
+}

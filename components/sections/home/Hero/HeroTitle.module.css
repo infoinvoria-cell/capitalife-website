@@ -1,0 +1,59 @@
+/* Überschrift-Varianten zum Vergleich. Klasse kommt auf das h1, die Spans tragen line1/line2. */
+
+/* 1 Getrennt: Zeile 1 weiss, Zeile 2 helles Gold */
+.t1 .l1 { color: #fff; }
+.t1 .l2 { color: var(--color-brand-gold-300); }
+
+/* 2 Verlauf quer wie Referenz: Silber > Weiss > Gold */
+.t2 {
+  background: linear-gradient(90deg, #a19d93 -2%, #f4f1ea 22%, #ffffff 44%, #efe0b2 72%, #e2ca7a 100%);
+}
+
+/* 3 Verlauf senkrecht: oben weiss, nach unten ins Gold */
+.t3 {
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 42%, #e2ca7a 100%);
+}
+
+/* 4 Zeile 1 weiss, Zeile 2 weicher Goldverlauf */
+.t4 .l1 { color: #fff; }
+.t4 .l2 {
+  background: linear-gradient(90deg, #f3e6bf 0%, #e2ca7a 55%, #c9a640 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 5 Champagner einfarbig */
+.t5 .l1,
+.t5 .l2 { color: #ecdba6; }
+
+/* 6 Gewichtskontrast: Zeile 1 dünn weiss, Zeile 2 kräftig gold */
+.t6 .l1 { color: #fff; font-weight: 300; }
+.t6 .l2 { color: var(--color-brand-gold-300); font-weight: 500; }
+
+/* 7 Glanz: Zeile 1 weiss mit hellem Kern, Zeile 2 gold flach */
+.t7 .l1 {
+  background: linear-gradient(90deg, #d9d5cb 0%, #ffffff 50%, #d9d5cb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.t7 .l2 { color: var(--color-brand-gold-300); }
+
+/* Verläufe über das ganze h1 (2 und 3): Text ausstanzen, Zeilen ohne eigene Bewegung */
+.t2,
+.t3 {
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* Platz für Unterlängen (g, p, y), sonst schneidet die Ausstanzung sie ab */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.t2 .l1,
+.t2 .l2,
+.t3 .l1,
+.t3 .l2 {
+  color: transparent;
+  animation: none;
+}

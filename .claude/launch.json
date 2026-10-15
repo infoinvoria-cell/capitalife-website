@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "web", "runtimeExecutable": "cmd", "runtimeArgs": ["/c", "set WATCHPACK_POLLING=true&& npx next dev -p 3010"], "port": 3010 }
+  ]
+}

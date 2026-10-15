@@ -1,0 +1,76 @@
+/* Gemeinsame Button-Stile (Apple-Stil, Pille). Grösse setzt die jeweilige Komponente.
+   Hover ohne Anheben und ohne Skalieren: nur die Fläche wächst nach aussen, die Schrift bleibt scharf. */
+
+/* Weisser Button. Hover: dunkler Verlauf, wächst 3 px nach aussen, Schrift weiss */
+.solid {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 980px;
+  background: #fff;
+  font: inherit;
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.solid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, #3a3a3a 0%, #121212 55%, #000 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  opacity: 0;
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.solid:hover,
+.solid:focus-visible {
+  color: #fff;
+}
+
+/* nur die dunkle Fläche dahinter wächst (Text wird nicht skaliert, bleibt scharf) */
+.solid:hover::before,
+.solid:focus-visible::before {
+  transform: scale(1.04, 1.12);
+  opacity: 1;
+}
+
+/* Button mit Rand. Hover: Rand und Schrift hellgold, der Rand wandert 3 px nach aussen */
+.outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 980px;
+  outline: 1px solid rgba(255, 255, 255, 0.4);
+  outline-offset: -1px;
+  color: #fff;
+  text-decoration: none;
+  transition:
+    color 0.18s ease,
+    outline-color 0.18s ease,
+    outline-offset 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.outline:hover,
+.outline:focus-visible {
+  color: var(--color-brand-gold-200);
+  outline-color: var(--color-brand-gold-200);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solid,
+  .outline,
+  .solid::before {
+    transition: none;
+  }
+}

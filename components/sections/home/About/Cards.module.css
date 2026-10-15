@@ -1,0 +1,175 @@
+/* Drei Karten nebeneinander: dunkler Rahmen mit Visual, darunter Titel und kurzer Text */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2.25rem);
+  width: min(100%, 68rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.frame {
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.5s ease;
+  position: relative;
+  overflow: hidden;
+  height: clamp(13rem, 34svh, 17rem);
+  border-radius: 1.25rem;
+  background: radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.06), transparent 55%), #050505;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Grosse Zahl: ruhiger Verlauf Grau > Weiss, wie Referenz */
+.value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+/* Farben des Zählers als animierbare Variablen: beim Zählen grau-weiss, bei "25+" weich Weiss > Gold */
+@property --top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.6);
+}
+
+@property --bottom {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.6);
+}
+
+.number {
+  --top: rgba(255, 255, 255, 0.6);
+  --bottom: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: flex-start;
+  font-size: clamp(4rem, 7vw, 6rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  transition:
+    opacity 0.5s ease,
+    --top 0.5s ease,
+    --bottom 0.5s ease;
+}
+
+/* Jede Ziffer und das "+" einzeln mit dem Verlauf füllen (gleiche Höhe = einheitlicher Verlauf) */
+.strip span,
+.number > span:last-child {
+  background: linear-gradient(180deg, var(--top) 15%, var(--bottom) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.value[data-phase="hold"] .number {
+  --top: #ffffff;
+  --bottom: #e2ca7a;
+}
+
+/* Walze je Ziffer: nur ein Feld sichtbar, oben und unten weich ausgeblendet */
+.col {
+  display: inline-block;
+  width: 0.56em;
+  height: 1em;
+  text-align: center;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+}
+
+.strip {
+  display: flex;
+  flex-direction: column;
+}
+
+.strip span {
+  height: 1em;
+}
+
+.value[data-phase="fade"] .number {
+  opacity: 0;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.title {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+.text {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+@media (max-width: 860px), (max-width: 1100px) and (orientation: portrait) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    width: min(100%, 30rem);
+  }
+}
+
+/* Hover: Karte hebt sich leicht, Kante wird heller, Titel und Text rücken mit */
+.title,
+.text {
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.4s ease;
+}
+
+.item:hover .frame {
+  transform: translateY(-6px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.item:hover .title {
+  transform: translateY(-3px);
+}
+
+.item:hover .text {
+  transform: translateY(-2px);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Einblenden übernimmt ScrollReveal (data-reveal), Karte für Karte */
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .frame,
+  .title,
+  .text {
+    animation: none;
+    transition: none;
+  }
+}

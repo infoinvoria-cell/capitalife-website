@@ -1,0 +1,75 @@
+/* Fusszeile: dünne Linie oben, viel Luft, kleine graue Schrift */
+.footer {
+  padding: 3.5rem var(--container-padding-inline) 2.5rem;
+  background: var(--color-brand-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-inter), -apple-system, "SF Pro Text", system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  width: min(100%, 68rem);
+  margin: 0 auto;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.logo {
+  display: block;
+  width: clamp(13rem, 22vw, 17rem);
+  height: auto;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+
+a:hover > .logo,
+a:focus-visible > .logo {
+  opacity: 1;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 0.8125rem;
+}
+
+.links a,
+.bottom a {
+  font-size: inherit;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.links a:hover,
+.links a:focus-visible,
+.bottom a:hover,
+.bottom a:focus-visible {
+  color: #fff;
+}
+
+.notice {
+  max-width: 60rem;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.bottom {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.38);
+}

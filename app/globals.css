@@ -47,3 +47,71 @@ body {
     animation: none;
   }
 }
+
+/* Tastatur-Fokus: feiner weisser Ring für alles Klickbare (Apple-Stil) */
+a:focus-visible,
+button:focus-visible,
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 3px;
+}
+
+/* Einblenden beim Näherkommen (components/ui/ScrollReveal.tsx): schnell, 3D von unten nach oben */
+html.reveal [data-reveal] {
+  opacity: 0;
+  transform: perspective(900px) translateY(40px) rotateX(18deg);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 0.55s ease var(--rd, 0s),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rd, 0s);
+}
+
+/* Reihenfolge innerhalb einer Gruppe: data-reveal="2" kommt kurz nach "1" usw. */
+[data-reveal="2"] { --rd: 0.08s; }
+[data-reveal="3"] { --rd: 0.16s; }
+[data-reveal="4"] { --rd: 0.24s; }
+
+html.reveal [data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Schlanke, ruhige Scroll-Leiste statt der breiten Browser-Leiste (nur Desktop; Handys blenden sie ohnehin aus).
+   Chrome, Edge, Safari: ::-webkit-scrollbar. Firefox: scrollbar-width/-color. */
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #000;
+}
+
+html::-webkit-scrollbar-thumb {
+  border: 3px solid #000;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+html::-webkit-scrollbar-corner {
+  background: #000;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.22) #000;
+  }
+}

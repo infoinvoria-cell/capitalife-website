@@ -1,0 +1,173 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100svh;
+  background: var(--color-brand-bg);
+  color: #fff;
+  font-family:
+    var(--font-inter),
+    -apple-system,
+    "SF Pro Text",
+    system-ui,
+    sans-serif;
+}
+
+/* ── Überschrift und Button innerhalb der Kugel ───────────────────── */
+.copy {
+  position: absolute;
+  inset: 0 0 auto 0;
+  /* Überschrift bleibt bei 50 %, das Label sitzt darüber */
+  top: calc(50svh - 3.625rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  padding-inline: var(--container-padding-inline);
+  text-align: center;
+}
+
+/* Label über der Überschrift: dunkles Liquid Glass, Text Grau-Weiss mit langsamem Glanz (Apple-Stil) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 1.875rem;
+  margin: 0;
+  padding: 0 0.95rem;
+  border-radius: 980px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.01)
+    ),
+    rgba(8, 8, 8, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.badgeText {
+  /* Nahtlose Schleife: Verlauf wiederholt sich, Bewegung genau eine Verlaufsbreite, gleichmässiges Tempo */
+  background: linear-gradient(
+    90deg,
+    #8a8a8a 0%,
+    #8a8a8a 30%,
+    #ffffff 50%,
+    #8a8a8a 70%,
+    #8a8a8a 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 7s linear infinite;
+}
+
+/* Glanz läuft von links nach rechts (Bild wandert nach rechts), nahtlos als Loop */
+@keyframes shine {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.75rem, 5.4vw, 5rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.title {
+  transform-origin: 50% 100%;
+  animation: rise 0.7s 0.06s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.title span {
+  display: block;
+}
+
+/* Apple-Stil: Pille, 17px, 48px hoch. Aussehen und Hover aus components/ui/Button.module.css */
+.primary {
+  composes: solid from "../../../ui/Button.module.css";
+  min-width: 9.5rem;
+  height: 3rem;
+  padding-inline: 1.5rem;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  animation: rise 0.7s 0.16s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* Kontrast zum weissen Button: nur Rand, gleiche Grösse */
+.secondary {
+  composes: outline from "../../../ui/Button.module.css";
+  min-width: 9.5rem;
+  height: 3rem;
+  padding-inline: 1.5rem;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  animation: rise 0.7s 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Einblenden beim Öffnen: schnell, 3D von unten nach oben, Element für Element */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: perspective(900px) translateY(36px) rotateX(18deg);
+  }
+}
+
+/* Niedrige Bildschirme (kleines MacBook, Tablet quer): Titel etwas kleiner, Kennzahlen tiefer */
+@media (min-width: 641px) and (max-height: 860px) {
+  .title {
+    font-size: clamp(2.75rem, min(5.4vw, 7.6svh), 5rem);
+  }
+}
+
+/* Handy und sehr niedrige Fenster (z. B. Handy quer): alles untereinander im Fluss */
+@media (max-width: 640px), (max-height: 600px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: max(7rem, 38svh) 0 4rem;
+  }
+  .copy {
+    position: static;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(2.25rem, 10.5vw, 2.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge,
+  .badgeText,
+  .title,
+  .primary,
+  .secondary {
+    animation: none;
+  }
+}
