@@ -114,6 +114,7 @@ export function createGlobeRenderer(
   const uMarkBox = u("uMarkBox");
   const uH = u("uH");
   const uMarkGain = u("uMarkGain");
+  const uCapGain = u("uCapGain");
   // Grundfarbe aus dem CSS (Hintergrund des Canvas = Seitenhintergrund)
   const bg = (
     getComputedStyle(canvas).backgroundColor.match(/\d+/g) ?? ["0", "0", "0"]
@@ -146,6 +147,8 @@ export function createGlobeRenderer(
       gl.uniform1f(uH, h);
       // Handy: Schriftzug im Hintergrund kräftiger, damit er auf dem kleinen Bildschirm sichtbar bleibt
       gl.uniform1f(uMarkGain, canvas.clientWidth <= 640 ? 2 : 1);
+      // Handy: Kappe oben (Europa) minimal heller
+      gl.uniform1f(uCapGain, canvas.clientWidth <= 640 ? 1.35 : 1);
       gl.uniform1f(uLon, (lonDeg * Math.PI) / 180);
       gl.uniform1f(uAngle, angleRad);
       gl.uniform1f(uPx, 1 / size);

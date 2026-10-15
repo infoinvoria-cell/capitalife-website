@@ -24,6 +24,7 @@ uniform vec4 uMarkBox;     // Schriftzug: links, oben (von oben gemessen), Breit
 uniform float uH;          // Canvas-Hoehe in Geraetepixeln
 uniform vec3 uBg;          // Seitenhintergrund (statt reinem Schwarz)
 uniform float uMarkGain;   // Helligkeit des Schriftzugs (Handy: kraeftiger)
+uniform float uCapGain;    // Helligkeit der Kappe oben (Europa) (Handy: etwas mehr Licht)
 
 const float R = 0.375;
 const float PI = 3.14159265;
@@ -69,7 +70,7 @@ void main() {
   float ul = clamp(u.x * -0.34 + u.y * 0.94, 0.0, 1.0);
   // Helle Zone oben: kompakt am Rand (wie Referenz), Afrika und Ueberschrift bleiben dunkel
   float t = clamp((rin - 0.004) / (0.07 - 0.004), 0.0, 1.0);
-  float cap = pow(1.0 - t * t * (3.0 - 2.0 * t), 1.6) * pow(ul, 16.0);
+  float cap = pow(1.0 - t * t * (3.0 - 2.0 * t), 1.6) * pow(ul, 16.0) * uCapGain;
   float low = 0.30 * exp(-pow((abs(ang) - 83.0) / 5.0, 2.0)) * exp(-rin / 0.035);
 
   vec3 cen = vec3(cos(uLat) * cos(uLon), cos(uLat) * sin(uLon), sin(uLat));
