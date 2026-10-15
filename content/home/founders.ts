@@ -9,7 +9,7 @@ export type FoundersCopy = {
 export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
   en: {
     title: "The people behind Capitalife",
-    text: "We believe in long-term thinking, and that professional tools shouldn't be reserved for institutions. That's how we build Capitalife, day by day.",
+    text: "Think long term, act clearly, share openly: what is usually reserved for institutions should be accessible to everyone. That is what we stand for.",
     people: [
       {
         name: "Jeroen Göhlert",
@@ -25,7 +25,7 @@ export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
   },
   de: {
     title: "Die Menschen hinter Capitalife",
-    text: "Wir glauben an langfristiges Denken und daran, dass professionelle Werkzeuge nicht nur Institutionen vorbehalten sein sollten. Mit dieser Haltung bauen wir Capitalife, Tag für Tag.",
+    text: "Langfristig denken, klar handeln, offen teilen: Was sonst Institutionen vorbehalten ist, soll für alle zugänglich sein. Dafür stehen wir.",
     people: [
       {
         name: "Jeroen Göhlert",
