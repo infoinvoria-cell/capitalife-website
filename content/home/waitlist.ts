@@ -22,7 +22,7 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     placeholder: "Your email address",
     button: "Join the waitlist",
     consent:
-      "I agree to receive emails about the launch, also via a service outside the EU (India/USA). I can withdraw at any time.",
+      "I agree to receive launch emails, also via a service outside the EU. Withdraw anytime.",
     privacy: "Details",
     note: "Free and without obligation. This is not an investment offer and not investment advice.",
     invalid: "Please enter a valid email address and confirm the consent.",
@@ -40,7 +40,7 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     placeholder: "Deine E-Mail-Adresse",
     button: "Auf die Warteliste",
     consent:
-      "Ich willige ein, E-Mails zum Start zu erhalten, auch über einen Dienst außerhalb der EU (Indien/USA). Widerruf jederzeit möglich.",
+      "Ich willige ein, E-Mails zum Start zu erhalten, auch über einen Dienst außerhalb der EU. Widerruf jederzeit.",
     privacy: "Details",
     note: "Kostenlos und unverbindlich. Kein Anlageangebot und keine Anlageberatung.",
     invalid:
