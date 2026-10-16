@@ -53,6 +53,7 @@
 }
 
 .section {
+  scroll-margin-top: 7rem; /* Sprungmarke nicht unter der Kopfzeile */
   display: flex;
   flex-direction: column;
   gap: 0.75rem;

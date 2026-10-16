@@ -22,8 +22,8 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     placeholder: "Your email address",
     button: "Join the waitlist",
     consent:
-      "I agree that Capitalife may email me about the launch and early access. For this, my email address is transmitted to Capitalife via the service Web3Forms (India, servers in the USA); these countries do not offer a level of data protection comparable to the EU. I can withdraw my consent at any time. See our",
-    privacy: "privacy policy.",
+      "I agree to receive emails about the launch, also via a service outside the EU (India/USA). I can withdraw at any time.",
+    privacy: "Details",
     note: "Free and without obligation. This is not an investment offer and not investment advice.",
     invalid: "Please enter a valid email address and confirm the consent.",
     pending:
@@ -40,8 +40,8 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     placeholder: "Deine E-Mail-Adresse",
     button: "Auf die Warteliste",
     consent:
-      "Ich willige ein, dass Capitalife mich per E-Mail über den Start und den frühen Zugang informiert. Meine E-Mail-Adresse wird dazu über den Dienst Web3Forms (Indien, Server in den USA) an Capitalife übermittelt; dort besteht kein mit der EU vergleichbares Datenschutzniveau. Ich kann meine Einwilligung jederzeit widerrufen. Mehr in der",
-    privacy: "Datenschutzerklärung.",
+      "Ich willige ein, E-Mails zum Start zu erhalten, auch über einen Dienst außerhalb der EU (Indien/USA). Widerruf jederzeit möglich.",
+    privacy: "Details",
     note: "Kostenlos und unverbindlich. Kein Anlageangebot und keine Anlageberatung.",
     invalid:
       "Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Einwilligung.",

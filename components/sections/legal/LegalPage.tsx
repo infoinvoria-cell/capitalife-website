@@ -24,7 +24,7 @@ export function LegalPage({ copy }: { copy: LegalCopy }) {
             {doc.intro && <p className={styles["intro"]}>{doc.intro}</p>}
           </header>
           {doc.sections.map((s) => (
-            <section key={s.heading} className={styles["section"]}>
+            <section key={s.heading} id={s.id} className={styles["section"]}>
               <h2 className={styles["heading"]}>{s.heading}</h2>
               {s.paragraphs?.map((p) => (
                 <p key={p} className={styles["text"]}>

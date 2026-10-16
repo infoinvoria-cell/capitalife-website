@@ -56,6 +56,7 @@ export const privacyCopy: LegalCopy = {
         ],
       },
       {
+        id: "warteliste",
         heading: "6. Warteliste",
         paragraphs: [
           "Wenn Sie sich für die Warteliste eintragen, verarbeiten wir Ihre E-Mail-Adresse, die gewählte Sprache, den Zeitpunkt und den Wortlaut Ihrer Einwilligung, um Sie über den Start und den frühen Zugang zu informieren. Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Sie jederzeit per E-Mail an info@capitalife-invest.de mit Wirkung für die Zukunft widerrufen können.",
@@ -147,6 +148,7 @@ export const privacyCopy: LegalCopy = {
         ],
       },
       {
+        id: "warteliste",
         heading: "6. Waitlist",
         paragraphs: [
           "If you join the waitlist, we process your email address, the chosen language, the time and the wording of your consent in order to inform you about the launch and early access. The legal basis is your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time with effect for the future by emailing info@capitalife-invest.de.",

@@ -78,7 +78,7 @@ export function Waitlist() {
             onChange={(e) => setConsent(e.target.checked)}
           />
           <span>
-            {t.consent} <Link href="/privacy">{t.privacy}</Link>
+            {t.consent} <Link href="/privacy#warteliste">{t.privacy}</Link>
           </span>
         </label>
 
