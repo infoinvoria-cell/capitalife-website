@@ -1,6 +1,6 @@
 // Datenschutzerklärung nach Art. 13 DSGVO für den aktuellen Stand der Seite:
 // Hosting Vercel, Server-Logfiles, Sprachwahl im localStorage, lokale Schriften, E-Mail-Kontakt.
-// Warteliste: überträgt derzeit nichts. Vor Aktivierung Abschnitt "Warteliste" mit Dienstleister ergänzen.
+// Warteliste: Versand über Web3Forms mit Einwilligung (Art. 6 Abs. 1 lit. a, Art. 49 Abs. 1 lit. a DSGVO).
 // Anschrift von Jeroen (16.10.2026). E-Mail über IONOS (MX von capitalife-invest.de).
 import type { LegalCopy } from "./types";
 
@@ -40,7 +40,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "3. Speicherung Ihrer Sprachwahl",
         paragraphs: [
-          "Wenn Sie zwischen Deutsch und Englisch wechseln, speichern wir diese Auswahl im lokalen Speicher Ihres Browsers (localStorage, Eintrag „capitalife_lang“), damit die Seite beim nächsten Besuch in Ihrer Sprache erscheint. Die Information verlässt Ihr Gerät nicht und wird nicht zu anderen Zwecken genutzt. Die Speicherung ist für diese von Ihnen gewünschte Funktion unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Sie können den Eintrag jederzeit in Ihren Browsereinstellungen löschen.",
+          "Beim ersten Besuch zeigen wir die Seite in der Sprache, die in Ihrem Browser eingestellt ist (Deutsch, sonst Englisch); diese Einstellung wird nur gelesen, nicht gespeichert. Wenn Sie selbst zwischen Deutsch und Englisch wechseln, speichern wir diese Auswahl im lokalen Speicher Ihres Browsers (localStorage, Eintrag „capitalife_lang“), damit die Seite beim nächsten Besuch in Ihrer Sprache erscheint. Die Information verlässt Ihr Gerät nicht und wird nicht zu anderen Zwecken genutzt. Die Speicherung ist für diese von Ihnen gewünschte Funktion unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Sie können den Eintrag jederzeit in Ihren Browsereinstellungen löschen.",
         ],
       },
       {
@@ -132,7 +132,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "3. Storing your language choice",
         paragraphs: [
-          "If you switch between German and English, we store this choice in your browser's local storage (localStorage, entry “capitalife_lang”) so that the site appears in your language on your next visit. The information does not leave your device and is not used for any other purpose. Storing it is strictly necessary for this function you requested (§ 25(2) no. 2 TDDDG). You can delete the entry at any time in your browser settings.",
+          "On your first visit we show the site in the language set in your browser (German, otherwise English); this setting is only read, not stored. If you switch between German and English yourself, we store this choice in your browser's local storage (localStorage, entry “capitalife_lang”) so that the site appears in your language on your next visit. The information does not leave your device and is not used for any other purpose. Storing it is strictly necessary for this function you requested (§ 25(2) no. 2 TDDDG). You can delete the entry at any time in your browser settings.",
         ],
       },
       {

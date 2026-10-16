@@ -1,4 +1,4 @@
-// Gründer-Box unter den drei Karten (Sektion 2). Namen und Rollen von Jeroen. PLATZHALTER: Überschrift und Satz bis Freigabe.
+// Gründer-Box unter den drei Karten (Sektion 2). Namen, Rollen und Text (Variante 3) von Jeroen freigegeben.
 // Bilder: public/team/portrait-2.png (links) und portrait-2.png (rechts) (freigestellt, transparenter Hintergrund, Hochformat).
 export type FoundersCopy = {
   title: string;
