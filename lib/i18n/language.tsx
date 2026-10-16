@@ -22,10 +22,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       if (stored === "de" || stored === "en") {
         setLangState(stored);
         document.documentElement.lang = stored;
+        return;
       }
     } catch {
       // ignore localStorage errors
     }
+    // Keine eigene Wahl gespeichert: Sprache des Browsers. Deutsch → Deutsch, alles andere → Englisch.
+    // Nicht speichern, damit sich nur eine bewusste Auswahl merkt.
+    const preferred = navigator.languages?.[0] ?? navigator.language ?? "";
+    if (preferred.toLowerCase().startsWith("de")) setLangState("de");
   }, []);
 
   const setLang = useCallback((next: Lang) => {
