@@ -102,15 +102,56 @@
     rgba(8, 8, 8, 0.55);
 }
 
-/* Logo: Ausschnitt zeigt nur das Symbol (0,86 × Höhe), beim Hover klappt der volle Schriftzug aus */
+/* Logo: Ausschnitt zeigt nur das Symbol (0,86 × Höhe), beim Hover klappt der volle Schriftzug aus.
+   Der Platz in der Leiste bleibt so breit wie das Symbol: der Schriftzug legt sich ÜBER die Links,
+   nichts verschiebt sich. Dahinter dunkelt ein Schatten ab, damit sich die Texte nicht mischen. */
 .brand {
   --logo-h: 1.75rem;
+  --logo-open: calc(var(--logo-h) * 11.46);
+  position: relative;
+  z-index: 2;
   justify-self: start;
   display: block;
+  width: calc(var(--logo-h) * 0.86);
+  height: var(--logo-h);
   border-radius: 6px;
 }
 
+/* Schatten hinter dem ausgeklappten Schriftzug: von der linken Rundung der Leiste bis kurz
+   hinter das Logo, rechts weich auslaufend */
+.brand::before {
+  content: "";
+  position: absolute;
+  /* 1 px Abstand, damit die Glaskante der Leiste sichtbar bleibt */
+  left: calc(-1.5rem + 1px);
+  top: 50%;
+  width: calc(1.5rem + var(--logo-h) * 0.86);
+  height: calc(4.25rem - 2px);
+  border-radius: 999px 0 0 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 6, 6, 0.96) 0,
+    rgba(6, 6, 6, 0.96) calc(100% - 3rem),
+    rgba(6, 6, 6, 0)
+  );
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition:
+    width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.4s ease;
+}
+
+.brand:hover::before,
+.brand:focus-visible::before {
+  width: calc(1.5rem + var(--logo-open) + 3.5rem);
+  opacity: 1;
+}
+
 .brandClip {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: block;
   overflow: hidden;
   width: calc(var(--logo-h) * 0.86);
@@ -119,7 +160,7 @@
 
 .brand:hover .brandClip,
 .brand:focus-visible .brandClip {
-  width: calc(var(--logo-h) * 11.46);
+  width: var(--logo-open);
 }
 
 .brandImg {
@@ -217,6 +258,10 @@
   }
   .brand {
     --logo-h: 1.75rem;
+  }
+  /* Handy: keine Links in der Leiste, also kein Schatten nötig */
+  .brand::before {
+    display: none;
   }
   /* Balken blendet mit dem Scrollen weich ein: --nav-p läuft von 0 (oben) bis 1 (nach ca. 60 px) */
   .nav,
