@@ -1,9 +1,11 @@
 // Warteliste, schnelle Lösung: die Anmeldung wird über Web3Forms als E-Mail an unser Postfach geschickt.
-// Der Schlüssel (NEXT_PUBLIC_WAITLIST_KEY, in Vercel hinterlegt) ist laut Web3Forms öffentlich gedacht.
 // Mitgeschickt werden nur E-Mail, Sprache, Zeitpunkt und der Wortlaut der Einwilligung (Nachweis).
 const ENDPOINT = "https://api.web3forms.com/submit";
 
-export const waitlistKey = process.env.NEXT_PUBLIC_WAITLIST_KEY ?? "";
+// Öffentlicher Web3Forms-Schlüssel (kein Geheimnis, laut Web3Forms für den Browser gedacht).
+// Eine Vercel-Env NEXT_PUBLIC_WAITLIST_KEY hat Vorrang.
+export const waitlistKey =
+  process.env.NEXT_PUBLIC_WAITLIST_KEY || "3b24c273-88cf-407d-9879-e6a31705fa90";
 
 export async function joinWaitlist(
   email: string,
