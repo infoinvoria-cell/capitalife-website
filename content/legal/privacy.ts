@@ -61,7 +61,7 @@ export const privacyCopy: LegalCopy = {
         paragraphs: [
           "Wenn Sie sich für die Warteliste eintragen, verarbeiten wir Ihre E-Mail-Adresse, die gewählte Sprache, den Zeitpunkt und den Wortlaut Ihrer Einwilligung, um Sie über den Start und den frühen Zugang zu informieren. Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Sie jederzeit per E-Mail an info@capitalife-invest.de mit Wirkung für die Zukunft widerrufen können.",
           "Die Übermittlung erfolgt über den Formulardienst Web3Forms, ein Angebot von Web3Creative, Kerala, Indien, mit Servern in den USA. Web3Forms leitet die Angaben per E-Mail an uns weiter und speichert die Einsendungen nach eigener Aussage nicht; Server-Logs werden dort etwa alle zwei Monate gelöscht. Für Indien und für diesen Anbieter in den USA liegt kein Angemessenheitsbeschluss der EU vor, und es besteht kein Vertrag zur Auftragsverarbeitung. Es besteht daher das Risiko, dass Behörden dort auf die Daten zugreifen und Ihre Rechte schwerer durchsetzbar sind. Die Übermittlung erfolgt deshalb nur auf Grundlage Ihrer ausdrücklichen Einwilligung (Art. 49 Abs. 1 lit. a DSGVO).",
-          "Wir speichern Ihre Angaben, bis Sie Ihre Einwilligung widerrufen oder die Warteliste beendet ist, und löschen sie danach.",
+          "Wir speichern Ihre Angaben, bis Sie Ihre Einwilligung widerrufen oder die Warteliste beendet ist, und löschen sie danach. Wenn Sie auf unsere Early-Access-E-Mail antworten, verarbeiten wir zusätzlich Ihren Namen und, falls angegeben, Ihre Telefonnummer, um Sie per E-Mail oder telefonisch zu kontaktieren (Art. 6 Abs. 1 lit. a DSGVO). Diese Angaben löschen wir nach Widerruf, spätestens 12 Monate nach dem Start oder sobald feststeht, dass er nicht stattfindet.",
         ],
       },
       {
@@ -153,7 +153,7 @@ export const privacyCopy: LegalCopy = {
         paragraphs: [
           "If you join the waitlist, we process your email address, the chosen language, the time and the wording of your consent in order to inform you about the launch and early access. The legal basis is your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time with effect for the future by emailing info@capitalife-invest.de.",
           "The data is transmitted via the form service Web3Forms, offered by Web3Creative, Kerala, India, with servers in the USA. Web3Forms forwards the details to us by email and, according to its own statement, does not store submissions; server logs there are deleted about every two months. There is no EU adequacy decision for India or for this provider in the USA, and no data processing agreement is in place. There is therefore a risk that authorities there may access the data and that your rights may be harder to enforce. The transfer therefore only takes place on the basis of your explicit consent (Art. 49(1)(a) GDPR).",
-          "We store your details until you withdraw your consent or the waitlist ends, and delete them afterwards.",
+          "We store your details until you withdraw your consent or the waitlist ends, and delete them afterwards. If you reply to our early access email, we additionally process your name and, if provided, your phone number in order to contact you by email or phone (Art. 6(1)(a) GDPR). We delete these details after withdrawal, at the latest 12 months after the launch or as soon as it is clear that it will not take place.",
         ],
       },
       {
