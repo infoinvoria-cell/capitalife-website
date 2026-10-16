@@ -30,8 +30,9 @@ Referenz, nur lesen: Capitalife Terminal (C:\Users\joris\Documents\Capitalife Te
 ## Recht / Finanz
 - Keine Performance-Zahlen ohne Freigabe. Live-Track-Record (White Swan, seit April 2024) und Backtest immer getrennt und beschriftet.
 - Kein Renditeversprechen, keine CFD-Werbung.
-- Impressum (/imprint), Datenschutz (/privacy), Risikohinweis (/risk) gebaut (content/legal/, components/sections/legal/). OFFEN vor Domain-Livegang: Anschrift, Telefon, E-Mail-Anbieter (capitalife.co hat KEINEN MX-Eintrag, info@ empfaengt nichts), Vercel-DPA/Tarif (Hobby = nicht kommerziell), Log-Speicherdauer. Keine Rechtsberatung, Anwalt pruefen lassen.
-- /partner-program (+ /partner, /tippgeber) ist oeffentlich und enthaelt Gewinn-/Investor-Aussagen (KWG-Risiko). Entfernen braucht Go.
+- Impressum (/imprint), Datenschutz (/privacy), Risikohinweis (/risk) gebaut (content/legal/, components/sections/legal/). Kontakt: info@capitalife-invest.de (IONOS), Anschrift Am Koenigsweg 3A, 48599 Gronau-Epe. OFFEN: Vercel-DPA/Tarif (Hobby = nicht kommerziell), Log-Speicherdauer, eGbR/USt-IdNr.
+- Warteliste (schnelle Loesung): Formular sendet ueber Web3Forms (lib/waitlist.ts) an das Postfach, das beim Schluessel hinterlegt ist. Schluessel als Vercel-Env NEXT_PUBLIC_WAITLIST_KEY. Ohne Schluessel sendet es nichts. Web3Forms = Indien/USA ohne AVV, daher Einwilligung nach Art. 49 DSGVO; spaeter auf Brevo/MailerLite mit Double-Opt-in wechseln. Keine Rechtsberatung, Anwalt pruefen lassen.
+- /partner-program und Umleitungen /partner, /tippgeber am 16.10.2026 entfernt (Go von Jeroen).
 - Rechtsrisiken im Blick: Partnerprogramm, Broker-Logos, Haftungsdach. Keine Rechtsberatung.
 - public/trades_clean_compounded.csv wird oeffentlich ausgeliefert: pruefen, ob sie dort bleiben darf.
 

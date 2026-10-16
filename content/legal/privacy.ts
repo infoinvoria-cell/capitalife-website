@@ -1,7 +1,7 @@
 // Datenschutzerklärung nach Art. 13 DSGVO für den aktuellen Stand der Seite:
 // Hosting Vercel, Server-Logfiles, Sprachwahl im localStorage, lokale Schriften, E-Mail-Kontakt.
 // Warteliste: überträgt derzeit nichts. Vor Aktivierung Abschnitt "Warteliste" mit Dienstleister ergänzen.
-// OFFEN: Anschrift des Verantwortlichen (wie Impressum).
+// Anschrift von Jeroen (16.10.2026). E-Mail über IONOS (MX von capitalife-invest.de).
 import type { LegalCopy } from "./types";
 
 export const privacyCopy: LegalCopy = {
@@ -14,7 +14,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "1. Verantwortlicher",
         paragraphs: [
-          "Capitalife GbR, vertreten durch die Gesellschafter Jeroen Göhlert und Jan Luca Manfré\n[Straße und Hausnummer folgen], [PLZ und Ort folgen], Deutschland\nE-Mail: info@capitalife.co",
+          "Capitalife GbR, vertreten durch die Gesellschafter Jeroen Göhlert und Jan Luca Manfré\nAm Königsweg 3A, 48599 Gronau-Epe, Deutschland\nE-Mail: info@capitalife-invest.de",
           "Ein Datenschutzbeauftragter ist für uns gesetzlich nicht vorgeschrieben.",
         ],
       },
@@ -52,13 +52,15 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "5. Kontakt per E-Mail",
         paragraphs: [
-          "Wenn Sie uns per E-Mail schreiben, verarbeiten wir Ihre Angaben (z. B. Name, E-Mail-Adresse, Inhalt der Nachricht), um Ihre Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit es um einen Vertrag oder vorvertragliche Fragen geht, im Übrigen unser berechtigtes Interesse an der Beantwortung (Art. 6 Abs. 1 lit. f DSGVO). Wir löschen die Daten, sobald die Anfrage erledigt ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen. E-Mails werden über [E-Mail-Anbieter mit Anschrift folgt] verarbeitet; mit dem Anbieter besteht ein Vertrag zur Auftragsverarbeitung.",
+          "Wenn Sie uns per E-Mail schreiben, verarbeiten wir Ihre Angaben (z. B. Name, E-Mail-Adresse, Inhalt der Nachricht), um Ihre Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit es um einen Vertrag oder vorvertragliche Fragen geht, im Übrigen unser berechtigtes Interesse an der Beantwortung (Art. 6 Abs. 1 lit. f DSGVO). Wir löschen die Daten, sobald die Anfrage erledigt ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen. E-Mails werden über IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, verarbeitet; mit dem Anbieter besteht ein Vertrag zur Auftragsverarbeitung.",
         ],
       },
       {
         heading: "6. Warteliste",
         paragraphs: [
-          "Die Anmeldung zur Warteliste ist derzeit noch nicht freigeschaltet. Über das Formular werden aktuell keine Daten übertragen oder gespeichert. Vor der Freischaltung ergänzen wir hier, welchen Versanddienstleister wir einsetzen und wie das Bestätigungsverfahren (Double-Opt-in) abläuft. Die Anmeldung wird dann nur mit Ihrer Einwilligung erfolgen (Art. 6 Abs. 1 lit. a DSGVO), die Sie jederzeit widerrufen können.",
+          "Wenn Sie sich für die Warteliste eintragen, verarbeiten wir Ihre E-Mail-Adresse, die gewählte Sprache, den Zeitpunkt und den Wortlaut Ihrer Einwilligung, um Sie über den Start und den frühen Zugang zu informieren. Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Sie jederzeit per E-Mail an info@capitalife-invest.de mit Wirkung für die Zukunft widerrufen können.",
+          "Die Übermittlung erfolgt über den Formulardienst Web3Forms, ein Angebot von Web3Creative, Kerala, Indien, mit Servern in den USA. Web3Forms leitet die Angaben per E-Mail an uns weiter und speichert die Einsendungen nach eigener Aussage nicht; Server-Logs werden dort etwa alle zwei Monate gelöscht. Für Indien und für diesen Anbieter in den USA liegt kein Angemessenheitsbeschluss der EU vor, und es besteht kein Vertrag zur Auftragsverarbeitung. Es besteht daher das Risiko, dass Behörden dort auf die Daten zugreifen und Ihre Rechte schwerer durchsetzbar sind. Die Übermittlung erfolgt deshalb nur auf Grundlage Ihrer ausdrücklichen Einwilligung (Art. 49 Abs. 1 lit. a DSGVO).",
+          "Wir speichern Ihre Angaben, bis Sie Ihre Einwilligung widerrufen oder die Warteliste beendet ist, und löschen sie danach.",
         ],
       },
       {
@@ -82,7 +84,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "Beschwerderecht",
         paragraphs: [
-          "Sie können sich bei einer Datenschutz-Aufsichtsbehörde beschweren, insbesondere in dem Mitgliedstaat Ihres Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes (Art. 77 DSGVO). Für ein Anliegen genügt eine E-Mail an info@capitalife.co.",
+          "Sie können sich bei einer Datenschutz-Aufsichtsbehörde beschweren, insbesondere in dem Mitgliedstaat Ihres Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes (Art. 77 DSGVO). Für uns zuständig ist die Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen, Kavalleriestraße 2–4, 40213 Düsseldorf. Für ein Anliegen genügt eine E-Mail an info@capitalife-invest.de.",
         ],
       },
       {
@@ -103,7 +105,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "1. Controller",
         paragraphs: [
-          "Capitalife GbR, represented by the partners Jeroen Göhlert and Jan Luca Manfré\n[Street and number to follow], [postcode and city to follow], Germany\nEmail: info@capitalife.co",
+          "Capitalife GbR, represented by the partners Jeroen Göhlert and Jan Luca Manfré\nAm Königsweg 3A, 48599 Gronau-Epe, Germany\nEmail: info@capitalife-invest.de",
           "We are not legally required to appoint a data protection officer.",
         ],
       },
@@ -141,13 +143,15 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "5. Contact by email",
         paragraphs: [
-          "If you email us, we process your details (e.g. name, email address, content of the message) to answer your enquiry. The legal basis is Art. 6(1)(b) GDPR where a contract or pre-contractual questions are concerned, otherwise our legitimate interest in answering (Art. 6(1)(f) GDPR). We delete the data once the enquiry has been dealt with and no statutory retention obligations apply. Emails are processed via [email provider with address to follow]; a data processing agreement is in place with the provider.",
+          "If you email us, we process your details (e.g. name, email address, content of the message) to answer your enquiry. The legal basis is Art. 6(1)(b) GDPR where a contract or pre-contractual questions are concerned, otherwise our legitimate interest in answering (Art. 6(1)(f) GDPR). We delete the data once the enquiry has been dealt with and no statutory retention obligations apply. Emails are processed via IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, Germany; a data processing agreement is in place with the provider.",
         ],
       },
       {
         heading: "6. Waitlist",
         paragraphs: [
-          "Signing up for the waitlist is not yet activated. The form currently does not transmit or store any data. Before activation, we will add here which email service provider we use and how the confirmation process (double opt-in) works. Sign-up will then only take place with your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time.",
+          "If you join the waitlist, we process your email address, the chosen language, the time and the wording of your consent in order to inform you about the launch and early access. The legal basis is your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time with effect for the future by emailing info@capitalife-invest.de.",
+          "The data is transmitted via the form service Web3Forms, offered by Web3Creative, Kerala, India, with servers in the USA. Web3Forms forwards the details to us by email and, according to its own statement, does not store submissions; server logs there are deleted about every two months. There is no EU adequacy decision for India or for this provider in the USA, and no data processing agreement is in place. There is therefore a risk that authorities there may access the data and that your rights may be harder to enforce. The transfer therefore only takes place on the basis of your explicit consent (Art. 49(1)(a) GDPR).",
+          "We store your details until you withdraw your consent or the waitlist ends, and delete them afterwards.",
         ],
       },
       {
@@ -171,7 +175,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "Right to lodge a complaint",
         paragraphs: [
-          "You can lodge a complaint with a data protection supervisory authority, in particular in the member state of your habitual residence, place of work or place of the alleged infringement (Art. 77 GDPR). For any request, an email to info@capitalife.co is sufficient.",
+          "You can lodge a complaint with a data protection supervisory authority, in particular in the member state of your habitual residence, place of work or place of the alleged infringement (Art. 77 GDPR). The authority responsible for us is the State Commissioner for Data Protection and Freedom of Information of North Rhine-Westphalia, Kavalleriestraße 2–4, 40213 Düsseldorf, Germany. For any request, an email to info@capitalife-invest.de is sufficient.",
         ],
       },
       {

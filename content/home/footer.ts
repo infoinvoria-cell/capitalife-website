@@ -29,4 +29,4 @@ export const footerCopy: Record<"en" | "de", FooterCopy> = {
   },
 };
 
-export const contactEmail = "info@capitalife.co";
+export const contactEmail = "info@capitalife-invest.de";

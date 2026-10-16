@@ -1,5 +1,4 @@
-// Impressum nach § 5 DDG. OFFEN (Pflicht vor Domain-Livegang): ladungsfähige Anschrift, Telefon,
-// ggf. eGbR-Registerangabe und USt-IdNr. Kein Hinweis auf die OS-Plattform (seit 20.07.2025 abgeschaltet).
+// Impressum nach § 5 DDG. Daten von Jeroen (16.10.2026). OFFEN: ggf. eGbR-Registerangabe und USt-IdNr. Kein Hinweis auf die OS-Plattform (seit 20.07.2025 abgeschaltet).
 import type { LegalCopy } from "./types";
 
 export const imprintCopy: LegalCopy = {
@@ -10,7 +9,7 @@ export const imprintCopy: LegalCopy = {
       {
         heading: "Anbieter",
         paragraphs: [
-          "Capitalife GbR\n[Straße und Hausnummer folgen]\n[PLZ und Ort folgen]\nDeutschland",
+          "Capitalife GbR\nAm Königsweg 3A\n48599 Gronau-Epe\nDeutschland",
         ],
       },
       {
@@ -19,7 +18,9 @@ export const imprintCopy: LegalCopy = {
       },
       {
         heading: "Kontakt",
-        paragraphs: ["E-Mail: info@capitalife.co\nTelefon: [folgt]"],
+        paragraphs: [
+          "E-Mail: info@capitalife-invest.de\nTelefon: +49 176 21946491",
+        ],
       },
       {
         heading: "Verbraucherstreitbeilegung",
@@ -43,7 +44,7 @@ export const imprintCopy: LegalCopy = {
       {
         heading: "Provider",
         paragraphs: [
-          "Capitalife GbR\n[Street and number to follow]\n[Postcode and city to follow]\nGermany",
+          "Capitalife GbR\nAm Königsweg 3A\n48599 Gronau-Epe\nGermany",
         ],
       },
       {
@@ -52,7 +53,9 @@ export const imprintCopy: LegalCopy = {
       },
       {
         heading: "Contact",
-        paragraphs: ["Email: info@capitalife.co\nPhone: [to follow]"],
+        paragraphs: [
+          "Email: info@capitalife-invest.de\nPhone: +49 176 21946491",
+        ],
       },
       {
         heading: "Consumer dispute resolution",
