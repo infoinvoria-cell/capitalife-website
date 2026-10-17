@@ -100,6 +100,12 @@
   .kpi:first-child {
     grid-column: 1 / -1;
   }
+
+  /* Wort steht mittig, die Karte hängt rechts daneben: Überschrift um die halbe Kartenbreite
+     nach rechts, damit sie mittig über Wort + Karte steht (0,4em Abstand + 0,92em Karte, dd = 1,05rem) */
+  .kpi:has(.icon) dt {
+    transform: translateX(calc((0.4 + 0.92) * 1.05rem / 2));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
