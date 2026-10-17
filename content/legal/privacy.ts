@@ -21,7 +21,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "2. Hosting und Server-Logfiles",
         paragraphs: [
-          "Diese Website wird bei Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA, gehostet (Cloudflare Pages). Cloudflare stellt außerdem die DNS-Verwaltung unserer Domain bereit. Beim Aufruf der Seiten verarbeitet Cloudflare automatisch technische Daten, die Ihr Browser übermittelt:",
+          "Diese Website wird bei Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA, gehostet. Cloudflare stellt außerdem die DNS-Verwaltung unserer Domain bereit. Beim Aufruf der Seiten verarbeitet Cloudflare automatisch technische Daten, die Ihr Browser übermittelt:",
         ],
         items: [
           "IP-Adresse",
@@ -113,7 +113,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "2. Hosting and server log files",
         paragraphs: [
-          "This website is hosted by Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA (Cloudflare Pages). Cloudflare also provides the DNS management of our domain. When pages are accessed, Cloudflare automatically processes technical data transmitted by your browser:",
+          "This website is hosted by Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. Cloudflare also provides the DNS management of our domain. When pages are accessed, Cloudflare automatically processes technical data transmitted by your browser:",
         ],
         items: [
           "IP address",

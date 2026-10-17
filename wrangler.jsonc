@@ -1,0 +1,9 @@
+// Cloudflare: die statische Seite aus out/ (next build mit output: "export") wird als Worker mit Dateien ausgeliefert.
+{
+  "name": "capitalife-website",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
