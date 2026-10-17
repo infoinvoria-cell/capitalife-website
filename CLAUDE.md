@@ -46,3 +46,8 @@ Die Seite ist vorerst nur WARTELISTE / EARLY ACCESS / Coming soon. Keine echten 
 - Geprueft (Playwright, echte Animationen): 1920, MBP 16/14, MBA 13, 1280x800, iPad quer/hoch, iPad Pro, iPhone Max/normal/SE, Android, Handy quer. Prod-Build gruen.
 - Hero-Erde: Erde, Lichtkegel und Schriftzug zeichnet EIN WebGL-Canvas in Bildschirmgroesse (lib/globe/shader.ts, renderer.ts). Bilder in HeroGlobe.tsx sind nur Ersatz ohne WebGL. Qualitaet passt sich automatisch an langsame Geraete an.
 - Ungeprueft: metadataBase, Open Graph.
+
+## Hosting (17.10.2026)
+- Umzug von Vercel zu Cloudflare (Konto mit info@capitalife-invest.de). Seite ist statischer Export (next.config.ts: output "export", Bilder unoptimiert), ausgeliefert als Worker mit Dateien (wrangler.jsonc, Ordner out/). Cloudflare baut bei jedem Push auf main.
+- Worker-Adresse: capitalife-website.young-wind-364f.workers.dev. Ziel-Domain: capitalife-invest.de (Domain bleibt bei IONOS, Nameserver auf Cloudflare carioca/miguel umgestellt, Mail laeuft weiter ueber IONOS: MX, SPF, DKIM s1/s2, _dmarc, autodiscover als "DNS only").
+- Datenschutz nennt Cloudflare statt Vercel. Vercel-Projekt nicht mehr noetig (Abschalten braucht Go).
