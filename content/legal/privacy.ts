@@ -1,5 +1,5 @@
 // Datenschutzerklärung nach Art. 13 DSGVO für den aktuellen Stand der Seite:
-// Hosting Vercel, Server-Logfiles, Sprachwahl im localStorage, lokale Schriften, E-Mail-Kontakt.
+// Hosting Cloudflare, Server-Logfiles, Sprachwahl im localStorage, lokale Schriften, E-Mail-Kontakt.
 // Warteliste: Versand über Web3Forms mit Einwilligung (Art. 6 Abs. 1 lit. a, Art. 49 Abs. 1 lit. a DSGVO).
 // Anschrift von Jeroen (16.10.2026). E-Mail über IONOS (MX von capitalife-invest.de).
 import type { LegalCopy } from "./types";
@@ -21,7 +21,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "2. Hosting und Server-Logfiles",
         paragraphs: [
-          "Diese Website wird bei Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, USA, gehostet. Beim Aufruf der Seiten verarbeitet Vercel automatisch technische Daten, die Ihr Browser übermittelt:",
+          "Diese Website wird bei Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA, gehostet (Cloudflare Pages). Cloudflare stellt außerdem die DNS-Verwaltung unserer Domain bereit. Beim Aufruf der Seiten verarbeitet Cloudflare automatisch technische Daten, die Ihr Browser übermittelt:",
         ],
         items: [
           "IP-Adresse",
@@ -34,7 +34,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "Zweck und Rechtsgrundlage",
         paragraphs: [
-          "Die Verarbeitung dient der Auslieferung, Stabilität und Sicherheit der Website. Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren und funktionsfähigen Angebot (Art. 6 Abs. 1 lit. f DSGVO). Mit Vercel besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO). Vercel ist nach dem EU-US Data Privacy Framework zertifiziert; die Übermittlung in die USA stützt sich auf den Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO). Die Logdaten werden nur so lange gespeichert, wie es für diese Zwecke erforderlich ist. Weitere Informationen: vercel.com/legal/privacy-policy.",
+          "Die Verarbeitung dient der Auslieferung, Stabilität und Sicherheit der Website. Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren und funktionsfähigen Angebot (Art. 6 Abs. 1 lit. f DSGVO). Mit Cloudflare besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO). Cloudflare ist nach dem EU-US Data Privacy Framework zertifiziert; die Übermittlung in die USA stützt sich auf den Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO). Die Logdaten werden nur so lange gespeichert, wie es für diese Zwecke erforderlich ist. Weitere Informationen: cloudflare.com/privacypolicy.",
         ],
       },
       {
@@ -113,7 +113,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "2. Hosting and server log files",
         paragraphs: [
-          "This website is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, USA. When pages are accessed, Vercel automatically processes technical data transmitted by your browser:",
+          "This website is hosted by Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA (Cloudflare Pages). Cloudflare also provides the DNS management of our domain. When pages are accessed, Cloudflare automatically processes technical data transmitted by your browser:",
         ],
         items: [
           "IP address",
@@ -126,7 +126,7 @@ export const privacyCopy: LegalCopy = {
       {
         heading: "Purpose and legal basis",
         paragraphs: [
-          "Processing serves the delivery, stability and security of the website. The legal basis is our legitimate interest in a secure and functional service (Art. 6(1)(f) GDPR). A data processing agreement is in place with Vercel (Art. 28 GDPR). Vercel is certified under the EU-US Data Privacy Framework; the transfer to the USA is based on the European Commission's adequacy decision (Art. 45 GDPR). Log data is only stored as long as necessary for these purposes. More information: vercel.com/legal/privacy-policy.",
+          "Processing serves the delivery, stability and security of the website. The legal basis is our legitimate interest in a secure and functional service (Art. 6(1)(f) GDPR). A data processing agreement is in place with Cloudflare (Art. 28 GDPR). Cloudflare is certified under the EU-US Data Privacy Framework; the transfer to the USA is based on the European Commission's adequacy decision (Art. 45 GDPR). Log data is only stored as long as necessary for these purposes. More information: cloudflare.com/privacypolicy.",
         ],
       },
       {
