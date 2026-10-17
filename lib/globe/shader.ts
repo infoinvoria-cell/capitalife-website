@@ -45,8 +45,11 @@ vec3 light(vec2 p) {
 // Schriftzug hinter der Kugel: nur dort sichtbar, wo Licht hinfaellt
 float mark() {
   vec2 uv = (vec2(gl_FragCoord.x, uH - gl_FragCoord.y) - uMarkBox.xy) / uMarkBox.zw;
-  if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return 0.0;
-  return texture2D(uMark, uv).r;
+  // Immer lesen, erst danach ausblenden: liest man nur innerhalb einer Abfrage, waehlen manche
+  // Grafikkarten an der Kante eine falsche, verwaschene Bildstufe -> heller Strich an der Unterkante.
+  float v = texture2D(uMark, clamp(uv, 0.0, 1.0)).r;
+  vec2 inside = step(vec2(0.0), uv) * step(uv, vec2(1.0));
+  return v * inside.x * inside.y;
 }
 
 void main() {
