@@ -24,6 +24,8 @@ function beamAngle(sec: number, phone: boolean): number {
     : 95 + (170 * (tt - top)) / BEAM_BACK_PHONE;
 }
 const SLOW_MS = 22; // Bildzeit, ab der ein Gerät als zu langsam gilt (unter ca. 45 Bilder pro Sekunde)
+const FAST_MS = 18; // Bildzeit, ab der wieder volle Schärfe möglich ist
+const WARMUP_MS = 4000; // Anfangs ruckelt jedes Gerät (Bilder laden, Grafikkarte wärmt auf): nicht messen
 
 function load(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -96,11 +98,15 @@ export function HeroGlobeCanvas({
       raf = requestAnimationFrame(tick);
       const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
       last = now;
-      if (dt > 0 && dt < 0.1 && quality > 0.5) {
+      // Erst nach der Anlaufzeit messen, und in beide Richtungen: wird das Gerät wieder schnell,
+      // kommt die volle Schärfe zurück (sonst bliebe ein kurzes Ruckeln beim Laden für immer unscharf)
+      if (dt > 0 && dt < 0.1 && now - t0 > WARMUP_MS) {
         frames += 1;
         spent += dt * 1000;
         if (frames === 60) {
-          if (spent / frames > SLOW_MS) quality -= 0.25;
+          const avg = spent / frames;
+          if (avg > SLOW_MS && quality > 0.5) quality -= 0.25;
+          else if (avg < FAST_MS && quality < 1) quality += 0.25;
           frames = 0;
           spent = 0;
         }
