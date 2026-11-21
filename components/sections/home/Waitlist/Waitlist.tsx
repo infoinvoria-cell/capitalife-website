@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { waitlistCopy } from "@/content/home/waitlist";
 import { useLanguage } from "@/lib/i18n/language";
+import { captureRef, getRef } from "@/lib/ref";
 import { joinWaitlist, waitlistKey } from "@/lib/waitlist";
 import styles from "./Waitlist.module.css";
 
@@ -20,6 +21,10 @@ export function Waitlist() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => {
+    captureRef();
+  }, []);
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (busy) return;
@@ -31,6 +36,7 @@ export function Waitlist() {
       email.trim(),
       lang,
       `${t.consent} ${t.privacy}`,
+      getRef(),
     );
     setBusy(false);
     setMessage(ok ? t.success : t.error);

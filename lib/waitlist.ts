@@ -11,6 +11,7 @@ export async function joinWaitlist(
   email: string,
   lang: string,
   consentText: string,
+  ref?: string | null,
 ): Promise<boolean> {
   if (!waitlistKey) return false;
   try {
@@ -22,12 +23,15 @@ export async function joinWaitlist(
       },
       body: JSON.stringify({
         access_key: waitlistKey,
-        subject: "Neue Anmeldung Warteliste Capitalife",
+        subject:
+          "Neue Anmeldung Warteliste Capitalife" +
+          (ref ? ` (Empfehlung: ${ref})` : ""),
         from_name: "Capitalife Website",
         email,
         sprache: lang,
         zeitpunkt: new Date().toISOString(),
         einwilligung: consentText,
+        ...(ref ? { empfehlung: ref } : {}),
         botcheck: false,
       }),
     });
