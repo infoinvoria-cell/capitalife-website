@@ -1,5 +1,5 @@
 // Gründer-Box unter den drei Karten (Sektion 2). Namen, Rollen und Text (Variante 3) von Jeroen freigegeben.
-// Bilder: public/team/portrait-2.png (links) und portrait-2.png (rechts) (freigestellt, transparenter Hintergrund, Hochformat).
+// Bilder: public/team/portrait-2.webp (links) und portrait-1.webp (rechts) (freigestellt, transparenter Hintergrund, Hochformat).
 export type FoundersCopy = {
   title: string;
   text: string;
@@ -14,12 +14,12 @@ export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
       {
         name: "Jeroen Göhlert",
         role: "CEO & Founder",
-        image: "/team/portrait-2.png",
+        image: "/team/portrait-2.webp",
       },
       {
         name: "Jan Luca Manfré",
         role: "COO & Founder",
-        image: "/team/portrait-1.png",
+        image: "/team/portrait-1.webp",
       },
     ],
   },
@@ -30,12 +30,12 @@ export const foundersCopy: Record<"en" | "de", FoundersCopy> = {
       {
         name: "Jeroen Göhlert",
         role: "CEO & Gründer",
-        image: "/team/portrait-2.png",
+        image: "/team/portrait-2.webp",
       },
       {
         name: "Jan Luca Manfré",
         role: "COO & Gründer",
-        image: "/team/portrait-1.png",
+        image: "/team/portrait-1.webp",
       },
     ],
   },
