@@ -6,6 +6,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { waitlistCopy } from "@/content/home/waitlist";
 import { useLanguage } from "@/lib/i18n/language";
 import { captureRef, getRef } from "@/lib/ref";
+import { meldePartner } from "@/lib/partner-tracking";
 import { joinWaitlist, waitlistKey } from "@/lib/waitlist";
 import styles from "./Waitlist.module.css";
 
@@ -20,9 +21,13 @@ export function Waitlist() {
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Nur wer über einen Empfehlungslink kam, sieht das zweite Häkchen (Einwilligung für den Empfehlungsgeber).
+  const [ref, setRef] = useState<string | null>(null);
+  const [partnerConsent, setPartnerConsent] = useState(false);
 
   useEffect(() => {
     captureRef();
+    setRef(getRef());
   }, []);
 
   const onSubmit = async (e: FormEvent) => {
@@ -36,13 +41,16 @@ export function Waitlist() {
       email.trim(),
       lang,
       `${t.consent} ${t.privacy}`,
-      getRef(),
+      ref,
     );
+    // Zusätzlich ans Partner-Tracking, nur mit eigener Einwilligung; ein Fehler dort ändert nichts an der Anmeldung.
+    if (ok && ref && partnerConsent) await meldePartner(email.trim(), ref, t.partnerConsent);
     setBusy(false);
     setMessage(ok ? t.success : t.error);
     if (ok) {
       setEmail("");
       setConsent(false);
+      setPartnerConsent(false);
     }
   };
 
@@ -87,6 +95,18 @@ export function Waitlist() {
             {t.consent} <Link href="/privacy#warteliste">{t.privacy}</Link>
           </span>
         </label>
+
+        {ref && (
+          <label className={styles["consent"]} htmlFor="waitlist-partner-consent">
+            <input
+              id="waitlist-partner-consent"
+              type="checkbox"
+              checked={partnerConsent}
+              onChange={(e) => setPartnerConsent(e.target.checked)}
+            />
+            <span>{t.partnerConsent}</span>
+          </label>
+        )}
 
         <p className={styles["note"]} aria-live="polite" data-reveal="4">
           {message ?? t.note}

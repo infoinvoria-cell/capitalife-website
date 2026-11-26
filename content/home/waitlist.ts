@@ -7,6 +7,8 @@ export type WaitlistCopy = {
   button: string;
   consent: string;
   privacy: string;
+  /** Zweites Häkchen, nur bei Empfehlungslink: Einwilligung, dass der Empfehlungsgeber die Anmeldung sieht. */
+  partnerConsent: string;
   note: string;
   invalid: string;
   pending: string;
@@ -24,6 +26,7 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     consent:
       "I agree to receive launch emails, also via a service outside the EU. Withdraw anytime.",
     privacy: "Details",
+    partnerConsent: "I agree that the person who recommended Capitalife to me can see that I signed up.",
     note: "Free and without obligation. This is not an investment offer and not investment advice.",
     invalid: "Please enter a valid email address and confirm the consent.",
     pending:
@@ -42,6 +45,7 @@ export const waitlistCopy: Record<"en" | "de", WaitlistCopy> = {
     consent:
       "Ich willige ein, E-Mails zum Start zu erhalten, auch über einen Dienst außerhalb der EU. Widerruf jederzeit.",
     privacy: "Details",
+    partnerConsent: "Ich bin einverstanden, dass mein Empfehlungsgeber sieht, dass ich mich angemeldet habe.",
     note: "Kostenlos und unverbindlich. Kein Anlageangebot und keine Anlageberatung.",
     invalid:
       "Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Einwilligung.",

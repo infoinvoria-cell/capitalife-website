@@ -1,9 +1,13 @@
 // Cloudflare: die statische Seite aus out/ (next build mit output: "export") wird als Worker mit Dateien ausgeliefert.
+// Nur /api/* läuft durch den Worker (worker/index.ts, Partner-Tracking); alles andere kommt direkt als Datei mit public/_headers.
 {
   "name": "capitalife-website",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./out",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page"
   }
 }
